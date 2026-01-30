@@ -1,16 +1,15 @@
+import 'dotenv/config';
 import mysql from 'mysql2/promise';
 
-console.log("--- STARTING DATABASE CONNECTION ---");
+console.log("ENV USER:", process.env.DB_USER); // test
 
 export const pool = mysql.createPool({
-  host: '127.0.0.1',  // Using the IP address is more stable than 'localhost'
-  user: 'root', 
-  password: 'Beza102#', 
-  database: 'team4mation',
-  port: 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
-
-console.log("✅ DB Pool initialized with user: root");
