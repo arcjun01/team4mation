@@ -1,24 +1,28 @@
 import express from 'express';
-import { pool } from '../db.js'; 
+import { pool } from '../db.js';
 
 const router = express.Router();
-
 
 router.post("/", async (req, res) => {
   const { gender } = req.body;
 
+  if (!gender) {
+    return res.status(400).json({ success: false, error: "Gender is required" });
+  }
+
   try {
+    // Correct table name
     const [result] = await pool.execute(
-      "INSERT INTO survey_responses (gender) VALUES (?)",
+      "INSERT INTO student_survey_entries (gender) VALUES (?)",
       [gender]
     );
 
-    console.log("New survey response saved with ID:", result.insertId);
-    
+    console.log("New survey response saved with student_id:", result.insertId);
+
     res.status(201).json({ 
       success: true, 
       message: "Survey submitted!", 
-      id: result.insertId 
+      student_id: result.insertId // return the generated student_id
     });
   } catch (err) {
     console.error("Database Error:", err);

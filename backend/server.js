@@ -17,6 +17,9 @@ app.use("/api/survey", surveyRoutes);
 
 const PORT = process.env.PORT || 3001;
 
+console.log("Using database:", process.env.DB_NAME);
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
