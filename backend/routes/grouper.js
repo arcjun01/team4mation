@@ -17,6 +17,7 @@ function grouper() {
 
     console.log(groups);
 
+    return groups;
 
     function seperateGenders() {
         const males = []
