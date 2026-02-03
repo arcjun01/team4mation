@@ -1,25 +1,23 @@
 const { students, settings } = require("../data/students");
 
 
+
+
+const groupNum = Math.floor(settings.classSize / settings.teamSize)
+const testDataLength = Math.floor(students.length / settings.teamSize);
+console.log(groupNum);
+console.log(testDataLength);
+
 const { males, others } = seperateGenders();
-// console.log(males)
-// console.log(males.length)
-// console.log(others)
-// console.log(others.length)
+console.log(males)
+console.log(males.length)
+console.log(others)
+console.log(others.length)
 
-// const maxMaleNum = Math.floor(settings.teamSize / 2)
-// const groupNum = Math.floor(settings.classSize / settings.teamSize)
-// const testDataLength = Math.floor(students.length / settings.teamSize);
-// console.log(maxMaleNum);
-// console.log(groupNum);
-// console.log(testDataLength);
+const groups = makeBasicGroups(males, others, groupNum);
 
-// const groups = [];
+console.log(groups);
 
-for (let i = 0; i < testDataLength; i++) {
-    const group = [];
-
-}
 
 function seperateGenders() {
     const males = []
@@ -31,4 +29,27 @@ function seperateGenders() {
     }
 
     return { males, others };
+}
+
+function makeBasicGroups(males, others, groupNum) {
+    const groups = [];
+    const maxMaleNum = Math.floor(settings.teamSize / 2)
+
+    for (let i = 0; i < testDataLength; i++) {
+        const group = [];
+
+        const malesAdded = Math.min(maxMaleNum, males.length);
+        for (let j = 0; j < malesAdded; j++) {
+            group.push(males.pop());
+        }
+
+        while (group.length < settings.teamSize) {
+            //if (others.length === 0) return null; // impossible to form groups
+            group.push(others.pop());
+        }
+
+        groups.push(group)
+    }
+
+    return groups;
 }
