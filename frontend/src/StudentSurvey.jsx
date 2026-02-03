@@ -18,7 +18,7 @@ export default function StudentSurvey() {
       setLoading(true);
       setMessage("");
 
-      const response = await fetch("http://localhost:3001/api/survey", {
+      const response = await fetch("http://localhost:3001/teams", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

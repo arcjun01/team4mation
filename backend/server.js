@@ -1,14 +1,13 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
+require("dotenv").config();
 
-import surveyRoutes from './routes/survey.js';
-import teamRoutes from './routes/teams.js'; 
-
+const express = require("express");
+const cors = require("cors");
+const teamRoutes = require("./routes/teams");
 
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
 
 // Routes
@@ -19,6 +18,8 @@ const PORT = process.env.PORT || 3001;
 
 console.log("Using database:", process.env.DB_NAME);
 
+
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
