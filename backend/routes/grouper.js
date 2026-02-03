@@ -16,26 +16,26 @@ function grouper() {
     const groups = makeBasicGroups(males, others, groupNum);
 
     console.log(groups);
+    return groups
+}
 
+function seperateGenders() {
+    const males = []
+    const others = []
 
-    function seperateGenders() {
-        const males = []
-        const others = []
-
-        for (const person of students) {
-            if (person.gender === "Male") males.push(person);
-            if (person.gender === "Female" || person.gender === "Other") others.push(person)
-        }
-
-        return { males, others };
+    for (const person of students) {
+        if (person.gender === "Male") males.push(person);
+        if (person.gender === "Female" || person.gender === "Other") others.push(person)
     }
+
+    return { males, others };
 }
 
 
 
 function makeBasicGroups(males, others, groupNum) {
     const groups = [];
-    const maxMaleNum = Math.floor(settings.teamSize / 2)
+    const maxMaleNum = Math.ceil(settings.teamSize / 2)
 
     for (let i = 0; i < groupNum; i++) {
         const group = [];
