@@ -1,23 +1,24 @@
 const studentData = require("../data/students.js")
 const { students, settings } = studentData
 
-//function grouper() {
-const groupNum = Math.floor(settings.classSize / settings.teamSize)
-const testDataLength = Math.floor(students.length / settings.teamSize);
-console.log(groupNum);
-console.log(testDataLength);
+function grouper() {
+    const groupNum = Math.floor(settings.classSize / settings.teamSize)
+    const testDataLength = Math.floor(students.length / settings.teamSize);
+    console.log(groupNum);
+    console.log(testDataLength);
 
-const { males, others } = seperateGenders();
-console.log(males)
-console.log(males.length)
-console.log(others)
-console.log(others.length)
+    const { males, others } = seperateGenders();
+    console.log(males)
+    console.log(males.length)
+    console.log(others)
+    console.log(others.length)
 
-const groups = makeBasicGroups(males, others, groupNum);
+    const groups = makeBasicGroups(males, others, groupNum);
 
-console.log(groups);
-//  return groups
-//}
+    console.log(groups);
+
+    return groups;
+}
 
 function seperateGenders() {
     const males = []
@@ -37,17 +38,6 @@ function makeBasicGroups(males, others, groupNum) {
     const groups = [];
     const maxMaleNum = Math.floor(settings.teamSize / 2)
 
-    // let i = 0;
-    // for (const person of males) {
-    //     groups[i].push(person);
-    //     i = (i + 1) % groupNum;
-    // }
-
-    // i = 0;
-    // for (const person of others) {
-    //     groups[i].push(person);
-    //     i = (i + 1) % groupNum;
-    // }
 
     for (let i = 0; i < groupNum; i++) {
         const group = [];
