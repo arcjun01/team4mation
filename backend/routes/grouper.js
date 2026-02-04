@@ -18,20 +18,19 @@ function grouper() {
     console.log(groups);
 
     return groups;
-
-    function seperateGenders() {
-        const males = []
-        const others = []
-
-        for (const person of students) {
-            if (person.gender === "Male") males.push(person);
-            if (person.gender === "Female" || person.gender === "Other") others.push(person)
-        }
-
-        return { males, others };
-    }
 }
 
+function seperateGenders() {
+    const males = []
+    const others = []
+
+    for (const person of students) {
+        if (person.gender === "Male") males.push(person);
+        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+    }
+
+    return { males, others };
+}
 
 
 function makeBasicGroups(males, others, groupNum) {
@@ -47,7 +46,6 @@ function makeBasicGroups(males, others, groupNum) {
         }
 
         while (group.length < settings.teamSize && others.length > 0) {
-            //if (others.length === 0) return null; // impossible to form groups
             group.push(others.pop());
         }
 
