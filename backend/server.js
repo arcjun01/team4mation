@@ -12,9 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes); 
-
-const PORT = process.env.PORT || 3001;
+// app.use("/api/survey", surveyRoutes); 
 
 console.log("Using database:", process.env.DB_NAME);
 

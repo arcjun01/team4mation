@@ -46,7 +46,7 @@ function makeBasicGroups(males, others, groupNum) {
             group.push(males.pop());
         }
 
-        while (group.length < settings.teamSize) {
+        while (group.length < settings.teamSize && others.length > 0) {
             //if (others.length === 0) return null; // impossible to form groups
             group.push(others.pop());
         }

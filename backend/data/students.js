@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-export default [
-  { name: "Alex", gender: "Female" },
-  { name: "Jordan", gender: "Male" },
-  { name: "Sam", gender: "Non-binary" }
-];
-=======
 // Dummy students (IDs only)
 const students = [
   { student_id: "S01", gender: "Male" },
@@ -43,4 +36,3 @@ module.exports = {
   students,
   settings
 };
->>>>>>> feature
