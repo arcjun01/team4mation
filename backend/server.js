@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/teams", teamRoutes);
-//app.use("/api/survey", surveyRoutes);
+// app.use("/api/survey", surveyRoutes); 
 
 console.log("Using database:", process.env.DB_NAME);
 

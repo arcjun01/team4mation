@@ -19,9 +19,9 @@ router.post("/", async (req, res) => {
 
     console.log("New survey response saved with student_id:", result.insertId);
 
-    res.status(201).json({ 
-      success: true, 
-      message: "Survey submitted!", 
+    res.status(201).json({
+      success: true,
+      message: "Survey submitted!",
       student_id: result.insertId // return the generated student_id
     });
   } catch (err) {
