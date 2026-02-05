@@ -2,20 +2,9 @@ const studentData = require("../data/students.js")
 const { students, settings } = studentData
 
 function grouper() {
-    const groupNum = Math.floor(settings.classSize / settings.teamSize)
-    const testDataLength = Math.floor(students.length / settings.teamSize);
-    console.log(groupNum);
-    console.log(testDataLength);
-
+    const groupNum = Math.ceil(students.length / settings.teamSize);
     const { males, others } = seperateGenders();
-    console.log(males)
-    console.log(males.length)
-    console.log(others)
-    console.log(others.length)
-
     const groups = makeBasicGroups(males, others, groupNum);
-
-    console.log(groups);
 
     return groups;
 }
@@ -32,27 +21,43 @@ function seperateGenders() {
     return { males, others };
 }
 
-
 function makeBasicGroups(males, others, groupNum) {
-    const groups = [];
-    const maxMaleNum = Math.floor(settings.teamSize / 2)
+    const groups = Array.from({ length: groupNum }, () => []);
 
-    for (let i = 0; i < groupNum; i++) {
-        const group = [];
 
-        const malesAdded = Math.min(maxMaleNum, males.length);
-        for (let j = 0; j < malesAdded; j++) {
-            group.push(males.pop());
+    let i = 0;
+    for (const person of males) {
+        const index = findAvailableTeam(i, groups, groupNum)
+        if (index !== -1) {
+            groups[index].push(person)
+            i = (index + 1) % groupNum;
         }
+    }
 
-        while (group.length < settings.teamSize && others.length > 0) {
-            group.push(others.pop());
+    i = 0;
+    for (const person of others) {
+        const index = findAvailableTeam(i, groups, groupNum)
+        if (index !== -1) {
+            groups[index].push(person)
+            i = (index + 1) % groupNum;
         }
-
-        groups.push(group)
     }
 
     return groups;
+}
+
+function findAvailableTeam(startIndex, groups, groupNum) {
+    let checked = 0;
+    let i = startIndex;
+
+    while (checked < groupNum) {
+        if (groups[i].length < settings.teamSize) {
+            return i;
+        }
+        i = (i + 1) % groupNum;
+        checked++;
+    }
+    return -1;
 }
 
 module.exports = grouper;
