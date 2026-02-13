@@ -1,3 +1,5 @@
+// import express from 'express';
+
 const express = require("express");
 const router = express.Router();
 const grouper = require("./grouper.js");
@@ -16,11 +18,11 @@ router.get("/", (req, res) => {
 
 // For students
 router.post("/", (req, res) => {
-  const studentData = req.body; 
+  const studentData = req.body;
   console.log("Data received from survey:", studentData);
 
   const teams = grouper();
-  
+
   res.json({
     message: "Student response recorded successfully",
   });
