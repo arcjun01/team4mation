@@ -1,0 +1,5 @@
+DB_HOST=127.0.0.1
+DB_USER=team4user
+DB_PASSWORD=StrongPass123!
+DB_NAME=team4mation
+DB_PORT=3360

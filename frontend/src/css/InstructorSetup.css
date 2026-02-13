@@ -1,0 +1,11 @@
+.setup-container {
+    padding: 40px;
+    font-family: sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.setup-title {
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
