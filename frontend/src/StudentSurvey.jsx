@@ -18,7 +18,7 @@ export default function StudentSurvey() {
       setLoading(true);
       setMessage("");
 
-      const response = await fetch("http://localhost:3001/teams", {
+      const response = await fetch("http://localhost:3001/api/survey", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,8 +29,8 @@ export default function StudentSurvey() {
       if (!response.ok) {
         throw new Error("Failed to submit survey");
       }
-
-      setMessage("Survey submitted successfully.");
+      const data = await response.json();
+      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
       setGender("");
     } catch (err) {
       setMessage("Submission failed. Please try again.");
