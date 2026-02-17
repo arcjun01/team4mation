@@ -1,0 +1,17 @@
+.link-page-container {
+    background-color: #d1dbd9; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+}
+
+.card-container {
+    background: white;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 15px;
+    padding-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
