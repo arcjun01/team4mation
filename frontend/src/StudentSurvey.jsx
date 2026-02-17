@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import GenderQuestion from "./components/GenderQuestion";
+import GpaQuestion from "./components/GpaQuestion";
 import "./css/studentSurvey.css";
 
 export default function StudentSurvey() {
@@ -7,34 +9,6 @@ export default function StudentSurvey() {
   const [gpaError, setGpaError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
-  const handleGpaChange = (value) => {
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) {
-      setGpa("");
-      setGpaError("");
-      return;
-    }
-
-    if (numValue < 1.0 || numValue > 4.0) {
-      setGpaError("GPA must be between 1.0 and 4.0");
-    } else {
-      setGpaError("");
-    }
-    setGpa(numValue);
-  };
-
-  const handleGpaIncrement = () => {
-    const newValue = Math.min(gpa + 0.1, 4.0);
-    setGpa(Math.round(newValue * 10) / 10);
-    setGpaError("");
-  };
-
-  const handleGpaDecrement = () => {
-    const newValue = Math.max(gpa - 0.1, 1.0);
-    setGpa(Math.round(newValue * 10) / 10);
-    setGpaError("");
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,60 +57,14 @@ export default function StudentSurvey() {
           <div className="survey-title">Student Survey</div>
 
           <form onSubmit={handleSubmit} className="survey-form">
-            <div>
-              <label className="survey-question">What is your gender?</label>
+            <GenderQuestion gender={gender} setGender={setGender} />
 
-              <div className="survey-options">
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked={gender === "male"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Male</span>
-                </label>
-
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={gender === "female"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Female</span>
-                </label>
-
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="other"
-                    checked={gender === "other"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Other</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="gpa-question">What was your final GPA in SDEV 344? Enter or adjust below</label>
-              <p className="gpa-info">You can view your GPA in <a href="https://csprd.ctclink.us/psc/csprd_9/EMPLOYEE/SA/c/SSR_STUDENT_ACAD_REC_FL.SSR_MD_ACAD_REC_FL.GBL?Action=U&MD=Y&GMenu=SSR_STUDENT_ACAD_REC_FL&GComp=SSR_ACADREC_NAV_FL&GPage=SCC_START_PAGE_FL&scname=CTC_ACADEMIC_RECORDS_NAVCOL&AJAXTRANSFER=Y" target="_blank" rel="noopener noreferrer">ctcLink</a> under Academic Records → Course History.</p>
-              
-              <input
-                type="number"
-                step="0.1"
-                min="1.0"
-                max="4.0"
-                value={gpa}
-                onChange={(e) => handleGpaChange(e.target.value)}
-                className="gpa-input"
-              />
-              {gpaError && <div className="gpa-error">{gpaError}</div>}
-            </div>
+            <GpaQuestion 
+              gpa={gpa} 
+              gpaError={gpaError} 
+              setGpa={setGpa} 
+              setGpaError={setGpaError} 
+            />
 
             {message && (
               <div className="survey-message">{message}</div>
