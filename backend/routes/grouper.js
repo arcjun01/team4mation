@@ -5,6 +5,7 @@ function grouper() {
     const groupNum = Math.ceil(students.length / settings.teamSize);
     const { males, others } = seperateGenders();
     const groups = makeBasicGroups(males, others, groupNum);
+    improveGroups(groups);
 
     return groups;
 }
@@ -63,29 +64,146 @@ function makeBasicGroups(males, others, groupNum) {
     }
 
     return groups;
-    // const groups = Array.from({ length: groupNum }, () => []);
+}
+
+function improveGroups(groups) {
+
+    let improvementMade = true;
+    let passCount = 0;
+    const MAX_PASSES = 4;
+
+    while (improvementMade && passCount < MAX_PASSES) {
+
+        improvementMade = false;
+        passCount++;
+        console.log("Checking improvement Start: improvementMade=", improvementMade, ", passCount=", passCount);
+        for (let i = 0; i < groups.length - 1; i++) {
+            for (let j = i + 1; j < groups.length; j++) {
+                for (const studentA of groups[i]) {
+                    console.log("Checking: ", studentA, " from ", groups[i]);
+                    for (const studentB of groups[j]) {
+                        console.log("Checking: ", studentB, " from ", groups[j]);
+                        if (evalulateSwap(studentA, studentB, groups[i], groups[j])) {
+                            console.log("Swap ", studentA, " and ", studentB);
+
+                            const indexA = groups[i].findIndex(s => s.student_id === studentA.student_id);
+
+                            const indexB = groups[j].findIndex(s => s.student_id === studentB.student_id);
+
+                            groups[i][indexA] = studentB;
+                            groups[j][indexB] = studentA;
 
 
+                            improvementMade = true
+                            break;
+                        }
+                    }
+                    if (improvementMade) break;
+                }
+                if (improvementMade) break;
+            }
+            if (improvementMade) break;
+        }
 
-    // let i = 0;
-    // for (const person of males) {
-    //     const index = findAvailableTeam(i, groups, groupNum)
-    //     if (index !== -1) {
-    //         groups[index].push(person)
-    //         i = (index + 1) % groupNum;
-    //     }
-    // }
+    }
 
-    // i = 0;
-    // for (const person of others) {
-    //     const index = findAvailableTeam(i, groups, groupNum)
-    //     if (index !== -1) {
-    //         groups[index].push(person)
-    //         i = (index + 1) % groupNum;
-    //     }
-    // }
 
-    // return groups;
+    return groups;
+}
+
+function evalulateSwap(studentA, studentB, groupA, groupB) {
+    const testA = groupA.map(student => student.student_id === studentA.student_id ? studentB : student);
+    console.log("GroupA: ", groupA, " TestA: ", testA)
+
+    const testB = groupB.map(student => student.student_id === studentB.student_id ? studentA : student);
+    console.log("GroupB: ", groupB, " TestB: ", testB);
+
+    if (!checkGenderRule(testA, testB)) {
+        return false;
+    }
+
+    let currentScoreA = calculateGroupScore(groupA);
+    let currentScoreB = calculateGroupScore(groupB);
+
+    let testScoreA = calculateGroupScore(testA);
+    let testScoreB = calculateGroupScore(testB);
+
+    console.log("Current Group A: ", currentScoreA);
+    console.log("Test Group A: ", testScoreA);
+    console.log("Current Group B: ", currentScoreB);
+    console.log("Test Group B: ", testScoreB);
+
+    if ((testScoreA + testScoreB) > (currentScoreA + currentScoreB)) {
+        return true;
+    }
+
+    return false;
+}
+
+function calculateScheduleOverlap() {
+
+}
+
+function calculateCommitmentVariance() {
+
+}
+
+function calculateGPASimilarity(group) {
+
+    let min = group[0].gpa;
+    let max = group[0].gpa;
+
+    for (const student of group) {
+        if (student.gpa > max) {
+            max = student.gpa;
+        }
+        if (student.gpa < min) {
+            min = student.gpa;
+        }
+    }
+
+    let gpaSpread = max - min
+
+    return (-1 * gpaSpread);
+}
+
+function calculateGroupScore(group) {
+    GPA_WEIGHT = 3
+    SCHEDULE_WEIGHT = 2
+    COMMITMENT_WEIGHT = 1
+
+    gpaScore = calculateGPASimilarity(group);
+    //
+    //
+
+    totalScore = (gpaScore * GPA_WEIGHT)
+
+    return totalScore;
+}
+
+function checkGenderRule(testA, testB) {
+    let maleCount = 0;
+    for (const student of testA) {
+        if (student.gender === "Male") {
+            maleCount++;
+        }
+        if (maleCount > testA.length / 2) {
+            return false
+        }
+    }
+
+    maleCount = 0;
+    for (const student of testB) {
+        if (student.gender === "Male") {
+            maleCount++;
+        }
+        if (maleCount > testB.length / 2) {
+            return false
+        }
+    }
+
+    return true;
+
 }
 
 function findAvailableTeam(startIndex, groups, groupNum) {
