@@ -66,6 +66,7 @@ function makeBasicGroups(males, others, groupNum) {
     return groups;
 }
 
+//plan split
 //////////////////////////////////////////////////////
 
 function improveGroups(groups) {
@@ -106,10 +107,7 @@ function improveGroups(groups) {
             }
             if (improvementMade) break;
         }
-
     }
-
-
     return groups;
 }
 
@@ -146,12 +144,25 @@ function calculateScheduleOverlap() {
 
 }
 
-function calculateCommitmentVariance() {
+function calculateCommitmentSimilarity(group) {
+    let min = group[0].commitment;
+    let max = group[0].commitment;
 
+    for (const student of group) {
+        if (student.commitment > max) {
+            max = student.commitment;
+        }
+        if (student.commitment < min) {
+            min = student.commitment;
+        }
+    }
+
+    let commitmentRange = max - min
+
+    return (-1 * commitmentRange);
 }
 
 function calculateGPASimilarity(group) {
-
     let min = group[0].gpa;
     let max = group[0].gpa;
 
@@ -176,9 +187,9 @@ function calculateGroupScore(group) {
 
     const gpaScore = calculateGPASimilarity(group);
     //
-    //
+    const commitmentScore = calculateCommitmentSimilarity(group);
 
-    const totalScore = (gpaScore * GPA_WEIGHT)
+    const totalScore = (gpaScore * GPA_WEIGHT) + (0) + (commitmentScore * COMMITMENT_WEIGHT)
 
     return totalScore;
 }
@@ -204,19 +215,4 @@ function isGenderBalanced(group) {
 
     return maleCount <= otherCount;
 }
-
-function findAvailableTeam(startIndex, groups, groupNum) {
-    let checked = 0;
-    let i = startIndex;
-
-    while (checked < groupNum) {
-        if (groups[i].length < settings.teamSize) {
-            return i;
-        }
-        i = (i + 1) % groupNum;
-        checked++;
-    }
-    return -1;
-}
-
 module.exports = grouper;
