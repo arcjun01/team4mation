@@ -25,26 +25,67 @@ function seperateGenders() {
 function makeBasicGroups(males, others, groupNum) {
     const groups = Array.from({ length: groupNum }, () => []);
 
+    // Sort each gender group by GPA
+    males.sort((a, b) => a.gpa - b.gpa);
+    others.sort((a, b) => a.gpa - b.gpa);
 
-    let i = 0;
-    for (const person of males) {
-        const index = findAvailableTeam(i, groups, groupNum)
-        if (index !== -1) {
-            groups[index].push(person)
-            i = (index + 1) % groupNum;
+    let maleIndex = 0;
+    let otherIndex = 0;
+
+    for (let g = 0; g < groupNum; g++) {
+
+        // Add up to 2 males
+        for (let m = 0; m < 2 && maleIndex < males.length; m++) {
+            groups[g].push(males[maleIndex++]);
+        }
+
+        // Add up to 2 others
+        for (let o = 0; o < 2 && otherIndex < others.length; o++) {
+            groups[g].push(others[otherIndex++]);
         }
     }
 
-    i = 0;
-    for (const person of others) {
-        const index = findAvailableTeam(i, groups, groupNum)
-        if (index !== -1) {
-            groups[index].push(person)
-            i = (index + 1) % groupNum;
+    // If any leftovers remain, fill remaining spots
+    while (maleIndex < males.length) {
+        for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
+            if (groups[g].length < settings.teamSize) {
+                groups[g].push(males[maleIndex++]);
+            }
+        }
+    }
+
+    while (otherIndex < others.length) {
+        for (let g = 0; g < groupNum && otherIndex < others.length; g++) {
+            if (groups[g].length < settings.teamSize) {
+                groups[g].push(others[otherIndex++]);
+            }
         }
     }
 
     return groups;
+    // const groups = Array.from({ length: groupNum }, () => []);
+
+
+
+    // let i = 0;
+    // for (const person of males) {
+    //     const index = findAvailableTeam(i, groups, groupNum)
+    //     if (index !== -1) {
+    //         groups[index].push(person)
+    //         i = (index + 1) % groupNum;
+    //     }
+    // }
+
+    // i = 0;
+    // for (const person of others) {
+    //     const index = findAvailableTeam(i, groups, groupNum)
+    //     if (index !== -1) {
+    //         groups[index].push(person)
+    //         i = (index + 1) % groupNum;
+    //     }
+    // }
+
+    // return groups;
 }
 
 function findAvailableTeam(startIndex, groups, groupNum) {
