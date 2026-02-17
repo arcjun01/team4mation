@@ -66,6 +66,8 @@ function makeBasicGroups(males, others, groupNum) {
     return groups;
 }
 
+//////////////////////////////////////////////////////
+
 function improveGroups(groups) {
 
     let improvementMade = true;
@@ -168,42 +170,39 @@ function calculateGPASimilarity(group) {
 }
 
 function calculateGroupScore(group) {
-    GPA_WEIGHT = 3
-    SCHEDULE_WEIGHT = 2
-    COMMITMENT_WEIGHT = 1
+    const GPA_WEIGHT = 3
+    const SCHEDULE_WEIGHT = 2
+    const COMMITMENT_WEIGHT = 1
 
-    gpaScore = calculateGPASimilarity(group);
+    const gpaScore = calculateGPASimilarity(group);
     //
     //
 
-    totalScore = (gpaScore * GPA_WEIGHT)
+    const totalScore = (gpaScore * GPA_WEIGHT)
 
     return totalScore;
 }
 
 function checkGenderRule(testA, testB) {
+    return (
+        isGenderBalanced(testA) &&
+        isGenderBalanced(testB)
+    );
+}
+
+function isGenderBalanced(group) {
     let maleCount = 0;
-    for (const student of testA) {
+    let otherCount = 0;
+
+    for (const student of group) {
         if (student.gender === "Male") {
             maleCount++;
-        }
-        if (maleCount > testA.length / 2) {
-            return false
+        } else {
+            otherCount++;
         }
     }
 
-    maleCount = 0;
-    for (const student of testB) {
-        if (student.gender === "Male") {
-            maleCount++;
-        }
-        if (maleCount > testB.length / 2) {
-            return false
-        }
-    }
-
-    return true;
-
+    return maleCount <= otherCount;
 }
 
 function findAvailableTeam(startIndex, groups, groupNum) {
