@@ -86,3 +86,49 @@
 .survey-submit:hover:not(:disabled) {
     opacity: 0.9;
 }
+
+.gpa-question {
+    font-size: 20px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.gpa-info {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.gpa-info a {
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+.gpa-info a:hover {
+    color: #0052a3;
+}
+
+.gpa-input {
+    width: 100px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: border-color 0.2s ease;
+}
+
+.gpa-input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.gpa-error {
+    font-size: 14px;
+    color: #dc2626;
+    margin-top: 4px;
+}
