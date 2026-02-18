@@ -2,6 +2,7 @@ const studentData = require("../data/students.js")
 const { students, settings } = studentData
 
 function grouper() {
+    //get min group number
     const groupNum = Math.ceil(students.length / settings.teamSize);
     const { males, others } = seperateGenders();
     const groups = makeBasicGroups(males, others, groupNum);
@@ -75,20 +76,28 @@ function improveGroups(groups) {
     let passCount = 0;
     const MAX_PASSES = 4;
 
+    // loop while improvements to groups are made and we have checked at least 4 times
+    // for improvements
     while (improvementMade && passCount < MAX_PASSES) {
 
         improvementMade = false;
         passCount++;
+
         console.log("Checking improvement Start: improvementMade=", improvementMade, ", passCount=", passCount);
+
+        // loop groups twice so a group can be compared to every other group 
         for (let i = 0; i < groups.length - 1; i++) {
             for (let j = i + 1; j < groups.length; j++) {
+                // get students from group 1 and group 2
                 for (const studentA of groups[i]) {
                     console.log("Checking: ", studentA, " from ", groups[i]);
                     for (const studentB of groups[j]) {
                         console.log("Checking: ", studentB, " from ", groups[j]);
+                        // check if swaping students would result in a better group
                         if (evalulateSwap(studentA, studentB, groups[i], groups[j])) {
                             console.log("Swap ", studentA, " and ", studentB);
 
+                            // swap students
                             const indexA = groups[i].findIndex(s => s.student_id === studentA.student_id);
 
                             const indexB = groups[j].findIndex(s => s.student_id === studentB.student_id);
