@@ -1,17 +1,28 @@
 .link-page-container {
-    background-color: #d1dbd9; 
+    background-color: #c0ccc6; 
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 50px;
+    font-family: sans-serif;
 }
 
 .card-container {
     background: white;
-    width: 80%;
+    width: 90%;
     max-width: 800px;
-    border-radius: 15px;
-    padding-bottom: 40px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
 }
