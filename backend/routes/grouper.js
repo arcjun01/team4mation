@@ -1,58 +1,50 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
-
-function grouper() {
-    //get min group number
-    const groupNum = Math.ceil(students.length / settings.teamSize);
-    const { males, others } = seperateGenders();
-    const groups = makeBasicGroups(males, others, groupNum);
-    improveGroups(groups);
+function grouper(students, teamSize) {
+    if (!students || students.length === 0) return [];
+    
+    const groupNum = Math.ceil(students.length / teamSize);
+    
+    // Pass the students array into the helper function
+    const { males, others } = seperateGenders(students); 
+    const groups = makeBasicGroups(males, others, groupNum, teamSize);
 
     return groups;
 }
 
-function seperateGenders() {
-    const males = []
-    const others = []
+// Accept studentsList as a parameter
+function seperateGenders(studentsList) {
+    const males = [];
+    const others = [];
 
-    for (const person of students) {
-        if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+    // Use studentsList to match the parameter above
+    for (const person of studentsList) {
+        if (person.gender && person.gender.toLowerCase() === "male") {
+            males.push(person);
+        } else {
+            others.push(person);
+        }
     }
-
     return { males, others };
 }
 
-
-function makeBasicGroups(males, others, groupNum) {
+function makeBasicGroups(males, others, groupNum, teamSize) {
     const groups = Array.from({ length: groupNum }, () => []);
 
-    // Sort each gender group by GPA
-    males.sort((a, b) => a.gpa - b.gpa);
-    others.sort((a, b) => a.gpa - b.gpa);
-
-    let maleIndex = 0;
-    let otherIndex = 0;
-
-    for (let g = 0; g < groupNum; g++) {
-
-        // Add up to 2 males
-        for (let m = 0; m < 2 && maleIndex < males.length; m++) {
-            groups[g].push(males[maleIndex++]);
-        }
-
-        // Add up to 2 others
-        for (let o = 0; o < 2 && otherIndex < others.length; o++) {
-            groups[g].push(others[otherIndex++]);
+    let i = 0;
+    // Fill with males first to distribute them
+    for (const person of males) {
+        const index = findAvailableTeam(i, groups, groupNum, teamSize);
+        if (index !== -1) {
+            groups[index].push(person);
+            i = (index + 1) % groupNum;
         }
     }
 
-    // If any leftovers remain, fill remaining spots
-    while (maleIndex < males.length) {
-        for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
-            if (groups[g].length < settings.teamSize) {
-                groups[g].push(males[maleIndex++]);
-            }
+    // Fill remaining spots with others
+    for (const person of others) {
+        const index = findAvailableTeam(i, groups, groupNum, teamSize);
+        if (index !== -1) {
+            groups[index].push(person);
+            i = (index + 1) % groupNum;
         }
     }
 
@@ -120,67 +112,13 @@ function improveGroups(groups) {
     return groups;
 }
 
-function evalulateSwap(studentA, studentB, groupA, groupB) {
-    const testA = groupA.map(student => student.student_id === studentA.student_id ? studentB : student);
-    console.log("GroupA: ", groupA, " TestA: ", testA)
+function findAvailableTeam(startIndex, groups, groupNum, teamSize) {
+    let checked = 0;
+    let i = startIndex;
 
-    const testB = groupB.map(student => student.student_id === studentB.student_id ? studentA : student);
-    console.log("GroupB: ", groupB, " TestB: ", testB);
-
-    if (!checkGenderRule(testA, testB)) {
-        return false;
-    }
-
-    let currentScoreA = calculateGroupScore(groupA);
-    let currentScoreB = calculateGroupScore(groupB);
-
-    let testScoreA = calculateGroupScore(testA);
-    let testScoreB = calculateGroupScore(testB);
-
-    console.log("Current Group A: ", currentScoreA);
-    console.log("Test Group A: ", testScoreA);
-    console.log("Current Group B: ", currentScoreB);
-    console.log("Test Group B: ", testScoreB);
-
-    if ((testScoreA + testScoreB) > (currentScoreA + currentScoreB)) {
-        return true;
-    }
-
-    return false;
-}
-
-function calculateScheduleOverlap() {
-
-}
-
-function calculateCommitmentSimilarity(group) {
-    let min = group[0].commitment;
-    let max = group[0].commitment;
-
-    for (const student of group) {
-        if (student.commitment > max) {
-            max = student.commitment;
-        }
-        if (student.commitment < min) {
-            min = student.commitment;
-        }
-    }
-
-    let commitmentRange = max - min
-
-    return (-1 * commitmentRange);
-}
-
-function calculateGPASimilarity(group) {
-    let min = group[0].gpa;
-    let max = group[0].gpa;
-
-    for (const student of group) {
-        if (student.gpa > max) {
-            max = student.gpa;
-        }
-        if (student.gpa < min) {
-            min = student.gpa;
+    while (checked < groupNum) {
+        if (groups[i].length < teamSize) {
+            return i;
         }
     }
 
