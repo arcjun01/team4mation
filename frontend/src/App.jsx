@@ -1,24 +1,30 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import InstructorTeamSetup from "./components/InstructorTeamSetup";
 import StudentSurvey from "./StudentSurvey";
 import LinkGeneration from "./components/LinkGeneration.jsx";
-import { useState } from "react";
 
 function App() {
-  const [view, setView] = useState("student"); 
-
   return (
-    <div>
-      <h1 style={{ paddingLeft: '20px' }}>Team4mation</h1>
-<p style={{ paddingLeft: '20px' }}>Create smart student teams easily.</p>
-      {/* Toggle buttons for student/instructor view */}
-      <button onClick={() => setView("student")}>Student View</button>
-      <button onClick={() => setView("instructor")}>Instructor View</button>
-
-      <hr />
-      {view === "student" ? <StudentSurvey /> : <InstructorTeamSetup />}
-
-      <LinkGeneration />
-    </div>
+    <Router>
+      <div style={{ padding: '20px' }}>
+        <h1>Team4mation</h1>
+        <p>Create smart student teams easily.</p>
+        
+        <Routes>
+          {/* Default to Instructor Setup */}
+          <Route path="/" element={<InstructorTeamSetup />} />
+          
+          {/* Route for the generated link */}
+          <Route path="/generate-link/:id" element={<LinkGeneration />} />
+          
+          {/* Student view */}
+          <Route path="/survey/:id" element={<StudentSurvey />} />
+          
+          {/* Redirect */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
