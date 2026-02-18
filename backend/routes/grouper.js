@@ -1,45 +1,49 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
-
-function grouper() {
-    const groupNum = Math.ceil(students.length / settings.teamSize);
-    const { males, others } = seperateGenders();
-    const groups = makeBasicGroups(males, others, groupNum);
+function grouper(students, teamSize) {
+    if (!students || students.length === 0) return [];
+    
+    const groupNum = Math.ceil(students.length / teamSize);
+    
+    // Pass the students array into the helper function
+    const { males, others } = seperateGenders(students); 
+    const groups = makeBasicGroups(males, others, groupNum, teamSize);
 
     return groups;
 }
 
-function seperateGenders() {
-    const males = []
-    const others = []
+// Accept studentsList as a parameter
+function seperateGenders(studentsList) {
+    const males = [];
+    const others = [];
 
-    for (const person of students) {
-        if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+    // Use studentsList to match the parameter above
+    for (const person of studentsList) {
+        if (person.gender && person.gender.toLowerCase() === "male") {
+            males.push(person);
+        } else {
+            others.push(person);
+        }
     }
-
     return { males, others };
 }
 
-
-function makeBasicGroups(males, others, groupNum) {
+function makeBasicGroups(males, others, groupNum, teamSize) {
     const groups = Array.from({ length: groupNum }, () => []);
 
-
     let i = 0;
+    // Fill with males first to distribute them
     for (const person of males) {
-        const index = findAvailableTeam(i, groups, groupNum)
+        const index = findAvailableTeam(i, groups, groupNum, teamSize);
         if (index !== -1) {
-            groups[index].push(person)
+            groups[index].push(person);
             i = (index + 1) % groupNum;
         }
     }
 
-    i = 0;
+    // Fill remaining spots with others
     for (const person of others) {
-        const index = findAvailableTeam(i, groups, groupNum)
+        const index = findAvailableTeam(i, groups, groupNum, teamSize);
         if (index !== -1) {
-            groups[index].push(person)
+            groups[index].push(person);
             i = (index + 1) % groupNum;
         }
     }
@@ -47,12 +51,12 @@ function makeBasicGroups(males, others, groupNum) {
     return groups;
 }
 
-function findAvailableTeam(startIndex, groups, groupNum) {
+function findAvailableTeam(startIndex, groups, groupNum, teamSize) {
     let checked = 0;
     let i = startIndex;
 
     while (checked < groupNum) {
-        if (groups[i].length < settings.teamSize) {
+        if (groups[i].length < teamSize) {
             return i;
         }
         i = (i + 1) % groupNum;
