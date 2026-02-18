@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import GenderQuestion from "./components/GenderQuestion";
+import GpaQuestion from "./components/GpaQuestion";
 import "./css/studentSurvey.css";
 
 export default function StudentSurvey() {
   const [gender, setGender] = useState("");
+  const [gpa, setGpa] = useState(2.0);
+  const [gpaError, setGpaError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -11,6 +15,11 @@ export default function StudentSurvey() {
 
     if (!gender) {
       setMessage("Please select a gender before submitting.");
+      return;
+    }
+
+    if (gpaError || gpa < 1.0 || gpa > 4.0) {
+      setMessage("Please enter a valid GPA between 1.0 and 4.0.");
       return;
     }
 
@@ -23,7 +32,7 @@ export default function StudentSurvey() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gender }),
+        body: JSON.stringify({ gender, gpa }),
       });
 
       if (!response.ok) {
@@ -32,6 +41,8 @@ export default function StudentSurvey() {
       const data = await response.json();
       setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
       setGender("");
+      setGpa(2.0);
+      setGpaError("");
     } catch (err) {
       setMessage("Submission failed. Please try again.");
     } finally {
@@ -46,44 +57,14 @@ export default function StudentSurvey() {
           <div className="survey-title">Student Survey</div>
 
           <form onSubmit={handleSubmit} className="survey-form">
-            <div>
-              <label className="survey-question">What is your gender?</label>
+            <GenderQuestion gender={gender} setGender={setGender} />
 
-              <div className="survey-options">
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked={gender === "male"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Male</span>
-                </label>
-
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={gender === "female"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Female</span>
-                </label>
-
-                <label className="survey-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="other"
-                    checked={gender === "other"}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                  <span>Other</span>
-                </label>
-              </div>
-            </div>
+            <GpaQuestion 
+              gpa={gpa} 
+              gpaError={gpaError} 
+              setGpa={setGpa} 
+              setGpaError={setGpaError} 
+            />
 
             {message && (
               <div className="survey-message">{message}</div>
