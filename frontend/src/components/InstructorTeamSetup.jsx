@@ -3,6 +3,7 @@ import '../css/InstructorSetup.css';
 
 const InstructorTeamSetup = () => {
   const [formData, setFormData] = useState({
+    courseName: '',
     classSize: '',
     minSize: '',
     maxSize: '',
@@ -10,75 +11,112 @@ const InstructorTeamSetup = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    // Prevent numbers less than 1
+    if ((name === 'minSize' || name === 'maxSize' || name === 'classSize') && value !== '') {
+      if (parseInt(value) < 1) return;
+    }
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Team Criteria Saved:", formData);
-    // WORK ON THIS NEXT: Add logic to navigate to the "Send Link" page 
     alert("Criteria saved! Moving to invitation screen...");
   };
 
   return (
-    <div className="setup-container">
-      <h1 className="setup-title">Instructor View: Team Setup</h1>
-      <hr className="divider" />
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="classSize">Class Size:</label>
-          <input 
-            id="classSize"
-            className="input-field small-input"
-            type="number" 
-            name="classSize" 
-            value={formData.classSize} 
-            onChange={handleChange} 
-            placeholder="30"
-          />
+    <div className="setup-wrapper">
+      <div className="setup-container">
+        {/* Header Section */}
+        <div className="setup-card header-card">
+          <h1 className="setup-title">Setting Up Student Surveys</h1>
         </div>
 
-        <div className="form-group">
-          <label>Group Size:</label>
-          <div className="size-inputs">
+        {/* Info Text Card */}
+        <div className="setup-card info-card">
+          <p>Once you complete this setup, a link to a customized student survey will be generated.</p>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          {/* Question 1 */}
+          <div className="setup-card">
+            <label htmlFor="courseName">For which course is this team set-up for?</label>
             <input 
-              className="input-field small-input"
-              type="number" 
-              name="minSize" 
-              placeholder="Min" 
-              value={formData.minSize} 
+              id="courseName"
+              className="input-field full-input"
+              type="text" 
+              name="courseName" 
+              value={formData.courseName} 
               onChange={handleChange} 
-            />
-            <span>to</span>
-            <input 
-              className="input-field small-input"
-              type="number" 
-              name="maxSize" 
-              placeholder="Max" 
-              value={formData.maxSize} 
-              onChange={handleChange} 
+              placeholder="e.g., SDEV 100"
             />
           </div>
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="prevCourse">Previous Course Taken:</label>
-          <input 
-            id="prevCourse"
-            className="input-field long-input"
-            type="text" 
-            name="prevCourse" 
-            value={formData.prevCourse} 
-            onChange={handleChange} 
-            placeholder="e.g. CS 101"
-          />
-        </div>
+          {/* Question 2 */}
+          <div className="setup-card">
+            <label htmlFor="classSize">Enter or adjust class size</label>
+            <input 
+              id="classSize"
+              className="input-field numeric-input"
+              type="number" 
+              name="classSize" 
+              value={formData.classSize} 
+              onChange={handleChange} 
+              placeholder="20"
+            />
+          </div>
 
-        <button type="submit" className="create-button">
-          Create
-        </button>
-      </form>
+          {/* Question 3 */}
+          <div className="setup-card">
+            <label>Enter or adjust group size</label>
+            <div className="size-inputs">
+              <div className="input-group">
+                <span>Min:</span>
+                <input 
+                  className="input-field numeric-input"
+                  type="number" 
+                  name="minSize" 
+                  placeholder="3" 
+                  value={formData.minSize} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div className="input-group">
+                <span>Max:</span>
+                <input 
+                  className="input-field numeric-input"
+                  type="number" 
+                  name="maxSize" 
+                  placeholder="4" 
+                  value={formData.maxSize} 
+                  onChange={handleChange} 
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Question 4 */}
+          <div className="setup-card">
+            <label htmlFor="prevCourse">Enter the name of the prerequisite course</label>
+            <input 
+              id="prevCourse"
+              className="input-field full-input"
+              type="text" 
+              name="prevCourse" 
+              value={formData.prevCourse} 
+              onChange={handleChange} 
+              placeholder="e.g., SDEV 90"
+            />
+          </div>
+
+          {/* Buttons Section */}
+          <div className="button-group">
+            <button type="button" className="btn-cancel">Cancel</button>
+            <button type="submit" className="btn-create">Create Student Survey</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
