@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
 
 const InstructorTeamSetup = () => {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
+  const savedData = location.state?.formData;
+
+  const [formData, setFormData] = useState(savedData || {
     courseName: '',
     classSize: '',
     minSize: '',
@@ -21,19 +28,25 @@ const InstructorTeamSetup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // To generate a unique ID for the survey
+    const uniqueId = crypto.randomUUID(); 
+    
     console.log("Team Criteria Saved:", formData);
-    alert("Criteria saved! Moving to invitation screen...");
+    
+    // Move to the link generation page with the new ID
+    navigate(`/generate-link/${uniqueId}`);
   };
 
   return (
     <div className="setup-wrapper">
       <div className="setup-container">
-        {/* Header Section */}
+        {/* Header */}
         <div className="setup-card header-card">
           <h1 className="setup-title">Setting Up Student Surveys</h1>
         </div>
 
-        {/* Info Text Card */}
+        {/* Info Text */}
         <div className="setup-card info-card">
           <p>Once you complete this setup, a link to a customized student survey will be generated.</p>
         </div>
