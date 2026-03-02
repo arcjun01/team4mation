@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const teamRoutes = require("./routes/teams");
+const surveyRoutes = require("./routes/survey");
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(express.json());
 
 // Routes
 app.use("/teams", teamRoutes);
-// app.use("/api/survey", surveyRoutes); 
+app.use("/api/survey", surveyRoutes); 
 
 console.log("Using database:", process.env.DB_NAME);
 

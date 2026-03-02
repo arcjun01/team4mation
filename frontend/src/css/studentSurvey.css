@@ -1,3 +1,9 @@
+input[type="text"] {
+  border-radius: 5px;
+  width: 386px;
+  height: 30px;
+}
+
 .survey-page {
     min-height: 70vh;
     display: flex;
@@ -85,6 +91,13 @@
 
 .survey-submit:hover:not(:disabled) {
     opacity: 0.9;
+}
+
+.other-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 386px;
 }
 
 .gpa-question {

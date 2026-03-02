@@ -23,9 +23,7 @@ router.post("/", (req, res) => {
 
   const teams = grouper();
 
-  res.json({
-    message: "Student response recorded successfully",
-  });
+  res.status(201).json({ message: "Student response recorded successfully" });
 });
 
 module.exports = router;
