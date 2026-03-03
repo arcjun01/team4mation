@@ -33,7 +33,7 @@ input[type="text"] {
     border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     padding: 40px;
-    margin-top: 65px;
+    margin: 65px;
     width: 830px;
 }
 

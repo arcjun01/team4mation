@@ -1,4 +1,4 @@
-import headerImg from '/images/Team4MationHeader.svg';
+import headerImg from '../assets/Team4MationHeader.svg';
 
 export default function Header() {
   return (
