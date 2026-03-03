@@ -1,11 +1,10 @@
 import StudentSurvey from "./StudentSurvey";
+import Header from "./components/Header";
 
 function App() {
   return (
-    <div>
-      <h1>Team4mation</h1>
-      <p>Create smart student teams easily.</p>
-
+    <div className="main-container">
+      <Header />
       <StudentSurvey />
     </div>
   );

@@ -16,8 +16,8 @@ export default function GenderQuestion({ setGender }) {
   };
 
   return (
-    <div>
-      <label className="survey-question">What is your gender?</label>
+    <div className="question-container">
+      <h2 className="question-title">What is your gender?</h2>
 
       <div className="survey-options">
 

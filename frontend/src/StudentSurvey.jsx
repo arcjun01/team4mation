@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import GenderQuestion from "./components/GenderQuestion";
 import GpaQuestion from "./components/GpaQuestion";
+import AvailabilityQuestion from "./components/AvailabilityQuestion";
 import "./css/studentSurvey.css";
 
 export default function StudentSurvey() {
   const [gender, setGender] = useState("");
   const [gpa, setGpa] = useState(2.0);
   const [gpaError, setGpaError] = useState("");
+  const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -23,6 +25,12 @@ export default function StudentSurvey() {
       return;
     }
 
+    const selectedSlots = Object.keys(availability).filter(key => availability[key]);
+    if (selectedSlots.length === 0) {
+      setMessage("Please select at least one time slot for availability.");
+      return;
+    }
+
     try {
       setLoading(true);
       setMessage("");
@@ -32,7 +40,11 @@ export default function StudentSurvey() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gender, gpa }),
+        body: JSON.stringify({ 
+          gender, 
+          gpa,
+          availability_schedule: JSON.stringify(availability)
+        }),
       });
 
       if (!response.ok) {
@@ -43,6 +55,7 @@ export default function StudentSurvey() {
       setGender("");
       setGpa(2.0);
       setGpaError("");
+      setAvailability({});
     } catch (err) {
       setMessage("Submission failed. Please try again.");
     } finally {
@@ -52,35 +65,38 @@ export default function StudentSurvey() {
 
   return (
     <div className="survey-page">
-      <div className="survey-wrapper">
-        <div className="survey-card">
-          <div className="survey-title">Student Survey</div>
+      <div className="survey-card">
+        <h1 className="survey-title">Group Formation Survey</h1>
 
-          <form onSubmit={handleSubmit} className="survey-form">
-            <GenderQuestion gender={gender} setGender={setGender} />
+        <form onSubmit={handleSubmit} className="survey-form">
+          <GenderQuestion gender={gender} setGender={setGender} />
 
-            <GpaQuestion 
-              gpa={gpa} 
-              gpaError={gpaError} 
-              setGpa={setGpa} 
-              setGpaError={setGpaError} 
-            />
+          <GpaQuestion 
+            gpa={gpa} 
+            gpaError={gpaError} 
+            setGpa={setGpa} 
+            setGpaError={setGpaError} 
+          />
 
-            {message && (
-              <div className="survey-message">{message}</div>
-            )}
+          <AvailabilityQuestion 
+            availability={availability}
+            setAvailability={setAvailability}
+          />
 
-            <div className="survey-actions">
-              <button
-                type="submit"
-                disabled={loading}
-                className="survey-submit"
-              >
-                {loading ? "Submitting..." : "Submit"}
-              </button>
-            </div>
-          </form>
-        </div>
+          {message && (
+            <div className="survey-message">{message}</div>
+          )}
+
+          <div className="survey-actions">
+            <button
+              type="submit"
+              disabled={loading}
+              className="survey-submit"
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
