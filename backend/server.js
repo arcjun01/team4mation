@@ -20,7 +20,7 @@ app.use("/api/survey", surveyRoutes);
 console.log("Using database:", process.env.DB_NAME);
 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

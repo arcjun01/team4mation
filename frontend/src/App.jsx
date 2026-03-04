@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import InstructorTeamSetup from "./components/InstructorTeamSetup";
-import StudentSurvey from "./StudentSurvey";
+import StudentSurvey from "./components/StudentSurvey.jsx"; 
 import LinkGeneration from "./components/LinkGeneration.jsx";
+import InstructorDecryption from "./components/InstructorDecryption";
+import SurveySubmissions from "./components/SurveySubmissions";
 
 function App() {
   return (
@@ -19,6 +21,12 @@ function App() {
           
           {/* Student view */}
           <Route path="/survey/:id" element={<StudentSurvey />} />
+
+          {/* Instructor Decryption Entry Point */}
+          <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
+
+          {/* Decrypted Submissions List */}
+          <Route path="/survey-submissions" element={<SurveySubmissions />} />
           
           {/* Redirect */}
           <Route path="*" element={<Navigate to="/" />} />
