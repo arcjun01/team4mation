@@ -6,20 +6,27 @@ const InstructorTeamSetup = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const savedData = location.state?.formData;
 
+  // 1. Add 'useGpa' to your initial state
   const [formData, setFormData] = useState(savedData || {
     courseName: '',
     classSize: '',
     minSize: '',
     maxSize: '',
-    prevCourse: ''
+    prevCourse: '',
+    useGpa: false 
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    // Prevent numbers less than 1
+    const { name, value, type, checked } = e.target;
+    
+    // Handle checkbox separately
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+      return;
+    }
+
     if ((name === 'minSize' || name === 'maxSize' || name === 'classSize') && value !== '') {
       if (parseInt(value) < 1) return;
     }
@@ -28,37 +35,30 @@ const InstructorTeamSetup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // To generate a unique ID for the survey
     const uniqueId = crypto.randomUUID(); 
-    
     console.log("Team Criteria Saved:", formData);
-    
-    // Move to the link generation page with the new ID
     navigate(`/generate-link/${uniqueId}`);
   };
 
   return (
     <div className="setup-wrapper">
       <div className="setup-container">
-        {/* Header */}
         <div className="setup-card header-card">
           <h1 className="setup-title">Setting Up Student Surveys</h1>
         </div>
 
-        {/* Info Text */}
         <div className="setup-card info-card">
           <p>Once you complete this setup, a link to a customized student survey will be generated.</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Question 1 */}
           <div className="setup-card">
             <label htmlFor="courseName">For which course is this team set-up for?</label>
             <input 
               id="courseName"
               className="input-field full-input"
               type="text" 
+              required
               name="courseName" 
               value={formData.courseName} 
               onChange={handleChange} 
@@ -66,13 +66,13 @@ const InstructorTeamSetup = () => {
             />
           </div>
 
-          {/* Question 2 */}
           <div className="setup-card">
             <label htmlFor="classSize">Enter or adjust class size</label>
             <input 
               id="classSize"
               className="input-field numeric-input"
               type="number" 
+              required
               name="classSize" 
               value={formData.classSize} 
               onChange={handleChange} 
@@ -80,7 +80,6 @@ const InstructorTeamSetup = () => {
             />
           </div>
 
-          {/* Question 3 */}
           <div className="setup-card">
             <label>Enter or adjust group size</label>
             <div className="size-inputs">
@@ -100,6 +99,7 @@ const InstructorTeamSetup = () => {
                 <input 
                   className="input-field numeric-input"
                   type="number" 
+                  required
                   name="maxSize" 
                   placeholder="4" 
                   value={formData.maxSize} 
@@ -109,21 +109,37 @@ const InstructorTeamSetup = () => {
             </div>
           </div>
 
-          {/* Question 4 */}
-          <div className="setup-card">
-            <label htmlFor="prevCourse">Enter the name of the prerequisite course</label>
-            <input 
-              id="prevCourse"
-              className="input-field full-input"
-              type="text" 
-              name="prevCourse" 
-              value={formData.prevCourse} 
-              onChange={handleChange} 
-              placeholder="e.g., SDEV 90"
-            />
+          {/* Question 4: The Optional Checkbox */}
+          <div className="setup-card checkbox-section">
+            <div className="checkbox-row">
+              <input 
+                type="checkbox" 
+                id="useGpa" 
+                name="useGpa"
+                checked={formData.useGpa}
+                onChange={handleChange}
+              />
+              <label htmlFor="useGpa">Factor prerequisite GPA into team formation</label>
+            </div>
           </div>
 
-          {/* Buttons Section */}
+          {/* Conditional Question: Only shows if useGpa is true */}
+          {formData.useGpa && (
+            <div className="setup-card fade-in">
+              <label htmlFor="prevCourse">Enter the name of the prerequisite course</label>
+              <input 
+                id="prevCourse"
+                className="input-field full-input"
+                type="text" 
+                required={formData.useGpa} 
+                name="prevCourse" 
+                value={formData.prevCourse} 
+                onChange={handleChange} 
+                placeholder="e.g., SDEV 90"
+              />
+            </div>
+          )}
+
           <div className="button-group">
             <button type="button" className="btn-cancel">Cancel</button>
             <button type="submit" className="btn-create">Create Student Survey</button>
