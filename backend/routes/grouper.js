@@ -17,7 +17,7 @@ function seperateGenders() {
 
     for (const person of students) {
         if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+        if (person.gender !== "Male") others.push(person)
     }
 
     return { males, others };
