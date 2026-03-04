@@ -16,8 +16,8 @@ function seperateGenders() {
     const others = []
 
     for (const person of students) {
-        if (person.gender === "Male") males.push(person);
-        if (person.gender !== "Male") others.push(person)
+        if (person.gender.trim().toLowerCase() === "male") males.push(person);
+        if (person.gender.trim().toLowerCase() !== "male") others.push(person)
     }
 
     return { males, others };
@@ -215,7 +215,7 @@ function isGenderBalanced(group) {
     let otherCount = 0;
 
     for (const student of group) {
-        if (student.gender === "Male") {
+        if (student.gender.trim().toLowerCase() === "male") {
             maleCount++;
         } else {
             otherCount++;
