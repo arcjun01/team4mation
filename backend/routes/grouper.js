@@ -1,33 +1,36 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
+// const { students, settings } = studentData;
+function grouper(students, teamSize) {
+    // We create a local 'settings' object so teammate code using 'settings.teamSize' still works.
+    const settings = { teamSize: teamSize };
 
-function grouper() {
-    //get min group number
+    // Calculate group number using the real database teamSize.
     const groupNum = Math.ceil(students.length / settings.teamSize);
-    const { males, others } = seperateGenders();
-    const groups = makeBasicGroups(males, others, groupNum);
+    
+    // We pass the local 'students' into their existing functions.
+    const { males, others } = seperateGenders(students);
+    const groups = makeBasicGroups(males, others, groupNum, settings);
+    
     improveGroups(groups);
 
     return groups;
 }
 
-function seperateGenders() {
-    const males = []
-    const others = []
+function seperateGenders(students) { 
+    const males = [];
+    const others = [];
 
+    
     for (const person of students) {
         if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+        if (person.gender === "Female" || person.gender === "Other") others.push(person);
     }
 
     return { males, others };
 }
 
-
-function makeBasicGroups(males, others, groupNum) {
+function makeBasicGroups(males, others, groupNum, settings) {
     const groups = Array.from({ length: groupNum }, () => []);
 
-    // Sort each gender group by GPA
     males.sort((a, b) => a.gpa - b.gpa);
     others.sort((a, b) => a.gpa - b.gpa);
 
@@ -35,19 +38,14 @@ function makeBasicGroups(males, others, groupNum) {
     let otherIndex = 0;
 
     for (let g = 0; g < groupNum; g++) {
-
-        // Add up to 2 males
         for (let m = 0; m < 2 && maleIndex < males.length; m++) {
             groups[g].push(males[maleIndex++]);
         }
-
-        // Add up to 2 others
         for (let o = 0; o < 2 && otherIndex < others.length; o++) {
             groups[g].push(others[otherIndex++]);
         }
     }
 
-    // If any leftovers remain, fill remaining spots
     while (maleIndex < males.length) {
         for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
             if (groups[g].length < settings.teamSize) {

@@ -33,12 +33,40 @@ const InstructorTeamSetup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const uniqueId = crypto.randomUUID(); 
-    console.log("Team Criteria Saved:", formData);
-    navigate(`/generate-link/${uniqueId}`);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  const uniqueId = crypto.randomUUID(); 
+
+  // coerce numbers and handle optional minSize
+  const payload = {
+    uniqueId,
+    courseName: formData.courseName,
+    classSize: formData.classSize !== '' ? parseInt(formData.classSize, 10) : null,
+    maxSize: formData.maxSize !== '' ? parseInt(formData.maxSize, 10) : null,
+    minSize: formData.minSize !== '' ? parseInt(formData.minSize, 10) : null,
+    useGpa: formData.useGpa ? 1 : 0,
+    prevCourse: formData.prevCourse || null,
   };
+
+  try {
+    const response = await fetch('http://localhost:3001/api/config/save-setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      console.log("Configuration Saved to DB");
+      navigate(`/generate-link/${uniqueId}`);
+    } else {
+      const errorInfo = await response.json().catch(() => ({}));
+      console.error("Save failed:", errorInfo);
+      alert("Failed to save configuration: " + (errorInfo.error || response.statusText));
+    }
+  } catch (error) {
+    console.error("Error connecting to server:", error);
+  }
+};
 
   return (
     <div className="setup-wrapper">
