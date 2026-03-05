@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config({ path: "../.env" });
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
@@ -12,5 +12,4 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// Export using CommonJS
 module.exports = { pool };
