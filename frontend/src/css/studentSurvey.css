@@ -1,26 +1,43 @@
+#root {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.main-container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+input[type="text"] {
+  border-radius: 5px;
+  width: 386px;
+  height: 30px;
+}
+
 .survey-page {
-    min-height: 70vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f9fafb;
-}
-
-.survey-wrapper {
     width: 100%;
-    max-width: 640px;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 .survey-card {
     background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    padding: 24px;
+    padding: 40px;
+    margin: 65px;
+    width: 830px;
 }
 
 .survey-title {
-    font-size: 24px;
-    font-weight: 600;
     margin-bottom: 16px;
 }
 
@@ -32,7 +49,6 @@
 
 .survey-question {
     font-size: 18px;
-    padding-bottom: 120px;
 }
 
 .survey-options {
@@ -87,15 +103,21 @@
     opacity: 0.9;
 }
 
-.gpa-question {
+.other-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 386px;
+}
+
+.question-title {
     font-size: 20px;
     font-weight: 500;
     display: block;
     margin-bottom: 8px;
 }
 
-.gpa-info {
-    font-size: 14px;
+.details {
     color: #666;
     margin-bottom: 16px;
     line-height: 1.5;
@@ -131,4 +153,162 @@
     font-size: 14px;
     color: #dc2626;
     margin-top: 4px;
+}
+/* Availability Question Styles */
+.availability-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.question-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.availability-info {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: -8px;
+}
+
+.availability-container {
+    display: flex;
+    padding-right: 40px;
+    padding-bottom: 20px;
+    background: #EBEBEB;
+    border-radius: 10px;
+    gap: 0;
+    align-items: flex-start;
+    background: D0E4DB;
+}
+
+.days-column {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: #086759;
+    border-radius: 10px;
+    height: 310px;
+}
+
+.days-spacer {
+    height: 40px;
+    width: 45px;
+}
+
+.day-item {
+    width: 59px;
+    min-width: 45px;
+    height: 36px;
+    padding: 0;
+    text-align: center;
+    font-size: 15px;
+    background: #086759;
+    color: #ffffff;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.day-item:last-child {
+    border-bottom: none;
+}
+
+.availability-table-wrapper {
+    width: 693px;
+    overflow-x: auto;
+    background: #EBEBEB;
+    border-radius: 10px;
+    user-select: none;
+    padding: 14px 0px;
+    margin: 0 15px;
+}
+
+.ckeckboxes-frame {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    background: #EBEBEB;
+}
+
+.time-header {
+    display: flex;
+
+}
+
+.time-slot-header {
+    width: 45px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    margin-right: 1px;
+    font-size: 13px;
+}
+
+.time-slot-header:last-child {
+    border-right: none;
+}
+
+.day-row {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.day-row:last-child {
+    border-bottom: none;
+}
+
+.time-cell-background {
+    margin: 3px;
+    width: 40px;
+    height: 30px;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-cell {
+    width: 31px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    background: white;
+    border-radius: 2px;
+}
+
+.time-cell:last-child {
+    border-right: none;
+}
+
+.time-cell:hover {
+    background: #E9F6F0;
+}
+
+
+.time-cell.selected {
+    background: #DBF1E7;
+}
+
+.time-cell.selected:hover {
+    background: #A1DABF;
+}
+
+.time-cell:active {
+    background: #93C2AB;
+}
+
+.checkmark-icon {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    user-select: none;
 }

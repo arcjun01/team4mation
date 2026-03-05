@@ -1,0 +1,112 @@
+:root {
+  --sage-green: #a7bcaf;
+  --dark-green: #2d6a4f;
+  --light-bg: #e9edeb;
+  --stat-green: #b7d1c1;
+}
+
+.page-wrapper {
+  background-color: var(--light-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.main-viewport {
+  margin-top: -40px; /* Pulls content into the sage area */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 40px;
+}
+
+.content-container {
+  width: 90%;
+  max-width: 1000px;
+}
+
+/* Title Panel */
+.title-card {
+  background: white;
+  border-radius: 15px 15px 0 0;
+  padding: 40px;
+  text-align: center;
+  border-bottom: 2px solid var(--light-bg);
+}
+
+.title-card h1 {
+  font-weight: 400;
+  color: #333;
+  margin: 0;
+}
+
+/* Main White Data Area */
+.data-card {
+  background: white;
+  border-radius: 0 0 15px 15px;
+  padding: 60px;
+  display: flex;
+  justify-content: space-between;
+  min-height: 450px;
+}
+
+/* Two-column student list */
+.student-grid {
+  column-count: 2;
+  column-gap: 50px;
+  flex-grow: 1;
+}
+
+.student-name {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.name-number {
+  color: var(--dark-green);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* Right Stats Box */
+.stats-sidebar {
+  background-color: var(--stat-green);
+  padding: 40px 30px;
+  border-radius: 15px;
+  width: 220px;
+  height: fit-content;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  color: var(--dark-green);
+  font-size: 0.95rem;
+}
+
+/* Footer Buttons */
+.button-tray {
+  width: 90%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.nav-btn {
+  background-color: var(--sage-green);
+  border: none;
+  padding: 15px 50px;
+  border-radius: 15px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  filter: brightness(0.9);
+}
