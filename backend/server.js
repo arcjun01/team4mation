@@ -21,19 +21,9 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             return res.status(404).json({ error: "Survey configuration not found" });
         }
 
-        // 2. Fetch Students (Wrapped in a try-catch to identify if the survey_id column is missing)
-        let students = [];
-        try {
-            const [studentRows] = await pool.execute(
-                "SELECT name FROM student_survey_entries WHERE survey_id = ?", 
-                [surveyId]
-            );
-            students = studentRows;
-        } catch (dbErr) {
-            console.error("Column missing or Table error:", dbErr.message);
-            // Fallback so the front-end doesn't crash even if DB isn't perfect yet
-            students = []; 
-        }
+// Routes
+app.use("/teams", teamRoutes);
+app.use("/api/survey", surveyRoutes); 
 
         const classSize = config[0].class_size || 0;
         const submissions = students.length;

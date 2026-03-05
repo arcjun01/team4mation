@@ -18,9 +18,9 @@ export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError }) {
   };
 
   return (
-    <div>
-      <label className="gpa-question">What was your final GPA in SDEV 344? Enter or adjust below</label>
-      <p className="gpa-info">
+    <div className="question-container">
+      <h2 className="question-title">What was your final GPA in SDEV 344? Enter or adjust below</h2>
+      <p className="details">
         You can view your GPA in{" "}
         <a
             href="https://csprd.ctclink.us/psc/csprd_9/EMPLOYEE/SA/c/SSR_STUDENT_ACAD_REC_FL.SSR_MD_ACAD_REC_FL.GBL?Action=U&MD=Y&GMenu=SSR_STUDENT_ACAD_REC_FL&GComp=SSR_ACADREC_NAV_FL&GPage=SCC_START_PAGE_FL&scname=CTC_ACADEMIC_RECORDS_NAVCOL&AJAXTRANSFER=Y"

@@ -49,11 +49,12 @@ router.get("/:surveyId", async (req, res) => {
 
 // For students: This just records the survey 
 router.post("/", (req, res) => {
-    const studentData = req.body;
-    console.log("Data received from survey post:", studentData);
-    res.json({
-        message: "Student response recorded successfully",
-    });
+  const studentData = req.body;
+  console.log("Data received from survey:", studentData);
+
+  const teams = grouper();
+
+  res.status(201).json({ message: "Student response recorded successfully" });
 });
 
 module.exports = router;
