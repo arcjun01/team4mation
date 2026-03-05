@@ -50,8 +50,8 @@ export default function StudentSurvey() {
       if (!response.ok) {
         throw new Error("Failed to submit survey");
       }
-
-      setMessage("Survey submitted successfully.");
+      const data = await response.json();
+      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
       setGender("");
       setGpa(2.0);
       setGpaError("");
