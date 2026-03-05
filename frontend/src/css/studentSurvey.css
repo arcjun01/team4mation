@@ -114,11 +114,17 @@ input[type="text"] {
     max-width: 386px;
 }
 
+.question-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .question-title {
     font-size: 20px;
     font-weight: 500;
     display: block;
     margin-bottom: 8px;
+    text-align: left;
 }
 
 .details {
@@ -189,7 +195,7 @@ input[type="text"] {
     border-radius: 10px;
     gap: 0;
     align-items: flex-start;
-    background: #D0E4DB;
+    background: #e9edeb;
 }
 
 .days-column {

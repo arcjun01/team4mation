@@ -6,8 +6,6 @@ import GenderQuestion from "./GenderQuestion";
 import GpaQuestion from "./GpaQuestion";
 import AvailabilityQuestion from "./AvailabilityQuestion";
 
-import "../css/studentSurvey.css";
-
 export default function StudentSurvey() {
   const { id } = useParams();
   const navigate = useNavigate();

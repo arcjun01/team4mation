@@ -2,7 +2,7 @@ import React from "react";
 
 export default function FullNameQuestion({ fullName, setFullName }) {
   return (
-    <div className="form-section">
+    <div className="question-container">
       <label className="gpa-question">What is your full name?</label>
       <input
         type="text"
