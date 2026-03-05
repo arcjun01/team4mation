@@ -136,8 +136,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
 
     let totalOverlap = 0;
     for (const slot of Object.keys(availibilitySlots)) {
-        if (availibilitySlots[slot] > Math.ceil(group.length / 2)) {
-            totalOverlap += availibilitySlots[slot];
+        if (slot >= Math.ceil(group.length / 2)) {
+            totalOverlap += slot;
         }
     }
 
