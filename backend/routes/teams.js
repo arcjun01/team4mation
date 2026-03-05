@@ -1,10 +1,8 @@
 import express from "express";
-import grouper from "./grouper.js";
+import { grouper } from "./grouper.js";
 import { pool } from "../db.js";
 
 const router = express.Router();
-const { grouper } = require("./grouper.js");
-const { pool } = require("../db.js");
 
 // For instructor: This generates and shows the teams based on DB data and survey config
 router.get("/:surveyId", async (req, res) => {

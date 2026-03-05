@@ -191,7 +191,8 @@ function isGenderBalanced(group) {
     }
     return maleCount <= otherCount;
 }
-module.exports = {
+
+export {
     grouper,
     buildAvailabilityMap,
     calculateScheduleOverlap,
