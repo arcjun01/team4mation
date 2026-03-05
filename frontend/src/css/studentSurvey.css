@@ -1,24 +1,45 @@
+#root {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.main-container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+input[type="text"] {
+  border-radius: 5px;
+  width: 386px;
+  height: 30px;
+}
 
 .survey-page {
-    min-height: 70vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f9fafb;
-}
-
-.survey-wrapper {
     width: 100%;
-    max-width: 640px;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 .survey-card {
     background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    padding: 24px;
+    padding: 40px;
+    margin: 65px;
+    width: 830px;
 }
 
+.survey-title {
+    margin-bottom: 16px;
+}
 
 .results-layout {
     display: flex;
@@ -27,18 +48,20 @@
     margin-top: 20px;
 }
 
+.survey-question {
+    font-size: 18px;
+}
 
 .student-list {
-    column-count: 2; 
+    column-count: 2;
     gap: 30px;
     list-style-position: inside;
-    color: #111827; 
+    color: #111827;
     font-weight: 500;
 }
 
-
 .stats-card {
-    background-color: #d1fae5; 
+    background-color: #d1fae5;
     padding: 20px;
     border-radius: 12px;
     min-width: 180px;
@@ -50,7 +73,6 @@
 .stats-card p {
     margin: 8px 0;
 }
-
 
 .survey-secondary-actions {
     display: flex;
@@ -65,7 +87,7 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    background: #e5e7eb; 
+    background: #e5e7eb;
     color: #374151;
     transition: background 0.2s ease;
 }
@@ -74,7 +96,7 @@
     background: #d1d5db;
 }
 
-
+/* Encryption branch input */
 .full-name-input {
     width: 96%;
     padding: 12px;
@@ -84,6 +106,26 @@
     margin-top: 8px;
 }
 
+/* Feature branch input section */
+.other-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 386px;
+}
+
+.question-title {
+    font-size: 20px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.details {
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
 
 .survey-card .gpa-info {
     font-size: 1.1rem;
@@ -92,7 +134,7 @@
 }
 
 .survey-submit {
-    background-color: #b2dfdb; 
+    background-color: #b2dfdb;
     border: none;
     border-radius: 10px;
     padding: 12px 45px;
@@ -112,4 +154,158 @@
     background-color: #e0e0e0;
     cursor: not-allowed;
     transform: none;
+}
+
+.gpa-error {
+    font-size: 14px;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+/* Availability Question Styles */
+
+.availability-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.question-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.availability-info {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: -8px;
+}
+
+.availability-container {
+    display: flex;
+    padding-right: 40px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    gap: 0;
+    align-items: flex-start;
+    background: #D0E4DB;
+}
+
+.days-column {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: #086759;
+    border-radius: 10px;
+    height: 310px;
+}
+
+.days-spacer {
+    height: 40px;
+    width: 45px;
+}
+
+.day-item {
+    width: 59px;
+    min-width: 45px;
+    height: 36px;
+    text-align: center;
+    font-size: 15px;
+    background: #086759;
+    color: #ffffff;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.day-item:last-child {
+    border-bottom: none;
+}
+
+.availability-table-wrapper {
+    width: 693px;
+    overflow-x: auto;
+    background: #EBEBEB;
+    border-radius: 10px;
+    user-select: none;
+    padding: 14px 0px;
+    margin: 0 15px;
+}
+
+.ckeckboxes-frame {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    background: #EBEBEB;
+}
+
+.time-header {
+    display: flex;
+}
+
+.time-slot-header {
+    width: 45px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    margin-right: 1px;
+    font-size: 13px;
+}
+
+.day-row {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.day-row:last-child {
+    border-bottom: none;
+}
+
+.time-cell-background {
+    margin: 3px;
+    width: 40px;
+    height: 30px;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-cell {
+    width: 31px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    background: white;
+    border-radius: 2px;
+}
+
+.time-cell:hover {
+    background: #E9F6F0;
+}
+
+.time-cell.selected {
+    background: #DBF1E7;
+}
+
+.time-cell.selected:hover {
+    background: #A1DABF;
+}
+
+.time-cell:active {
+    background: #93C2AB;
+}
+
+.checkmark-icon {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    user-select: none;
 }

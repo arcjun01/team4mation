@@ -10,42 +10,90 @@ const secretKey = Buffer.from('vperysecretkey32charcheckdigital', 'utf8');
 
 router.post("/", async (req, res) => {
   const { fullName, survey_id } = req.body;
-  const gender = req.body.gender || "Not Provided";
-  const gpaNum = parseFloat(req.body.gpa || 0.0);
+  const { gender, gpa, availability_schedule } = req.body;
 
   // Generate a unique IV for EVERY submission to ensure security
   const iv = crypto.randomBytes(16);
 
   if (!fullName) {
     return res.status(400).json({ success: false, error: "Full name is required" });
+  const gpaNum = parseFloat(gpa ?? 2.0);
+  if (isNaN(gpaNum) || gpaNum < 1.0 || gpaNum > 4.0) {
+    return res.status(400).json({ success: false, error: "GPA must be 1.0–4.0" });
   }
 
-  try {
-    console.log("--- Incoming Submission ---");
-    console.log("Plain-text Name:", fullName);
-    console.log("Target Survey ID:", survey_id);
-
-    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-    let encryptedName = cipher.update(fullName, 'utf8', 'hex');
-    encryptedName += cipher.final('hex');
-    const ivHex = iv.toString('hex');
-
-    const [result] = await pool.execute(
-      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
-      [encryptedName, ivHex, gender, gpaNum, survey_id]
-    );
-
-    console.log("New survey response saved with id:", result.insertId);
-
-    res.status(201).json({
-      success: true,
-      message: "Survey submitted!",
-      student_id: result.insertId 
-    });
-  } catch (err) {
-    console.error("Database Error:", err);
-    res.status(500).json({ success: false, error: "Database error" });
+  if (!availability_schedule) {
+    return res.status(400).json({ success: false, error: "Availability schedule is required" });
   }
+
+  const connection = await pool.getConnection();
+
+try {
+  console.log("--- Incoming Submission ---");
+  console.log("Plain-text Name:", fullName);
+  console.log("Target Survey ID:", survey_id);
+
+  // Encrypt name
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+  let encryptedName = cipher.update(fullName, "utf8", "hex");
+  encryptedName += cipher.final("hex");
+  const ivHex = iv.toString("hex");
+
+  // Begin transaction
+  await connection.beginTransaction();
+
+  // Insert student survey entry
+  const [result] = await connection.execute(
+    "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
+    [encryptedName, ivHex, gender, gpaNum, survey_id]
+  );
+
+  const studentId = result.insertId;
+  console.log("New survey response saved with id:", studentId);
+
+  // Parse availability schedule
+  const availabilityData = JSON.parse(availability_schedule);
+  const insertPromises = [];
+
+  for (const [key, isSelected] of Object.entries(availabilityData)) {
+    if (isSelected) {
+      const [dayOfWeek, timeSlot] = key.split("-");
+
+      insertPromises.push(
+        connection.execute(
+          "INSERT INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
+          [studentId, dayOfWeek, timeSlot]
+        )
+      );
+    }
+  }
+
+  // Execute availability inserts
+  if (insertPromises.length > 0) {
+    await Promise.all(insertPromises);
+  }
+
+  // Commit transaction
+  await connection.commit();
+
+  res.status(201).json({
+    success: true,
+    message: "Survey submitted!",
+    student_id: studentId
+  });
+
+} catch (error) {
+  await connection.rollback();
+  console.error("Submission error:", error);
+
+  res.status(500).json({
+    success: false,
+    message: "Error submitting survey"
+  });
+
+} finally {
+  connection.release();
+}
 });
 
 router.post("/reveal", async (req, res) => {

@@ -24,7 +24,7 @@ const LinkGeneration = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(surveyUrl);
-    alert("Unique link copied to clipboard!"); 
+    alert("Unique link copied to clipboard!");
   };
 
   const handleEmailClick = () => {
@@ -33,19 +33,25 @@ const LinkGeneration = () => {
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
+  const handleViewStatus = () => {
+    navigate(`/survey-stats/${id}`);
+  };
+
   return (
     <div className="link-page-container">
       <div className="card-container">
         <h2 className="card-title">Student Survey Link</h2>
         
         <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-          {isClosed ? "Survey is now closed. You can proceed to view and decrypt submissions." : "Copy the link or click Share to send it via Outlook."}
+          {isClosed 
+            ? "Survey is now closed. You can proceed to view and decrypt submissions." 
+            : "Copy the link or click Share to send it via Outlook."}
         </p>
         
         <div className="action-row">
           <div className="url-box">
             <Link to={`/survey/${id}`} className="survey-active-link">
-                {surveyUrl}
+              {surveyUrl}
             </Link>
           </div>
 
@@ -63,15 +69,28 @@ const LinkGeneration = () => {
       <div className={`footer-action-row ${isClosed ? 'centered' : ''}`}>
         {isClosed ? (
           <button 
-            className="footer-btn open-submissions-btn" 
+            className="footer-btn open-submissions-btn"
             onClick={() => navigate(`/instructor/decrypt/${id}`)}
           >
             Open Submissions
           </button>
         ) : (
           <>
-            <button className="footer-btn" onClick={handleEdit}>Edit Survey</button>
-            <button className="footer-btn" onClick={handleClose}>Close Survey</button>
+            <button className="footer-btn" onClick={handleEdit}>
+              Edit Survey
+            </button>
+
+            <button 
+              className="footer-btn"
+              onClick={handleViewStatus}
+              style={{ backgroundColor: '#a3c1ad' }}
+            >
+              View Submissions
+            </button>
+
+            <button className="footer-btn" onClick={handleClose}>
+              Close Survey
+            </button>
           </>
         )}
       </div>

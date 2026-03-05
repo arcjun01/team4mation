@@ -1,0 +1,42 @@
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
+
+.page-header img {
+  display: block;
+  width: 100vw;
+  min-width: 1440px;
+  height: auto;
+  position: absolute;
+  z-index: 1;  
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 1440px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+h1, h2 {
+     font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin: 0%;
+}
+
+h2 {
+    font-size: 20px;
+}
+
