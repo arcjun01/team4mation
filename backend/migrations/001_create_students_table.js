@@ -26,6 +26,24 @@ export const up = async () => {
     `);
     console.log('✓ Availability table created successfully');
 
+    // Create survey configurations table
+    await connection.query(`
+      DROP TABLE IF EXISTS survey_configurations
+    `);
+    await connection.query(`
+      CREATE TABLE survey_configurations (
+        id VARCHAR(255) PRIMARY KEY,
+        course_name VARCHAR(255),
+        class_size INT,
+        min_size INT,
+        max_size INT,
+        use_gpa BOOLEAN,
+        prev_course VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✓ Survey configurations table created successfully');
+
   } finally {
     connection.release();
   }
@@ -34,6 +52,7 @@ export const up = async () => {
 export const down = async () => {
   const connection = await pool.getConnection();
   try {
+    await connection.query('DROP TABLE IF EXISTS survey_configurations');
     await connection.query('DROP TABLE IF EXISTS availability');
     await connection.query('DROP TABLE IF EXISTS students');
     console.log('✓ Tables dropped successfully');

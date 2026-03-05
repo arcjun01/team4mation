@@ -121,6 +121,6 @@ const availabilityData = [
     { student_id: "S23", day_of_week: "WED", time_slot: "12 PM" },
 ]
 
-module.exports = {
+export {
     availabilityData
 }

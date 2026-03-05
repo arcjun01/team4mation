@@ -1,6 +1,6 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
-const { availabilityData } = require("../data/availibility.js")
+import studentData from "../data/students.js";
+const { students, settings } = studentData;
+import { availabilityData } from "../data/availibility.js";
 
 function buildAvailabilityMap(availabilityData) {
     const availibilityMap = {}
@@ -135,12 +135,9 @@ function calculateScheduleOverlap(group, availabilityMap) {
     }
 
     let totalOverlap = 0;
-<<<<<<< HEAD
 
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-=======
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
     for (const slot of Object.keys(availibilitySlots)) {
         const count = availibilitySlots[slot];
         if (count >= minOverlap) {
@@ -157,14 +154,10 @@ function calculateCommitmentSimilarity(group) {
         if (student.commitment > max) max = student.commitment;
         if (student.commitment < min) min = student.commitment;
     }
-<<<<<<< HEAD
 
     let commitmentRange = max - min
 
     return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
-=======
-    return -1 * (max - min);
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 }
 
 function calculateGPASimilarity(group) {
@@ -173,14 +166,10 @@ function calculateGPASimilarity(group) {
         if (student.gpa > max) max = student.gpa;
         if (student.gpa < min) min = student.gpa;
     }
-<<<<<<< HEAD
 
     let gpaSpread = max - min
 
     return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
-=======
-    return -1 * (max - min);
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 }
 
 function calculateGroupScore(group, availabilityMap) {
@@ -202,7 +191,6 @@ function isGenderBalanced(group) {
     }
     return maleCount <= otherCount;
 }
-<<<<<<< HEAD
 module.exports = {
     grouper,
     buildAvailabilityMap,
@@ -213,7 +201,4 @@ module.exports = {
     isGenderBalanced,
     makeBasicGroups
 };
-=======
 
-module.exports = grouper;
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
