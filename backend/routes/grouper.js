@@ -185,7 +185,7 @@ function calculateScheduleOverlap(group, availabilityMap) {
         }
     }
 
-    return totalOverlap;
+    return totalOverlap / group.length;
 
 }
 
@@ -234,7 +234,7 @@ function calculateGroupScore(group, availabilityMap) {
     const availibilityScore = calculateScheduleOverlap(group, availabilityMap);
     const commitmentScore = calculateCommitmentSimilarity(group);
 
-    const totalScore = (gpaScore * GPA_WEIGHT) + (availibilityScore * 2) + (commitmentScore * COMMITMENT_WEIGHT)
+    const totalScore = (gpaScore * GPA_WEIGHT) + (availibilityScore * SCHEDULE_WEIGHT) + (commitmentScore * COMMITMENT_WEIGHT)
 
     return totalScore;
 }
