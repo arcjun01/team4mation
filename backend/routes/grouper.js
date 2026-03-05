@@ -1,12 +1,27 @@
 const studentData = require("../data/students.js")
 const { students, settings } = studentData
+const { availabilityData } = require("../data/availibility.js")
+
+function buildAvailabilityMap(availabilityData) {
+    const availibilityMap = {}
+    for (const time of availabilityData) {
+        if (!availibilityMap[time.student_id]) {
+            availibilityMap[time.student_id] = [];
+        }
+        availibilityMap[time.student_id].push(`${time.day_of_week}-${time.time_slot}`)
+    }
+    console.log(availibilityMap)
+    return availibilityMap;
+}
+
 
 function grouper() {
+    const availabilityMap = buildAvailabilityMap(availabilityData);
     //get min group number
     const groupNum = Math.ceil(students.length / settings.teamSize);
     const { males, others } = seperateGenders();
     const groups = makeBasicGroups(males, others, groupNum);
-    improveGroups(groups);
+    improveGroups(groups, availabilityMap);
 
     return groups;
 }
@@ -16,8 +31,8 @@ function seperateGenders() {
     const others = []
 
     for (const person of students) {
-        if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+        if (person.gender.trim().toLowerCase() === "male") males.push(person);
+        if (person.gender.trim().toLowerCase() !== "male") others.push(person)
     }
 
     return { males, others };
@@ -70,7 +85,7 @@ function makeBasicGroups(males, others, groupNum) {
 //plan split
 //////////////////////////////////////////////////////
 
-function improveGroups(groups) {
+function improveGroups(groups, availabilityMap) {
 
     let improvementMade = true;
     let passCount = 0;
@@ -94,7 +109,7 @@ function improveGroups(groups) {
                     for (const studentB of groups[j]) {
                         console.log("Checking: ", studentB, " from ", groups[j]);
                         // check if swaping students would result in a better group
-                        if (evalulateSwap(studentA, studentB, groups[i], groups[j])) {
+                        if (evalulateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
                             console.log("Swap ", studentA, " and ", studentB);
 
                             // swap students
@@ -120,7 +135,7 @@ function improveGroups(groups) {
     return groups;
 }
 
-function evalulateSwap(studentA, studentB, groupA, groupB) {
+function evalulateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
     const testA = groupA.map(student => student.student_id === studentA.student_id ? studentB : student);
     console.log("GroupA: ", groupA, " TestA: ", testA)
 
@@ -131,11 +146,11 @@ function evalulateSwap(studentA, studentB, groupA, groupB) {
         return false;
     }
 
-    let currentScoreA = calculateGroupScore(groupA);
-    let currentScoreB = calculateGroupScore(groupB);
+    let currentScoreA = calculateGroupScore(groupA, availabilityMap);
+    let currentScoreB = calculateGroupScore(groupB, availabilityMap);
 
-    let testScoreA = calculateGroupScore(testA);
-    let testScoreB = calculateGroupScore(testB);
+    let testScoreA = calculateGroupScore(testA, availabilityMap);
+    let testScoreB = calculateGroupScore(testB, availabilityMap);
 
     console.log("Current Group A: ", currentScoreA);
     console.log("Test Group A: ", testScoreA);
@@ -149,7 +164,28 @@ function evalulateSwap(studentA, studentB, groupA, groupB) {
     return false;
 }
 
-function calculateScheduleOverlap() {
+function calculateScheduleOverlap(group, availabilityMap) {
+    const availibilitySlots = {}
+
+    for (const student of group) {
+        const timeSlots = availabilityMap[student.student_id] || []
+        for (const slot of timeSlots) {
+            if (!availibilitySlots[slot]) {
+                availibilitySlots[slot] = 0
+            }
+            availibilitySlots[slot]++;
+        }
+    }
+
+    const totalOverlap = 0;
+
+    for (const slot of Object.keys(availibilitySlots)) {
+        if (slot > Math.ceil(group.length / 2)) {
+            totalOverlap += slot;
+        }
+    }
+
+    return totalOverlap / group.length;
 
 }
 
@@ -189,16 +225,16 @@ function calculateGPASimilarity(group) {
     return (-1 * gpaSpread);
 }
 
-function calculateGroupScore(group) {
-    const GPA_WEIGHT = 3
-    const SCHEDULE_WEIGHT = 2
+function calculateGroupScore(group, availabilityMap) {
+    const GPA_WEIGHT = 2
+    const SCHEDULE_WEIGHT = 3
     const COMMITMENT_WEIGHT = 1
 
     const gpaScore = calculateGPASimilarity(group);
-    //
+    const availibilityScore = calculateScheduleOverlap(group, availabilityMap);
     const commitmentScore = calculateCommitmentSimilarity(group);
 
-    const totalScore = (gpaScore * GPA_WEIGHT) + (0) + (commitmentScore * COMMITMENT_WEIGHT)
+    const totalScore = (gpaScore * GPA_WEIGHT) + (availibilityScore * SCHEDULE_WEIGHT) + (commitmentScore * COMMITMENT_WEIGHT)
 
     return totalScore;
 }
@@ -215,7 +251,7 @@ function isGenderBalanced(group) {
     let otherCount = 0;
 
     for (const student of group) {
-        if (student.gender === "Male") {
+        if (student.gender.trim().toLowerCase() === "male") {
             maleCount++;
         } else {
             otherCount++;
