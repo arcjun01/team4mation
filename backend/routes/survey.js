@@ -1,6 +1,6 @@
-const express = require('express');
-const { pool } = require('../db.js');
-const crypto = require('crypto');
+import express from 'express';
+import { pool } from '../db.js';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -155,4 +155,4 @@ router.post("/reveal", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

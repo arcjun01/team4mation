@@ -1,6 +1,6 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
-const { availabilityData } = require("../data/availibility.js")
+import studentData from "../data/students.js";
+const { students, settings } = studentData;
+import { availabilityData } from "../data/availibility.js";
 
 function buildAvailabilityMap(availabilityData) {
     const availibilityMap = {}
@@ -182,4 +182,4 @@ function isGenderBalanced(group) {
     return maleCount <= otherCount;
 }
 
-module.exports = grouper;
+export default grouper;

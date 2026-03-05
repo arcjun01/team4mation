@@ -1,10 +1,11 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const { pool } = require("./db.js");
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import { pool } from "./db.js";
+import teamRoutes from "./routes/teams.js";
+import surveyRoutes from "./routes/survey.js";
 
-const teamRoutes = require("./routes/teams");
-const surveyRoutes = require("./routes/survey");
+dotenv.config();
 
 const app = express();
 app.use(cors());
