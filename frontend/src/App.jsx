@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import InstructorTeamSetup from "./components/InstructorTeamSetup";
 import StudentSurvey from "./StudentSurvey";
 import LinkGeneration from "./components/LinkGeneration.jsx";
+import SurveySubmissions from "./components/SurveySubmissions.jsx";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
           
           {/* Student view */}
           <Route path="/survey/:id" element={<StudentSurvey />} />
+          
+          {/*Submission status*/}
+          <Route path="/survey-stats/:id" element={<SurveySubmissions />} />
           
           {/* Redirect */}
           <Route path="*" element={<Navigate to="/" />} />
