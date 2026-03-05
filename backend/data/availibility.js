@@ -1,4 +1,4 @@
-const availability = [
+const availabilityData = [
     // S01
     { student_id: "S01", day_of_week: "MON", time_slot: "9:00" },
     { student_id: "S01", day_of_week: "MON", time_slot: "14:00" },
@@ -110,3 +110,7 @@ const availability = [
     { student_id: "S23", day_of_week: "TUE", time_slot: "12:00" },
     { student_id: "S23", day_of_week: "FRI", time_slot: "15:00" },
 ]
+
+module.exports = {
+    availabilityData
+}

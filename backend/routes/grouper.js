@@ -1,5 +1,7 @@
 const studentData = require("../data/students.js")
 const { students, settings } = studentData
+const availabilityData = require("../data/availibility.js")
+
 
 function grouper() {
     //get min group number
