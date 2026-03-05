@@ -1,11 +1,22 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom";
+
+import FullNameQuestion from "./FullNameQuestion";
+import GenderQuestion from "./GenderQuestion";
+import GpaQuestion from "./GpaQuestion";
+import AvailabilityQuestion from "./AvailabilityQuestion";
+
 import "../css/studentSurvey.css";
 
 export default function StudentSurvey() {
-  const { id } = useParams(); 
-  const navigate = useNavigate(); 
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
+  const [gender, setGender] = useState("");
+  const [gpa, setGpa] = useState(2.0);
+  const [gpaError, setGpaError] = useState("");
+  const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -13,7 +24,26 @@ export default function StudentSurvey() {
     e.preventDefault();
 
     if (!fullName) {
-      setMessage("Please enter your name before submitting.");
+      setMessage("Please enter your full name before submitting.");
+      return;
+    }
+
+    if (!gender) {
+      setMessage("Please select a gender before submitting.");
+      return;
+    }
+
+    if (gpaError || gpa < 1.0 || gpa > 4.0) {
+      setMessage("Please enter a valid GPA between 1.0 and 4.0.");
+      return;
+    }
+
+    const selectedSlots = Object.keys(availability).filter(
+      (key) => availability[key]
+    );
+
+    if (selectedSlots.length === 0) {
+      setMessage("Please select at least one time slot for availability.");
       return;
     }
 
@@ -21,28 +51,40 @@ export default function StudentSurvey() {
       setLoading(true);
       setMessage("");
 
-      const response = await fetch("http://localhost:5000/api/survey", {
+      const response = await fetch("http://localhost:3001/api/survey", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          fullName, 
-          survey_id: id
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName,
+          gender,
+          gpa,
+          availability_schedule: JSON.stringify(availability),
+          survey_id: id,
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to submit");
+      if (!response.ok) {
+        throw new Error("Failed to submit survey");
+      }
 
-      // Success feedback and automatic redirection
-      setMessage("Survey submitted successfully! Redirecting to dashboard...");
-      
-      // Delay for 2 seconds so the student can read the success message
+      const data = await response.json();
+
+      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
+
       setTimeout(() => {
-        navigate(`/generate-link/${id}`); 
+        navigate(`/generate-link/${id}`);
       }, 2000);
 
+      setFullName("");
+      setGender("");
+      setGpa(2.0);
+      setGpaError("");
+      setAvailability({});
     } catch (err) {
-      console.error("Submission error:", err);
-      setMessage("Submission failed. Ensure your backend is running on port 5000.");
+      console.error(err);
+      setMessage("Submission failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -50,38 +92,48 @@ export default function StudentSurvey() {
 
   return (
     <div className="survey-page">
-      <div className="survey-wrapper">
-        <div className="survey-card">
-          <div className="survey-header" style={{ textAlign: 'center', marginBottom: '20px' }}>
-             <h2 className="survey-title">SDEV 372 Group Formation Survey</h2>
+      <div className="survey-card">
+        <h1 className="survey-title">Group Formation Survey</h1>
+
+        <form onSubmit={handleSubmit} className="survey-form">
+
+          <FullNameQuestion
+            fullName={fullName}
+            setFullName={setFullName}
+          />
+
+          <GenderQuestion
+            gender={gender}
+            setGender={setGender}
+          />
+
+          <GpaQuestion
+            gpa={gpa}
+            gpaError={gpaError}
+            setGpa={setGpa}
+            setGpaError={setGpaError}
+          />
+
+          <AvailabilityQuestion
+            availability={availability}
+            setAvailability={setAvailability}
+          />
+
+          {message && (
+            <div className="survey-message">{message}</div>
+          )}
+
+          <div className="survey-actions">
+            <button
+              type="submit"
+              disabled={loading}
+              className="survey-submit"
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="survey-form">
-            <div className="form-section">
-              <label className="gpa-question">What is your full name?</label>
-              <input 
-                type="text" 
-                className="full-name-input"
-                placeholder="Enter your name..."
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required 
-              />
-            </div>
-
-            {message && (
-              <div className="survey-message" style={{ marginTop: '15px', fontWeight: 'bold', color: message.includes("failed") ? "red" : "green" }}>
-                {message}
-              </div>
-            )}
-
-            <div className="survey-actions" style={{ marginTop: '20px' }}>
-              <button type="submit" disabled={loading} className="survey-submit">
-                {loading ? "Submitting..." : "Submit Survey"}
-              </button>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   );
