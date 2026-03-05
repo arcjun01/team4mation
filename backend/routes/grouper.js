@@ -226,8 +226,8 @@ function calculateGPASimilarity(group) {
 }
 
 function calculateGroupScore(group, availabilityMap) {
-    const GPA_WEIGHT = 3
-    const SCHEDULE_WEIGHT = 2
+    const GPA_WEIGHT = 2
+    const SCHEDULE_WEIGHT = 3
     const COMMITMENT_WEIGHT = 1
 
     const gpaScore = calculateGPASimilarity(group);
