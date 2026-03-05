@@ -16,7 +16,6 @@ const LinkGeneration = () => {
     navigate('/', { state: { formData } });
   };
 
-
   const handleClose = () => {
     if (window.confirm("Are you sure you want to exit?")) {
       navigate('/'); // Redirects to start
@@ -32,6 +31,11 @@ const LinkGeneration = () => {
     const subject = encodeURIComponent("Action Required: Student Survey");
     const body = encodeURIComponent(`Please complete the team survey at this link: ${surveyUrl}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
+  // NEW: Navigate to the submissions status page
+  const handleViewStatus = () => {
+    navigate(`/survey-stats/${id}`);
   };
 
   return (
@@ -61,6 +65,8 @@ const LinkGeneration = () => {
       
       <div className="footer-action-row">
         <button className="footer-btn" onClick={handleEdit}>Edit Survey</button>
+        
+        <button className="footer-btn" onClick={handleViewStatus} style={{ backgroundColor: '#a3c1ad' }}>View Submissions</button>
         <button className="footer-btn" onClick={handleClose}>Close Survey</button>
       </div>
     </div>

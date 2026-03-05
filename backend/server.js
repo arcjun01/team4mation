@@ -7,6 +7,51 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Add this to server.js
+app.get("/api/survey/stats/:surveyId", async (req, res) => {
+    const { surveyId } = req.params;
+    try {
+        // 1. Fetch Configuration
+        const [config] = await pool.execute(
+            "SELECT class_size FROM survey_configurations WHERE id = ?", 
+            [surveyId]
+        );
+
+        if (config.length === 0) {
+            return res.status(404).json({ error: "Survey configuration not found" });
+        }
+
+        // 2. Fetch Students (Wrapped in a try-catch to identify if the survey_id column is missing)
+        let students = [];
+        try {
+            const [studentRows] = await pool.execute(
+                "SELECT name FROM student_survey_entries WHERE survey_id = ?", 
+                [surveyId]
+            );
+            students = studentRows;
+        } catch (dbErr) {
+            console.error("Column missing or Table error:", dbErr.message);
+            // Fallback so the front-end doesn't crash even if DB isn't perfect yet
+            students = []; 
+        }
+
+        const classSize = config[0].class_size || 0;
+        const submissions = students.length;
+        const pending = Math.max(0, classSize - submissions);
+
+        res.json({
+            classSize,
+            submissions,
+            pending,
+            // Safety: ensure map only runs if students exists
+            studentList: students ? students.map(s => s.name) : []
+        });
+
+    } catch (err) {
+        console.error("General Stats Error:", err.message);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
+});
 
 app.post("/api/config/save-setup", async (req, res) => {
     console.log("POST request received at /api/config/save-setup");
