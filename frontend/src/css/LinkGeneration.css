@@ -94,6 +94,31 @@
     transition: all 0.2s ease;
 }
 
+.footer-action-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Spacing between the three buttons */
+  margin-top: 30px;
+  width: 100%;
+}
+
+.footer-btn {
+  flex: 1; /* Ensures equal width for all three buttons */
+  max-width: 180px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #97b4a8; /* Sage green theme */
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.footer-btn:hover {
+  filter: brightness(0.9);
+}
+
 .footer-btn:hover {
     background-color: #80cbc4;
 }
