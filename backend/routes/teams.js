@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const grouper = require("./grouper.js");
-const { pool } = require("../db.js"); 
+const { grouper } = require("./grouper.js");
+const { pool } = require("../db.js");
 
 // For instructor: This generates and shows the teams based on DB data
 router.get("/", async (req, res) => {
@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 
     try {
         const [rows] = await pool.execute("SELECT * FROM student_survey_entries");
-        
+
         const teamSize = parseInt(req.query.teamSize) || 3;
 
         const teams = grouper(rows, teamSize);

@@ -177,11 +177,14 @@ function calculateScheduleOverlap(group, availabilityMap) {
         }
     }
 
-    const totalOverlap = 0;
+    let totalOverlap = 0;
+
+    const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
     for (const slot of Object.keys(availibilitySlots)) {
-        if (slot >= Math.ceil(group.length / 2)) {
-            totalOverlap += slot;
+        const count = availibilitySlots[slot];
+        if (count >= minOverlap) {
+            totalOverlap += count;
         }
     }
 
@@ -204,7 +207,7 @@ function calculateCommitmentSimilarity(group) {
 
     let commitmentRange = max - min
 
-    return (-1 * commitmentRange);
+    return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
 }
 
 function calculateGPASimilarity(group) {
@@ -222,7 +225,7 @@ function calculateGPASimilarity(group) {
 
     let gpaSpread = max - min
 
-    return (-1 * gpaSpread);
+    return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
 }
 
 function calculateGroupScore(group, availabilityMap) {
@@ -260,4 +263,13 @@ function isGenderBalanced(group) {
 
     return maleCount <= otherCount;
 }
-module.exports = grouper;
+module.exports = {
+    grouper,
+    buildAvailabilityMap,
+    calculateScheduleOverlap,
+    calculateGPASimilarity,
+    calculateCommitmentSimilarity,
+    calculateGroupScore,
+    isGenderBalanced,
+    makeBasicGroups
+};
