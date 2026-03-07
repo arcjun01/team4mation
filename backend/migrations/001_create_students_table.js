@@ -38,6 +38,7 @@ export const up = async () => {
           max_size INT,
           use_gpa BOOLEAN,
           prev_course VARCHAR(255),
+          status VARCHAR(20) DEFAULT 'open',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);

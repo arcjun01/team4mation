@@ -22,6 +22,9 @@ function App() {
           {/* Student view */}
           <Route path="/survey/:id" element={<StudentSurvey />} />
 
+          {/*Submission status*/ }
+          <Route path="/survey-stats/:id" element={<SurveySubmissions />} />
+
           {/* Instructor Decryption Entry Point */}
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
 

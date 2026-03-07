@@ -9,33 +9,39 @@ function InstructorDecryption() {
     const navigate = useNavigate();
 
     const handleDecrypt = async (e) => {
-        e.preventDefault();
-        setIsDecrypting(true);
+    e.preventDefault();
+    setIsDecrypting(true);
 
-        try {
-            const response = await fetch('http://localhost:5000/api/survey/reveal', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    decryptionKey, 
-                    surveyId: id 
-                })
+    try {
+        const response = await fetch('http://localhost:3001/api/survey/reveal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                decryptionKey, 
+                surveyId: id 
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // SUCCESS: Pass the decrypted names and survey ID to the dashboard
+            navigate('/survey-submissions', { 
+                state: { 
+                    names: data.names, 
+                    id: id 
+                } 
             });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                navigate('/survey-submissions', { state: { names: data.names } });
-            } else {
-                alert(data.error || "Invalid Decryption Key");
-            }
-        } catch (error) {
-            console.error("Decryption failed:", error);
-            alert("Server error. Please ensure your backend is running.");
-        } finally {
-            setIsDecrypting(false);
+        } else {
+            alert(data.error || "Invalid Decryption Key");
         }
-    };
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        alert("Server error. Ensure backend is running on port 3001.");
+    } finally {
+        setIsDecrypting(false);
+    }
+};
 
     return (
         <div className="survey-page">

@@ -67,9 +67,7 @@ export default function StudentSurvey() {
         throw new Error("Failed to submit survey");
       }
 
-      const data = await response.json();
-
-      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
+      setMessage("Survey submitted successfully! Redirecting...");
 
       setTimeout(() => {
         navigate(`/generate-link/${id}`);
