@@ -117,6 +117,7 @@ export default function StudentSurvey() {
       // Redirect to thank you page after successful submission
       navigate("/thank-you");
     } catch (err) {
+      console.error("Submission error:", err);
       setMessage("Submission failed. Please try again.");
     } finally {
       setLoading(false);

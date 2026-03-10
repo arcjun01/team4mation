@@ -6,25 +6,17 @@ const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const formData = location.state?.formData;
   
+  const formData = location.state?.formData;
   const surveyUrl = `/team4mation/survey/${id}`;
 
   const handleEdit = () => {
-    // Navigate back to setup and pass the data back to populate the fields
     navigate('/', { state: { formData } });
-  };
-
-  const handleClose = () => {
-    if (window.confirm("Are you sure you want to exit?")) {
-      navigate('/'); // Redirects to start
-    }
   };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(surveyUrl);
-    alert("Unique link copied to clipboard!"); 
+    alert("Unique link copied to clipboard!");
   };
 
   const handleEmailClick = () => {
@@ -33,7 +25,6 @@ const LinkGeneration = () => {
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
-  // NEW: Navigate to the submissions status page
   const handleViewStatus = () => {
     navigate(`/survey-stats/${id}`);
   };
@@ -44,7 +35,7 @@ const LinkGeneration = () => {
         <h2 className="card-title">Student Survey Link</h2>
         
         <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-          Copy the link or click Share to send it via Outlook.
+          Copy the link or click the mail icon to share it with your students via Outlook.
         </p>
         
         <div className="action-row">
@@ -64,10 +55,17 @@ const LinkGeneration = () => {
       </div>
       
       <div className="footer-action-row">
-        <button className="footer-btn" onClick={handleEdit}>Edit Survey</button>
-        
-        <button className="footer-btn" onClick={handleViewStatus} style={{ backgroundColor: '#a3c1ad' }}>View Submissions</button>
-        <button className="footer-btn" onClick={handleClose}>Close Survey</button>
+        <button className="footer-btn" onClick={handleEdit}>
+          Edit Survey
+        </button>
+
+        <button 
+          className="footer-btn" 
+          onClick={handleViewStatus}
+          style={{ backgroundColor: '#a3c1ad', fontWeight: 'bold' }}
+        >
+          View Submission Status
+        </button>
       </div>
     </div>
   );

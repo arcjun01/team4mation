@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import { grouper } from "./grouper.js";
+import { pool } from "../db.js";
+
 const router = express.Router();
-const grouper = require("./grouper.js");
-const { pool } = require("../db.js");
 
 // For instructor: This generates and shows the teams based on DB data and survey config
 router.get("/:surveyId", async (req, res) => {
@@ -9,11 +10,9 @@ router.get("/:surveyId", async (req, res) => {
     console.log(`Instructor's view: Fetching data for Survey ID: ${surveyId}`);
 
     try {
-        // 1. Get the settings for THIS specific survey from the new table
-        const [configRows] = await pool.execute(
-            "SELECT * FROM survey_configurations WHERE id = ?", 
-            [surveyId]
-        );
+        const [rows] = await pool.execute("SELECT * FROM student_survey_entries");
+
+        const teamSize = parseInt(req.query.teamSize) || 3;
 
         // Check if the survey exists
         if (configRows.length === 0) {
@@ -57,4 +56,4 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Student response recorded successfully" });
 });
 
-module.exports = router;
+export default router;

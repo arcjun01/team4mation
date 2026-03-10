@@ -1,6 +1,6 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
-const { availabilityData } = require("../data/availibility.js")
+import studentData from "../data/students.js";
+const { students, settings } = studentData;
+import { availabilityData } from "../data/availibility.js";
 
 function buildAvailabilityMap(availabilityData) {
     const availibilityMap = {}
@@ -135,9 +135,13 @@ function calculateScheduleOverlap(group, availabilityMap) {
     }
 
     let totalOverlap = 0;
+
+    const minOverlap = Math.max(2, Math.ceil(group.length / 2));
+
     for (const slot of Object.keys(availibilitySlots)) {
-        if (availibilitySlots[slot] > Math.ceil(group.length / 2)) {
-            totalOverlap += availibilitySlots[slot];
+        const count = availibilitySlots[slot];
+        if (count >= minOverlap) {
+            totalOverlap += count;
         }
     }
 
@@ -150,7 +154,10 @@ function calculateCommitmentSimilarity(group) {
         if (student.commitment > max) max = student.commitment;
         if (student.commitment < min) min = student.commitment;
     }
-    return -1 * (max - min);
+
+    let commitmentRange = max - min
+
+    return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
 }
 
 function calculateGPASimilarity(group) {
@@ -159,7 +166,10 @@ function calculateGPASimilarity(group) {
         if (student.gpa > max) max = student.gpa;
         if (student.gpa < min) min = student.gpa;
     }
-    return -1 * (max - min);
+
+    let gpaSpread = max - min
+
+    return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
 }
 
 function calculateGroupScore(group, availabilityMap) {
@@ -182,4 +192,14 @@ function isGenderBalanced(group) {
     return maleCount <= otherCount;
 }
 
-module.exports = grouper;
+export {
+    grouper,
+    buildAvailabilityMap,
+    calculateScheduleOverlap,
+    calculateGPASimilarity,
+    calculateCommitmentSimilarity,
+    calculateGroupScore,
+    isGenderBalanced,
+    makeBasicGroups
+};
+

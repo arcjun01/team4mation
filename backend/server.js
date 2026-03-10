@@ -13,15 +13,14 @@ app.use(express.json());
 
 // Routes
 app.use("/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes); 
+app.use("/api/survey", surveyRoutes);
 
 // Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
     try {
-        // 1. Fetch Configuration
         const [config] = await pool.execute(
-            "SELECT class_size FROM survey_configurations WHERE id = ?", 
+            "SELECT class_size, status FROM survey_configurations WHERE id = ?",
             [surveyId]
         );
 
@@ -29,13 +28,13 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             return res.status(404).json({ error: "Survey configuration not found" });
         }
 
-        // 2. Fetch Student Submissions
         const [students] = await pool.execute(
-            "SELECT full_name FROM students WHERE survey_id = ?",
-            [surveyId]
+            "SELECT full_name FROM students LIMIT ?",
+            [config[0].class_size || 100]
         );
 
         const classSize = config[0].class_size || 0;
+        const status = config[0].status || 'open';
         const submissions = students.length;
         const pending = Math.max(0, classSize - submissions);
 
@@ -43,12 +42,12 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             classSize,
             submissions,
             pending,
+            status,
             studentList: students ? students.map(s => s.full_name) : []
         });
-
     } catch (err) {
-        console.error("General Stats Error:", err.message);
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+        console.error("Stats Error:", err.message);
+        res.status(500).json({ error: "Database error", studentList: [] });
     }
 });
 
@@ -88,6 +87,26 @@ app.post("/api/config/save-setup", async (req, res) => {
         );
         console.log("Success: Saved to DB");
         res.status(201).json({ success: true });
+    } catch (err) {
+        console.error("Database Error:", err.message);
+        res.status(500).json({ error: "DB Error", details: err.message });
+    }
+});
+
+// Close Survey Endpoint
+app.patch("/api/survey/close/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await pool.execute(
+            "UPDATE survey_configurations SET status = 'closed' WHERE id = ?",
+            [id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Survey not found" });
+        }
+
+        res.json({ success: true, message: "Survey successfully closed" });
     } catch (err) {
         console.error("Database Error:", err.message);
         res.status(500).json({ error: "DB Error", details: err.message });

@@ -32,7 +32,7 @@ const settings = {
 };
 
 // Export both so you can use them anywhere
-module.exports = {
+export default {
   students,
   settings
 };
