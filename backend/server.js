@@ -1,13 +1,21 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const { pool } = require("./db.js"); 
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import { pool } from "./db.js";
+import teamRoutes from "./routes/teams.js";
+import surveyRoutes from "./routes/survey.js";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Add this to server.js
+// Routes
+app.use("/teams", teamRoutes);
+app.use("/api/survey", surveyRoutes); 
+
+// Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
     try {
@@ -21,9 +29,11 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             return res.status(404).json({ error: "Survey configuration not found" });
         }
 
-// Routes
-app.use("/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes); 
+        // 2. Fetch Student Submissions
+        const [students] = await pool.execute(
+            "SELECT full_name FROM students WHERE survey_id = ?",
+            [surveyId]
+        );
 
         const classSize = config[0].class_size || 0;
         const submissions = students.length;
@@ -33,8 +43,7 @@ app.use("/api/survey", surveyRoutes);
             classSize,
             submissions,
             pending,
-            // Safety: ensure map only runs if students exists
-            studentList: students ? students.map(s => s.name) : []
+            studentList: students ? students.map(s => s.full_name) : []
         });
 
     } catch (err) {
@@ -43,6 +52,7 @@ app.use("/api/survey", surveyRoutes);
     }
 });
 
+// Config Save Endpoint
 app.post("/api/config/save-setup", async (req, res) => {
     console.log("POST request received at /api/config/save-setup");
     const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse } = req.body;
@@ -59,12 +69,6 @@ app.post("/api/config/save-setup", async (req, res) => {
         res.status(500).json({ error: "DB Error", details: err.message });
     }
 });
-
-
-const teamRoutes = require("./routes/teams");
-const surveyRoutes = require("./routes/survey");
-app.use("/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

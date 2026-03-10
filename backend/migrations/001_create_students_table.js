@@ -7,9 +7,11 @@ export const up = async () => {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS students (
         student_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        full_name VARCHAR(255),
         gender VARCHAR(50),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        gpa DOUBLE
+        gpa DOUBLE,
+        commitment VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('✓ Students table created successfully');

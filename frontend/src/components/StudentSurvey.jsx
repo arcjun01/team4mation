@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import FullNameQuestion from "./components/studentSurvey/FullNameQuestion";
-import GenderQuestion from "./components/studentSurvey/GenderQuestion";
-import GpaQuestion from "./components/studentSurvey/GpaQuestion";
-import AvailabilityQuestion from "./components/studentSurvey/AvailabilityQuestion";
-import CommitmentQuestion from "./components/studentSurvey/CommitmentQuestion";
-import "./css/studentSurvey.css";
+import { useParams, useNavigate } from "react-router-dom";
+
+import FullNameQuestion from "./FullNameQuestion";
+import GenderQuestion from "./GenderQuestion";
+import GpaQuestion from "./GpaQuestion";
+import AvailabilityQuestion from "./AvailabilityQuestion";
 
 export default function StudentSurvey() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
   const [gpa, setGpa] = useState(2.0);
   const [gpaError, setGpaError] = useState("");
   const [availability, setAvailability] = useState({});
-  const [commitment, setCommitment] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -34,12 +36,10 @@ export default function StudentSurvey() {
       return;
     }
 
-    if (!commitment) {
-      setMessage("Please select your weekly commitment hours before submitting.");
-      return;
-    }
+    const selectedSlots = Object.keys(availability).filter(
+      (key) => availability[key]
+    );
 
-    const selectedSlots = Object.keys(availability).filter(key => availability[key]);
     if (selectedSlots.length === 0) {
       setMessage("Please select at least one time slot for availability.");
       return;
@@ -54,27 +54,32 @@ export default function StudentSurvey() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           fullName,
-          gender, 
+          gender,
           gpa,
-          commitment,
-          availability_schedule: JSON.stringify(availability)
+          availability_schedule: JSON.stringify(availability),
+          survey_id: id,
         }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to submit survey");
       }
-      const data = await response.json();
-      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
+
+      setMessage("Survey submitted successfully! Redirecting...");
+
+      setTimeout(() => {
+        navigate(`/generate-link/${id}`);
+      }, 2000);
+
       setFullName("");
       setGender("");
       setGpa(2.0);
       setGpaError("");
       setAvailability({});
-      setCommitment("");
     } catch (err) {
+      console.error(err);
       setMessage("Submission failed. Please try again.");
     } finally {
       setLoading(false);
@@ -87,26 +92,25 @@ export default function StudentSurvey() {
         <h1 className="survey-title">Group Formation Survey</h1>
 
         <form onSubmit={handleSubmit} className="survey-form">
-          <FullNameQuestion 
+
+          <FullNameQuestion
             fullName={fullName}
             setFullName={setFullName}
           />
 
-          <GenderQuestion gender={gender} setGender={setGender} />
-
-          <GpaQuestion 
-            gpa={gpa} 
-            gpaError={gpaError} 
-            setGpa={setGpa} 
-            setGpaError={setGpaError} 
+          <GenderQuestion
+            gender={gender}
+            setGender={setGender}
           />
 
-          <CommitmentQuestion 
-            commitment={commitment}
-            setCommitment={setCommitment}
+          <GpaQuestion
+            gpa={gpa}
+            gpaError={gpaError}
+            setGpa={setGpa}
+            setGpaError={setGpaError}
           />
 
-          <AvailabilityQuestion 
+          <AvailabilityQuestion
             availability={availability}
             setAvailability={setAvailability}
           />
@@ -124,6 +128,7 @@ export default function StudentSurvey() {
               {loading ? "Submitting..." : "Submit"}
             </button>
           </div>
+
         </form>
       </div>
     </div>

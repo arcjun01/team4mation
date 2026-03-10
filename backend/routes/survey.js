@@ -1,10 +1,14 @@
-const express = require('express');
-const { pool } = require('../db.js');
+import express from 'express';
+import { pool } from '../db.js';
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { gender, gpa, availability_schedule } = req.body;
+  const { fullName, gender, gpa, commitment, availability_schedule } = req.body;
+
+  if (!fullName) {
+    return res.status(400).json({ success: false, error: "Full name is required" });
+  }
 
   if (!gender) {
     return res.status(400).json({ success: false, error: "Gender is required" });
@@ -13,6 +17,10 @@ router.post("/", async (req, res) => {
   const gpaNum = parseFloat(gpa ?? 2.0);
   if (isNaN(gpaNum) || gpaNum < 1.0 || gpaNum > 4.0) {
     return res.status(400).json({ success: false, error: "GPA must be 1.0–4.0" });
+  }
+
+  if (!commitment) {
+    return res.status(400).json({ success: false, error: "Commitment is required" });
   }
 
   if (!availability_schedule) {
@@ -26,8 +34,8 @@ router.post("/", async (req, res) => {
 
     // Insert student record
     const [result] = await connection.execute(
-      "INSERT INTO students (gender, gpa) VALUES (?, ?)",
-      [gender, gpaNum]
+      "INSERT INTO students (full_name, gender, gpa, commitment) VALUES (?, ?, ?, ?)",
+      [fullName, gender, gpaNum, commitment]
     );
 
     const studentId = result.insertId;
@@ -72,4 +80,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
