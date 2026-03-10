@@ -57,7 +57,7 @@ const InstructorTeamSetup = () => {
 
     if (response.ok) {
       console.log("Configuration Saved to DB");
-      navigate(`/generate-link/${uniqueId}`);
+      navigate(`/generate-link/${uniqueId}`, { state: { formData } });
     } else {
       const errorInfo = await response.json().catch(() => ({}));
       console.error("Save failed:", errorInfo);

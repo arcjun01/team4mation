@@ -9,7 +9,7 @@ const LinkGeneration = () => {
 
   const formData = location.state?.formData;
   
-  const surveyUrl = `${window.location.origin}/survey/${id}`;
+  const surveyUrl = `/team4mation/survey/${id}`;
 
   const handleEdit = () => {
     // Navigate back to setup and pass the data back to populate the fields
@@ -48,9 +48,9 @@ const LinkGeneration = () => {
         </p>
         
         <div className="action-row">
-          <div className="url-box">
+          <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
             {surveyUrl}
-          </div>
+          </a>
 
           <div className="icon-group">
             <button className="icon-btn" onClick={handleCopy} title="Copy Link">

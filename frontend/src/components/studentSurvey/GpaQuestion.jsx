@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError }) {
+export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError, prevCourse }) {
   const handleGpaChange = (value) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) {
@@ -17,9 +17,11 @@ export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError }) {
     setGpa(numValue);
   };
 
+  const courseDisplay = prevCourse || "SDEV 344";
+
   return (
     <div className="question-container">
-      <h2 className="question-title">What was your final GPA in SDEV 344? Enter or adjust below</h2>
+      <h2 className="question-title">What was your final GPA in {courseDisplay}? Enter or adjust below</h2>
       <p className="details">
         You can view your GPA in{" "}
         <a

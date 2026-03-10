@@ -52,6 +52,30 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
     }
 });
 
+// Get Survey Configuration Endpoint
+app.get("/api/config/:surveyId", async (req, res) => {
+    const { surveyId } = req.params;
+    try {
+        const [config] = await pool.execute(
+            "SELECT course_name, use_gpa, prev_course FROM survey_configurations WHERE id = ?",
+            [surveyId]
+        );
+
+        if (config.length === 0) {
+            return res.status(404).json({ error: "Survey configuration not found" });
+        }
+
+        res.json({
+            courseName: config[0].course_name,
+            useGpa: config[0].use_gpa === 1,
+            prevCourse: config[0].prev_course
+        });
+    } catch (err) {
+        console.error("Config Fetch Error:", err.message);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
+});
+
 // Config Save Endpoint
 app.post("/api/config/save-setup", async (req, res) => {
     console.log("POST request received at /api/config/save-setup");

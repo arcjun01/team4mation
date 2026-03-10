@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import FullNameQuestion from "./components/studentSurvey/FullNameQuestion";
 import GenderQuestion from "./components/studentSurvey/GenderQuestion";
 import GpaQuestion from "./components/studentSurvey/GpaQuestion";
 import AvailabilityQuestion from "./components/studentSurvey/AvailabilityQuestion";
 import CommitmentQuestion from "./components/studentSurvey/CommitmentQuestion";
+import ConfirmationModal from "./components/ConfirmationModal";
 import "./css/studentSurvey.css";
 
 export default function StudentSurvey() {
+  const { id: surveyId } = useParams();
+  const navigate = useNavigate();
+  
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
   const [gpa, setGpa] = useState(2.0);
@@ -15,8 +20,42 @@ export default function StudentSurvey() {
   const [commitment, setCommitment] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  
+  const [surveyConfig, setSurveyConfig] = useState(null);
+  const [loadingConfig, setLoadingConfig] = useState(true);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const handleSubmit = async (e) => {
+  // Fetch survey configuration on mount
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        if (!surveyId) {
+          setMessage("Invalid survey link.");
+          setLoadingConfig(false);
+          return;
+        }
+
+        const response = await fetch(`http://localhost:3001/api/config/${surveyId}`);
+        if (!response.ok) {
+          setMessage("Survey not found or expired.");
+          setLoadingConfig(false);
+          return;
+        }
+        
+        const data = await response.json();
+        setSurveyConfig(data);
+      } catch (err) {
+        console.error("Error fetching config:", err);
+        setMessage("Error loading survey. Please try again.");
+      } finally {
+        setLoadingConfig(false);
+      }
+    };
+
+    fetchConfig();
+  }, [surveyId]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!fullName) {
@@ -29,7 +68,8 @@ export default function StudentSurvey() {
       return;
     }
 
-    if (gpaError || gpa < 1.0 || gpa > 4.0) {
+    // Only validate GPA if it's required
+    if (surveyConfig?.useGpa && (gpaError || gpa < 1.0 || gpa > 4.0)) {
       setMessage("Please enter a valid GPA between 1.0 and 4.0.");
       return;
     }
@@ -45,6 +85,13 @@ export default function StudentSurvey() {
       return;
     }
 
+    // Show confirmation modal instead of submitting directly
+    setShowConfirmation(true);
+  };
+
+  const handleConfirm = async () => {
+    setShowConfirmation(false);
+    
     try {
       setLoading(true);
       setMessage("");
@@ -57,7 +104,7 @@ export default function StudentSurvey() {
         body: JSON.stringify({ 
           fullName,
           gender, 
-          gpa,
+          gpa: surveyConfig?.useGpa ? gpa : null,
           commitment,
           availability_schedule: JSON.stringify(availability)
         }),
@@ -67,13 +114,8 @@ export default function StudentSurvey() {
         throw new Error("Failed to submit survey");
       }
       const data = await response.json();
-      setMessage(`Survey submitted successfully! Your ID is: ${data.student_id}`);
-      setFullName("");
-      setGender("");
-      setGpa(2.0);
-      setGpaError("");
-      setAvailability({});
-      setCommitment("");
+      // Redirect to thank you page after successful submission
+      navigate("/thank-you");
     } catch (err) {
       setMessage("Submission failed. Please try again.");
     } finally {
@@ -81,10 +123,38 @@ export default function StudentSurvey() {
     }
   };
 
+  const handleCancel = () => {
+    setShowConfirmation(false);
+  };
+
+  if (loadingConfig) {
+    return (
+      <div className="survey-page">
+        <div className="survey-card">
+          <p>Loading survey...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!surveyConfig) {
+    return (
+      <div className="survey-page">
+        <div className="survey-card">
+          <p>{message || "Survey not available."}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const surveyTitle = surveyConfig.courseName 
+    ? `${surveyConfig.courseName} Group Formation Survey` 
+    : "Group Formation Survey";
+
   return (
     <div className="survey-page">
       <div className="survey-card">
-        <h1 className="survey-title">Group Formation Survey</h1>
+        <h1 className="survey-title">{surveyTitle}</h1>
 
         <form onSubmit={handleSubmit} className="survey-form">
           <FullNameQuestion 
@@ -94,12 +164,15 @@ export default function StudentSurvey() {
 
           <GenderQuestion gender={gender} setGender={setGender} />
 
-          <GpaQuestion 
-            gpa={gpa} 
-            gpaError={gpaError} 
-            setGpa={setGpa} 
-            setGpaError={setGpaError} 
-          />
+          {surveyConfig.useGpa && (
+            <GpaQuestion 
+              gpa={gpa} 
+              gpaError={gpaError} 
+              setGpa={setGpa} 
+              setGpaError={setGpaError}
+              prevCourse={surveyConfig.prevCourse}
+            />
+          )}
 
           <CommitmentQuestion 
             commitment={commitment}
@@ -126,6 +199,12 @@ export default function StudentSurvey() {
           </div>
         </form>
       </div>
+
+      <ConfirmationModal 
+        isOpen={showConfirmation}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }
