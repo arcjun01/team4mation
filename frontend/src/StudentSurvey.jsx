@@ -195,7 +195,7 @@ export default function StudentSurvey() {
               disabled={loading}
               className="survey-submit"
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? "Submitting..." : "Submit Survey"}
             </button>
           </div>
         </form>
