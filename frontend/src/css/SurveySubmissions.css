@@ -1,0 +1,122 @@
+/* GLOBAL WRAPPERS */
+.page-wrapper {
+    background: #f9fafb;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+}
+
+.main-viewport {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* TITLE SECTION */
+.title-card {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.title-card h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #111827;
+}
+
+/* MAIN CONTENT LAYOUT */
+.results-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+/* LEFT SIDE: STUDENT LIST */
+.student-list-container {
+    flex: 2; /* Takes up more space */
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 300px;
+}
+
+.student-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.student-name {
+    font-size: 16px;
+    color: #374151;
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.name-number {
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 8px;
+}
+
+/* RIGHT SIDE: THE GREEN STATS SIDEBAR */
+.stats-card-sidebar {
+    flex: 1;
+    background-color: #d1fae5; /* Light green background */
+    padding: 25px;
+    border-radius: 16px;
+    color: #065f46; /* Dark green text */
+    height: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.stats-row span {
+    font-weight: 500;
+}
+
+.stats-row strong {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* FOOTER / BUTTONS */
+.button-tray {
+    margin-top: 10px;
+}
+
+.btn-secondary {
+    padding: 12px 24px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: white;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+}

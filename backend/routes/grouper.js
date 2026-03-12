@@ -1,63 +1,205 @@
-const studentData = require("../data/students.js")
-const { students, settings } = studentData
+import studentData from "../data/students.js";
+const { students, settings } = studentData;
+import { availabilityData } from "../data/availibility.js";
 
-function grouper() {
-    const groupNum = Math.ceil(students.length / settings.teamSize);
-    const { males, others } = seperateGenders();
-    const groups = makeBasicGroups(males, others, groupNum);
+function buildAvailabilityMap(availabilityData) {
+    const availibilityMap = {}
+    for (const time of availabilityData) {
+        if (!availibilityMap[time.student_id]) {
+            availibilityMap[time.student_id] = [];
+        }
+        availibilityMap[time.student_id].push(`${time.day_of_week}-${time.time_slot}`)
+    }
+    console.log(availibilityMap)
+    return availibilityMap;
+}
+
+function grouper(studentsParam, teamSizeParam) {
+    // Use your branch logic for local teamSize
+    const settingsLocal = { teamSize: teamSizeParam || settings.teamSize };
+    const studentsList = studentsParam || students;
+
+    const availabilityMap = buildAvailabilityMap(availabilityData);
+
+    const groupNum = Math.ceil(studentsList.length / settingsLocal.teamSize);
+    const { males, others } = seperateGenders(studentsList);
+    const groups = makeBasicGroups(males, others, groupNum, settingsLocal);
+
+    improveGroups(groups, availabilityMap);
 
     return groups;
 }
 
-function seperateGenders() {
-    const males = []
-    const others = []
+function seperateGenders(studentsList) { 
+    const males = [];
+    const others = [];
 
-    for (const person of students) {
-        if (person.gender === "Male") males.push(person);
-        if (person.gender === "Female" || person.gender === "Other") others.push(person)
+    for (const person of studentsList) {
+        if (person.gender.trim().toLowerCase() === "male") males.push(person);
+        else others.push(person);
     }
 
     return { males, others };
 }
 
-function makeBasicGroups(males, others, groupNum) {
+function makeBasicGroups(males, others, groupNum, settingsLocal) {
     const groups = Array.from({ length: groupNum }, () => []);
 
+    males.sort((a, b) => a.gpa - b.gpa);
+    others.sort((a, b) => a.gpa - b.gpa);
 
-    let i = 0;
-    for (const person of males) {
-        const index = findAvailableTeam(i, groups, groupNum)
-        if (index !== -1) {
-            groups[index].push(person)
-            i = (index + 1) % groupNum;
+    let maleIndex = 0;
+    let otherIndex = 0;
+
+    for (let g = 0; g < groupNum; g++) {
+        for (let m = 0; m < 2 && maleIndex < males.length; m++) {
+            groups[g].push(males[maleIndex++]);
+        }
+        for (let o = 0; o < 2 && otherIndex < others.length; o++) {
+            groups[g].push(others[otherIndex++]);
         }
     }
 
-    i = 0;
-    for (const person of others) {
-        const index = findAvailableTeam(i, groups, groupNum)
-        if (index !== -1) {
-            groups[index].push(person)
-            i = (index + 1) % groupNum;
+    while (maleIndex < males.length) {
+        for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
+            if (groups[g].length < settingsLocal.teamSize) {
+                groups[g].push(males[maleIndex++]);
+            }
+        }
+    }
+
+    while (otherIndex < others.length) {
+        for (let g = 0; g < groupNum && otherIndex < others.length; g++) {
+            if (groups[g].length < settingsLocal.teamSize) {
+                groups[g].push(others[otherIndex++]);
+            }
         }
     }
 
     return groups;
 }
 
-function findAvailableTeam(startIndex, groups, groupNum) {
-    let checked = 0;
-    let i = startIndex;
+function improveGroups(groups, availabilityMap) {
+    let improvementMade = true;
+    let passCount = 0;
+    const MAX_PASSES = 4;
 
-    while (checked < groupNum) {
-        if (groups[i].length < settings.teamSize) {
-            return i;
+    while (improvementMade && passCount < MAX_PASSES) {
+        improvementMade = false;
+        passCount++;
+
+        for (let i = 0; i < groups.length - 1; i++) {
+            for (let j = i + 1; j < groups.length; j++) {
+                for (const studentA of groups[i]) {
+                    for (const studentB of groups[j]) {
+                        if (evalulateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
+                            const indexA = groups[i].findIndex(s => s.student_id === studentA.student_id);
+                            const indexB = groups[j].findIndex(s => s.student_id === studentB.student_id);
+                            groups[i][indexA] = studentB;
+                            groups[j][indexB] = studentA;
+                            improvementMade = true
+                            break;
+                        }
+                    }
+                    if (improvementMade) break;
+                }
+                if (improvementMade) break;
+            }
+            if (improvementMade) break;
         }
-        i = (i + 1) % groupNum;
-        checked++;
     }
-    return -1;
+    return groups;
 }
 
-module.exports = grouper;
+function evalulateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
+    const testA = groupA.map(student => student.student_id === studentA.student_id ? studentB : student);
+    const testB = groupB.map(student => student.student_id === studentB.student_id ? studentA : student);
+
+    if (!checkGenderRule(testA, testB)) return false;
+
+    const currentScoreA = calculateGroupScore(groupA, availabilityMap);
+    const currentScoreB = calculateGroupScore(groupB, availabilityMap);
+    const testScoreA = calculateGroupScore(testA, availabilityMap);
+    const testScoreB = calculateGroupScore(testB, availabilityMap);
+
+    return (testScoreA + testScoreB) > (currentScoreA + currentScoreB);
+}
+
+function calculateScheduleOverlap(group, availabilityMap) {
+    const availibilitySlots = {}
+    for (const student of group) {
+        const timeSlots = availabilityMap[student.student_id] || []
+        for (const slot of timeSlots) {
+            availibilitySlots[slot] = (availibilitySlots[slot] || 0) + 1;
+        }
+    }
+
+    let totalOverlap = 0;
+
+    const minOverlap = Math.max(2, Math.ceil(group.length / 2));
+
+    for (const slot of Object.keys(availibilitySlots)) {
+        const count = availibilitySlots[slot];
+        if (count >= minOverlap) {
+            totalOverlap += count;
+        }
+    }
+
+    return totalOverlap / group.length;
+}
+
+function calculateCommitmentSimilarity(group) {
+    let min = group[0].commitment, max = group[0].commitment;
+    for (const student of group) {
+        if (student.commitment > max) max = student.commitment;
+        if (student.commitment < min) min = student.commitment;
+    }
+
+    let commitmentRange = max - min
+
+    return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
+}
+
+function calculateGPASimilarity(group) {
+    let min = group[0].gpa, max = group[0].gpa;
+    for (const student of group) {
+        if (student.gpa > max) max = student.gpa;
+        if (student.gpa < min) min = student.gpa;
+    }
+
+    let gpaSpread = max - min
+
+    return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
+}
+
+function calculateGroupScore(group, availabilityMap) {
+    const GPA_WEIGHT = 2, SCHEDULE_WEIGHT = 3, COMMITMENT_WEIGHT = 1;
+    return (calculateGPASimilarity(group) * GPA_WEIGHT) +
+           (calculateScheduleOverlap(group, availabilityMap) * SCHEDULE_WEIGHT) +
+           (calculateCommitmentSimilarity(group) * COMMITMENT_WEIGHT);
+}
+
+function checkGenderRule(testA, testB) {
+    return isGenderBalanced(testA) && isGenderBalanced(testB);
+}
+
+function isGenderBalanced(group) {
+    let maleCount = 0, otherCount = 0;
+    for (const student of group) {
+        if (student.gender.trim().toLowerCase() === "male") maleCount++;
+        else otherCount++;
+    }
+    return maleCount <= otherCount;
+}
+
+export {
+    grouper,
+    buildAvailabilityMap,
+    calculateScheduleOverlap,
+    calculateGPASimilarity,
+    calculateCommitmentSimilarity,
+    calculateGroupScore,
+    isGenderBalanced,
+    makeBasicGroups
+};
+
