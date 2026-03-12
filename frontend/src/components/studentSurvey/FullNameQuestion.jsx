@@ -3,7 +3,7 @@ import React from "react";
 export default function FullNameQuestion({ fullName, setFullName }) {
   return (
     <div className="question-container">
-      <label className="gpa-question">What is your full name?</label>
+      <h2 className="question-title">What is your full name?</h2>
       <input
         type="text"
         className="full-name-input"
