@@ -78,12 +78,13 @@ app.get("/api/config/:surveyId", async (req, res) => {
 // Config Save Endpoint
 app.post("/api/config/save-setup", async (req, res) => {
     console.log("POST request received at /api/config/save-setup");
-    const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse } = req.body;
+
+    const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse, encryptionSalt } = req.body;
 
     try {
         await pool.execute(
-            "INSERT INTO survey_configurations (id, course_name, class_size, min_size, max_size, use_gpa, prev_course) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse || null]
+            "INSERT INTO survey_configurations (id, course_name, class_size, min_size, max_size, use_gpa, prev_course, encryption_salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse || null, encryptionSalt || null]
         );
         console.log("Success: Saved to DB");
         res.status(201).json({ success: true });
