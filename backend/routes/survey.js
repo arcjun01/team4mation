@@ -1,11 +1,12 @@
 import express from 'express';
 import { pool } from '../db.js';
+import crypto from 'crypto';
 
 const router = express.Router();
 
 const algorithm = 'aes-256-cbc';
 router.post("/", async (req, res) => {
-  const { fullName, gender, gpa, commitment, availability_schedule } = req.body;
+  const { fullName, gender, gpa, commitment, surveyId, availability_schedule } = req.body;
 
   if (!fullName) {
     return res.status(400).json({ success: false, error: "Full name is required" });
@@ -30,12 +31,10 @@ router.post("/", async (req, res) => {
 
   const connection = await pool.getConnection();
   try {
-    connection = await pool.getConnection();
-
     // Fetch the encryption_salt for this specific survey
     const [config] = await connection.execute(
         "SELECT encryption_salt FROM survey_configurations WHERE id = ?",
-        [survey_id]
+        [surveyId]
     );
 
     if (!config.length || !config[0].encryption_salt) {
@@ -47,7 +46,7 @@ router.post("/", async (req, res) => {
 
     console.log("--- Incoming Submission ---");
     console.log("Plain-text Name:", fullName);
-    console.log("Target Survey ID:", survey_id);
+    console.log("Target Survey ID:", surveyId);
 
     // Encrypt name with unique IV
     const iv = crypto.randomBytes(16);
@@ -67,6 +66,12 @@ router.post("/", async (req, res) => {
 
     const studentId = result.insertId;
     console.log("Inserted student ID:", studentId);
+
+    // Insert encrypted name into student_survey_entries
+    await connection.execute(
+      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
+      [encryptedName, ivHex, gender, gpaNum, surveyId]
+    );
 
     // Parse availability schedule and insert into availability table
     const availabilityData = JSON.parse(availability_schedule);
@@ -162,12 +167,8 @@ router.post("/reveal", async (req, res) => {
     res.json({ success: true, names: decryptedResults });
 
   } catch (err) {
-    // Rollback on error
-    await connection.rollback();
     console.error("Database Error:", err);
     res.status(500).json({ success: false, error: "Database error" });
-  } finally {
-    connection.release();
   }
 });
 

@@ -6,6 +6,7 @@ import ThankYouPage from "./components/ThankYouPage";
 import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
+import SurveySubmissions from "./components/SurveySubmissions";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
           <Route path="/survey/:id" element={<><Header /><StudentSurvey /></>} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
+          <Route path="/survey-submissions" element={<SurveySubmissions />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
