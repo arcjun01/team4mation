@@ -18,6 +18,18 @@ const InstructorTeamSetup = () => {
     useGpa: false 
   });
 
+  // States for Secure Key Generation
+  const [generatedKey, setGeneratedKey] = useState('');
+  const [showKey, setShowKey] = useState(false);
+  const [hasSavedKey, setHasSavedKey] = useState(false);
+
+  // Function to generate a secure 32-character hex key
+  const handleGenerateKey = () => {
+    const randomKey = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+      .map(b => b.toString(16).padStart(2, '0')).join('');
+    setGeneratedKey(randomKey);
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -46,6 +58,8 @@ const InstructorTeamSetup = () => {
     minSize: formData.minSize !== '' ? parseInt(formData.minSize, 10) : null,
     useGpa: formData.useGpa ? 1 : 0,
     prevCourse: formData.prevCourse || null,
+    // Include the salt for the database
+    encryptionSalt: generatedKey
   };
 
   try {
@@ -168,9 +182,60 @@ const InstructorTeamSetup = () => {
             </div>
           )}
 
+          {/* Secure Data Access Key Section */}
+          <div className="setup-card">
+            <label>Secure Data Access Key</label>
+            <p className="info-card p" style={{ marginBottom: '15px' }}>
+              Generate a key to decrypt student names later.
+            </p>
+            <p> <strong> NOTE: The system will not save this key.</strong> </p>
+            
+            {!generatedKey ? (
+              <button type="button" className="btn-cancel" style={{ backgroundColor: '#fff', border: '1px solid #ccc' }} onClick={handleGenerateKey}>
+                Generate Decryption Key
+              </button>
+            ) : (
+              <div className="key-display-section">
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                  <input 
+                    className="input-field full-input"
+                    type={showKey ? "text" : "password"} 
+                    value={generatedKey} 
+                    readOnly 
+                  />
+                  <button type="button" className="btn-cancel" style={{ padding: '10px 20px' }} onClick={() => setShowKey(!showKey)}>
+                    {showKey ? "Hide" : "Reveal"}
+                  </button>
+                  <button type="button" className="btn-cancel" style={{ padding: '10px 20px' }} onClick={() => {
+                    navigator.clipboard.writeText(generatedKey);
+                    alert("Key copied to clipboard!");
+                  }}>Copy</button>
+                </div>
+                
+                <div className="checkbox-row">
+                  <input 
+                    type="checkbox" 
+                    id="saveConfirm" 
+                    checked={hasSavedKey} 
+                    onChange={(e) => setHasSavedKey(e.target.checked)} 
+                  />
+                  <label htmlFor="saveConfirm" style={{ color: '#d9534f', fontWeight: 'bold' }}>
+                    I have saved this key. I understand it cannot be recovered.
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="button-group">
             <button type="button" className="btn-cancel">Cancel</button>
-            <button type="submit" className="btn-create">Create Student Survey</button>
+            <button 
+              type="submit" 
+              className="btn-create"
+              disabled={!hasSavedKey} // Button disabled until key confirmation is checked
+            >
+              Create Student Survey
+            </button>
           </div>
         </form>
       </div>
