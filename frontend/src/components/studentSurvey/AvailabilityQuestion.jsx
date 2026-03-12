@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import checkmarkIcon from "../assets/checkmark.svg";
+import checkmarkIcon from "../../assets/checkmark.svg";
 
 const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 

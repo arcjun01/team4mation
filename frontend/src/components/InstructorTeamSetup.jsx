@@ -57,7 +57,7 @@ const InstructorTeamSetup = () => {
 
     if (response.ok) {
       console.log("Configuration Saved to DB");
-      navigate(`/generate-link/${uniqueId}`);
+      navigate(`/generate-link/${uniqueId}`, { state: { formData } });
     } else {
       const errorInfo = await response.json().catch(() => ({}));
       console.error("Save failed:", errorInfo);
@@ -169,7 +169,9 @@ const InstructorTeamSetup = () => {
           )}
 
           <div className="button-group">
-            <button type="button" className="btn-cancel">Cancel</button>
+            <button type="button" className="btn-cancel" onClick={() => navigate(-1)}>
+              Cancel
+            </button>
             <button type="submit" className="btn-create">Create Student Survey</button>
           </div>
         </form>

@@ -1,10 +1,37 @@
+.link-page-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9fafb;
+    position: relative;
+}
+
+.link-page-header {
+    width: 100%;
+    max-width: 1440px;
+    align-self: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.link-page-header-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: bottom;
+}
+
 .link-page-container {
-    background-color: #f9fafb; 
-    min-height: 100vh;
+    background-color: transparent;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 50px;
+    justify-content: center;
+    padding: 0;
     font-family: sans-serif;
 }
 

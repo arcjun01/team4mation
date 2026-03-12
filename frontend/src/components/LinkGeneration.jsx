@@ -1,18 +1,18 @@
 import React from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
+import largeHeaderImg from '../assets/largeHeader.svg';
 
 const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Grab form data if we came from the setup page so we can edit it
   const formData = location.state?.formData;
-  const surveyUrl = `${window.location.origin}/survey/${id}`;
+  const surveyUrl = `/team4mation/survey/${id}`;
 
   const handleEdit = () => {
-    navigate('/', { state: { formData } });
+    navigate('/setup', { state: { formData } });
   };
 
   const handleCopy = () => {
@@ -27,10 +27,18 @@ const LinkGeneration = () => {
   };
 
   const handleViewStatus = () => {
-    navigate(`/survey-stats/${id}`);
+    navigate(`/instructor/decrypt/${id}`);
   };
 
   return (
+    <div className="link-page-wrapper">
+      <header className="link-page-header">
+        <img
+          src={largeHeaderImg}
+          alt="Team4mation header"
+          className="link-page-header-image"
+        />
+      </header>
     <div className="link-page-container">
       <div className="card-container">
         <h2 className="card-title">Student Survey Link</h2>
@@ -40,11 +48,9 @@ const LinkGeneration = () => {
         </p>
         
         <div className="action-row">
-          <div className="url-box">
-            <Link to={`/survey/${id}`} className="survey-active-link">
-              {surveyUrl}
-            </Link>
-          </div>
+          <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
+            {surveyUrl}
+          </a>
 
           <div className="icon-group">
             <button className="icon-btn" onClick={handleCopy} title="Copy Link">
@@ -70,6 +76,7 @@ const LinkGeneration = () => {
           View Submission Status
         </button>
       </div>
+    </div>
     </div>
   );
 };
