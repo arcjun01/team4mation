@@ -169,7 +169,9 @@ const InstructorTeamSetup = () => {
           )}
 
           <div className="button-group">
-            <button type="button" className="btn-cancel">Cancel</button>
+            <button type="button" className="btn-cancel" onClick={() => navigate(-1)}>
+              Cancel
+            </button>
             <button type="submit" className="btn-create">Create Student Survey</button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
+import largeHeaderImg from '../assets/largeHeader.svg';
 
 const LinkGeneration = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const LinkGeneration = () => {
   const surveyUrl = `/team4mation/survey/${id}`;
 
   const handleEdit = () => {
-    navigate('/', { state: { formData } });
+    navigate('/setup', { state: { formData } });
   };
 
   const handleCopy = () => {
@@ -30,6 +31,14 @@ const LinkGeneration = () => {
   };
 
   return (
+    <div className="link-page-wrapper">
+      <header className="link-page-header">
+        <img
+          src={largeHeaderImg}
+          alt="Team4mation header"
+          className="link-page-header-image"
+        />
+      </header>
     <div className="link-page-container">
       <div className="card-container">
         <h2 className="card-title">Student Survey Link</h2>
@@ -67,6 +76,7 @@ const LinkGeneration = () => {
           View Submission Status
         </button>
       </div>
+    </div>
     </div>
   );
 };

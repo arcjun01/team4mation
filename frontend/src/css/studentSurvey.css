@@ -347,3 +347,23 @@ input[type="text"] {
     text-align: center;
     font-weight: 500;
 }
+
+.thank-you-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
+}
+
+.thank-you-header {
+    width: 100%;
+    max-width: 1440px;
+    align-self: center;
+}
+
+.thank-you-header-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: bottom;
+}
