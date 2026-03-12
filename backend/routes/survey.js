@@ -1,28 +1,34 @@
 import express from 'express';
 import { pool } from '../db.js';
-import crypto from 'crypto';
 
 const router = express.Router();
 
 const algorithm = 'aes-256-cbc';
 router.post("/", async (req, res) => {
-  const { fullName, survey_id, gender, gpa, availability_schedule } = req.body;
+  const { fullName, gender, gpa, commitment, availability_schedule } = req.body;
 
   if (!fullName) {
     return res.status(400).json({ success: false, error: "Full name is required" });
   }
 
+  if (!gender) {
+    return res.status(400).json({ success: false, error: "Gender is required" });
+  }
+
   const gpaNum = parseFloat(gpa ?? 2.0);
   if (isNaN(gpaNum) || gpaNum < 1.0 || gpaNum > 4.0) {
-    return res.status(400).json({ success: false, error: "GPA must be between 1.0 and 4.0" });
+    return res.status(400).json({ success: false, error: "GPA must be 1.0–4.0" });
+  }
+
+  if (!commitment) {
+    return res.status(400).json({ success: false, error: "Commitment is required" });
   }
 
   if (!availability_schedule) {
     return res.status(400).json({ success: false, error: "Availability schedule is required" });
   }
 
-  let connection;
-
+  const connection = await pool.getConnection();
   try {
     connection = await pool.getConnection();
 
@@ -53,32 +59,22 @@ router.post("/", async (req, res) => {
 
     await connection.beginTransaction();
 
-    // Insert survey submission
+    // Insert student record
     const [result] = await connection.execute(
-      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
-      [encryptedName, ivHex, gender, gpaNum, survey_id]
+      "INSERT INTO students (full_name, gender, gpa, commitment) VALUES (?, ?, ?, ?)",
+      [fullName, gender, gpaNum, commitment]
     );
 
     const studentId = result.insertId;
-    console.log("New survey response saved with id:", studentId);
+    console.log("Inserted student ID:", studentId);
 
-    // Parse availability (with safety)
-    let availabilityData = {};
-    try {
-      availabilityData = JSON.parse(availability_schedule);
-    } catch {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid availability schedule format"
-      });
-    }
-
+    // Parse availability schedule and insert into availability table
+    const availabilityData = JSON.parse(availability_schedule);
     const insertPromises = [];
 
     for (const [key, isSelected] of Object.entries(availabilityData)) {
       if (isSelected) {
         const [dayOfWeek, timeSlot] = key.split("-");
-
         insertPromises.push(
           connection.execute(
             "INSERT INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
@@ -88,15 +84,16 @@ router.post("/", async (req, res) => {
       }
     }
 
+    // Execute all availability inserts
     if (insertPromises.length > 0) {
       await Promise.all(insertPromises);
     }
 
+    // Commit transaction
     await connection.commit();
 
     res.status(201).json({
       success: true,
-      message: "Survey submitted!",
       student_id: studentId
     });
 
@@ -165,8 +162,12 @@ router.post("/reveal", async (req, res) => {
     res.json({ success: true, names: decryptedResults });
 
   } catch (err) {
-    console.error("Decryption Route Error:", err);
-    res.status(500).json({ success: false, error: "Failed to decrypt names" });
+    // Rollback on error
+    await connection.rollback();
+    console.error("Database Error:", err);
+    res.status(500).json({ success: false, error: "Database error" });
+  } finally {
+    connection.release();
   }
 });
 

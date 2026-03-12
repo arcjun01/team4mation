@@ -8,7 +8,7 @@ const InstructorTeamSetup = () => {
 
   const savedData = location.state?.formData;
 
-  // 1. Add 'useGpa' to your initial state
+  // 1. Initial state including 'useGpa'
   const [formData, setFormData] = useState(savedData || {
     courseName: '',
     classSize: '',
@@ -46,41 +46,41 @@ const InstructorTeamSetup = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const uniqueId = crypto.randomUUID(); 
+    e.preventDefault();
+    const uniqueId = crypto.randomUUID(); 
 
-  // coerce numbers and handle optional minSize
-  const payload = {
-    uniqueId,
-    courseName: formData.courseName,
-    classSize: formData.classSize !== '' ? parseInt(formData.classSize, 10) : null,
-    maxSize: formData.maxSize !== '' ? parseInt(formData.maxSize, 10) : null,
-    minSize: formData.minSize !== '' ? parseInt(formData.minSize, 10) : null,
-    useGpa: formData.useGpa ? 1 : 0,
-    prevCourse: formData.prevCourse || null,
-    // Include the salt for the database
-    encryptionSalt: generatedKey
-  };
+    // Coerce numbers and handle optional fields
+    const payload = {
+      uniqueId,
+      courseName: formData.courseName,
+      classSize: formData.classSize !== '' ? parseInt(formData.classSize, 10) : null,
+      maxSize: formData.maxSize !== '' ? parseInt(formData.maxSize, 10) : null,
+      minSize: formData.minSize !== '' ? parseInt(formData.minSize, 10) : null,
+      useGpa: formData.useGpa ? 1 : 0,
+      prevCourse: formData.prevCourse || null,
+      // Include the salt/key for the database encryption process
+      encryptionSalt: generatedKey
+    };
 
-  try {
-    const response = await fetch('http://localhost:3001/api/config/save-setup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const response = await fetch('http://localhost:3001/api/config/save-setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    if (response.ok) {
-      console.log("Configuration Saved to DB");
-      navigate(`/generate-link/${uniqueId}`);
-    } else {
-      const errorInfo = await response.json().catch(() => ({}));
-      console.error("Save failed:", errorInfo);
-      alert("Failed to save configuration: " + (errorInfo.error || response.statusText));
+      if (response.ok) {
+        console.log("Configuration Saved to DB");
+        navigate(`/generate-link/${uniqueId}`, { state: { formData } });
+      } else {
+        const errorInfo = await response.json().catch(() => ({}));
+        console.error("Save failed:", errorInfo);
+        alert("Failed to save configuration: " + (errorInfo.error || response.statusText));
+      }
+    } catch (error) {
+      console.error("Error connecting to server:", error);
     }
-  } catch (error) {
-    console.error("Error connecting to server:", error);
-  }
-};
+  };
 
   return (
     <div className="setup-wrapper">
@@ -228,11 +228,17 @@ const InstructorTeamSetup = () => {
           </div>
 
           <div className="button-group">
-            <button type="button" className="btn-cancel">Cancel</button>
+            <button 
+              type="button" 
+              className="btn-cancel" 
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </button>
             <button 
               type="submit" 
               className="btn-create"
-              disabled={!hasSavedKey} // Button disabled until key confirmation is checked
+              disabled={!hasSavedKey} 
             >
               Create Student Survey
             </button>
