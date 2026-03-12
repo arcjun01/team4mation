@@ -5,8 +5,6 @@ import crypto from 'crypto';
 const router = express.Router();
 
 const algorithm = 'aes-256-cbc';
-const secretKey = Buffer.from('vperysecretkey32charcheckdigital', 'utf8');
-
 router.post("/", async (req, res) => {
   const { fullName, survey_id, gender, gpa, availability_schedule } = req.body;
 
@@ -28,13 +26,26 @@ router.post("/", async (req, res) => {
   try {
     connection = await pool.getConnection();
 
+    // Fetch the encryption_salt for this specific survey
+    const [config] = await connection.execute(
+        "SELECT encryption_salt FROM survey_configurations WHERE id = ?",
+        [survey_id]
+    );
+
+    if (!config.length || !config[0].encryption_salt) {
+        return res.status(400).json({ success: false, error: "Survey configuration or encryption salt not found" });
+    }
+
+    // Use the salt stored in the DB as the encryption key
+    const currentSecretKey = Buffer.from(config[0].encryption_salt.substring(0, 32), 'utf8');
+
     console.log("--- Incoming Submission ---");
     console.log("Plain-text Name:", fullName);
     console.log("Target Survey ID:", survey_id);
 
     // Encrypt name with unique IV
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+    const cipher = crypto.createCipheriv(algorithm, currentSecretKey, iv);
 
     let encryptedName = cipher.update(fullName, "utf8", "hex");
     encryptedName += cipher.final("hex");
@@ -112,8 +123,9 @@ router.post("/", async (req, res) => {
 router.post("/reveal", async (req, res) => {
   const { decryptionKey, surveyId } = req.body;
 
-  if (decryptionKey !== 'vperysecretkey32charcheckdigital') {
-    return res.status(401).json({ success: false, error: "Invalid Decryption Key" });
+  // Validate key length (must be 32 chars for aes-256)
+  if (!decryptionKey || decryptionKey.length !== 32) {
+    return res.status(401).json({ success: false, error: "Invalid Decryption Key Length" });
   }
 
   try {
@@ -122,11 +134,14 @@ router.post("/reveal", async (req, res) => {
       [surveyId]
     );
 
+    // Convert the instructor's key into a Buffer
+    const instructorKey = Buffer.from(decryptionKey, 'utf8');
+
     const decryptedResults = rows.map(row => {
       try {
         const decipher = crypto.createDecipheriv(
           algorithm,
-          secretKey,
+          instructorKey,
           Buffer.from(row.iv, 'hex')
         );
 
@@ -140,7 +155,7 @@ router.post("/reveal", async (req, res) => {
         };
       } catch (decryptionError) {
         console.error("Row decryption failed:", decryptionError);
-        return { name: "Error Decrypting", gender: row.gender, gpa: row.gpa };
+        return { name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
       }
     });
 
