@@ -9,7 +9,7 @@ const LinkGeneration = () => {
   const location = useLocation();
   
   const formData = location.state?.formData;
-  const surveyUrl = `/team4mation/survey/${id}`;
+  const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
 
   const handleEdit = () => {
     navigate('/setup', { state: { formData } });
