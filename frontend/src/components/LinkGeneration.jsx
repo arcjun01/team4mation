@@ -27,7 +27,7 @@ const LinkGeneration = () => {
   };
 
   const handleViewStatus = () => {
-    navigate(`/instructor/decrypt/${id}`);
+    navigate(`/survey-submissions/${id}`);
   };
 
   return (

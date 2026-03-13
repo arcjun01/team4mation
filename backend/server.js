@@ -28,22 +28,22 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             return res.status(404).json({ error: "Survey configuration not found" });
         }
 
-        const [students] = await pool.execute(
-            "SELECT full_name FROM students LIMIT ?",
-            [config[0].class_size || 100]
+        const [submissions] = await pool.execute(
+            "SELECT COUNT(*) as count FROM student_survey_entries WHERE survey_id = ?",
+            [surveyId]
         );
 
         const classSize = config[0].class_size || 0;
         const status = config[0].status || 'open';
-        const submissions = students.length;
-        const pending = Math.max(0, classSize - submissions);
+        const submissionCount = submissions[0].count || 0;
+        const pending = Math.max(0, classSize - submissionCount);
 
         res.json({
             classSize,
-            submissions,
+            submissions: submissionCount,
             pending,
             status,
-            studentList: students ? students.map(s => s.full_name) : []
+            studentList: []
         });
     } catch (err) {
         console.error("Stats Error:", err.message);

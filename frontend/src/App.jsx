@@ -17,8 +17,8 @@ function App() {
           <Route path="/setup" element={<><Header /><InstructorTeamSetup /></>} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
           <Route path="/survey/:id" element={<><Header /><StudentSurvey /></>} />
+          <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
-          <Route path="/survey-submissions" element={<SurveySubmissions />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
