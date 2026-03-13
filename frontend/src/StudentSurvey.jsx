@@ -15,11 +15,11 @@ export default function StudentSurvey() {
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
   const [gpa, setGpa] = useState(2.0);
-  const [gpaError, setGpaError] = useState("");
   const [availability, setAvailability] = useState({});
   const [commitment, setCommitment] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({});
   
   const [surveyConfig, setSurveyConfig] = useState(null);
   const [loadingConfig, setLoadingConfig] = useState(true);
@@ -58,30 +58,40 @@ export default function StudentSurvey() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!fullName) {
-      setMessage("Please enter your full name before submitting.");
-      return;
+    const newErrors = {};
+
+    // Validate fullName
+    if (!fullName.trim()) {
+      newErrors.fullName = "Please enter your full name.";
     }
 
+    // Validate gender
     if (!gender) {
-      setMessage("Please select a gender before submitting.");
-      return;
+      newErrors.gender = "Please select a gender.";
     }
 
-    // Only validate GPA if it's required
-    if (surveyConfig?.useGpa && (gpaError || gpa < 1.0 || gpa > 4.0)) {
-      setMessage("Please enter a valid GPA between 1.0 and 4.0.");
-      return;
+    // Validate GPA if it's required
+    if (surveyConfig?.useGpa) {
+      if (!gpa || gpa < 1.0 || gpa > 4.0) {
+        newErrors.gpa = "Please enter a valid GPA between 1.0 and 4.0.";
+      }
     }
 
+    // Validate commitment
     if (!commitment) {
-      setMessage("Please select your weekly commitment hours before submitting.");
-      return;
+      newErrors.commitment = "Please select a commitment level.";
     }
 
+    // Validate availability
     const selectedSlots = Object.keys(availability).filter(key => availability[key]);
     if (selectedSlots.length === 0) {
-      setMessage("Please select at least one time slot for availability.");
+      newErrors.availability = "Please select at least one time slot.";
+    }
+
+    setErrors(newErrors);
+
+    // If there are errors, don't submit
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -129,6 +139,13 @@ export default function StudentSurvey() {
     setShowConfirmation(false);
   };
 
+  const clearError = (field) => {
+    setErrors(prev => ({
+      ...prev,
+      [field]: ""
+    }));
+  };
+
   if (loadingConfig) {
     return (
       <div className="survey-page">
@@ -162,28 +179,39 @@ export default function StudentSurvey() {
           <FullNameQuestion 
             fullName={fullName}
             setFullName={setFullName}
+            error={errors.fullName}
+            onClear={() => clearError('fullName')}
           />
 
-          <GenderQuestion gender={gender} setGender={setGender} />
+          <GenderQuestion 
+            gender={gender} 
+            setGender={setGender}
+            error={errors.gender}
+            onClear={() => clearError('gender')}
+          />
 
           {surveyConfig.useGpa && (
             <GpaQuestion 
               gpa={gpa} 
-              gpaError={gpaError} 
-              setGpa={setGpa} 
-              setGpaError={setGpaError}
+              setGpa={setGpa}
               prevCourse={surveyConfig.prevCourse}
+              error={errors.gpa}
+              onClear={() => clearError('gpa')}
             />
           )}
 
           <CommitmentQuestion 
             commitment={commitment}
             setCommitment={setCommitment}
+            error={errors.commitment}
+            onClear={() => clearError('commitment')}
           />
 
           <AvailabilityQuestion 
             availability={availability}
             setAvailability={setAvailability}
+            error={errors.availability}
+            onClear={() => clearError('availability')}
           />
 
           {message && (

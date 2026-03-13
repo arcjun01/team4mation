@@ -23,25 +23,7 @@ export default function StudentSurvey() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!fullName) {
-      setMessage("Please enter your full name before submitting.");
-      return;
-    }
-
-    if (!gender) {
-      setMessage("Please select a gender before submitting.");
-      return;
-    }
-
-    if (gpaError || gpa < 1.0 || gpa > 4.0) {
-      setMessage("Please enter a valid GPA between 1.0 and 4.0.");
-      return;
-    }
-
-    if (!commitment) {
-      setMessage("Please select a commitment level before submitting.");
-      return;
-    }
+    
 
     const selectedSlots = Object.keys(availability).filter(
       (key) => availability[key]

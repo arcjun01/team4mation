@@ -1,20 +1,15 @@
 import React from "react";
 
-export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError, prevCourse }) {
+export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear }) {
   const handleGpaChange = (value) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) {
       setGpa("");
-      setGpaError("");
       return;
     }
 
-    if (numValue < 1.0 || numValue > 4.0) {
-      setGpaError("GPA must be between 1.0 and 4.0");
-    } else {
-      setGpaError("");
-    }
     setGpa(numValue);
+    if (error) onClear();
   };
 
   const courseDisplay = prevCourse || "SDEV 344";
@@ -46,7 +41,7 @@ export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError, prevCo
       <div style={{ fontSize: "14px", color: "#666", fontWeight: "500", marginTop: "8px" }}>
         {courseDisplay} GPA
       </div>
-      {gpaError && <div className="gpa-error">{gpaError}</div>}
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

@@ -184,6 +184,13 @@ span {
     margin-top: 4px;
 }
 
+.error-message {
+    font-size: 14px;
+    color: #dc2626;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
 .gpa-input {
     background-color: #B2E1CB;
     border: none;
