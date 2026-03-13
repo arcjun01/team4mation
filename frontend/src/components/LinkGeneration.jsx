@@ -33,43 +33,43 @@ const LinkGeneration = () => {
   return (
     <div className="link-page-wrapper">
       <Header variant="large" />
-    <div className="link-page-container">
-      <div className="card-container">
-        <h2 className="card-title">Student Survey Link</h2>
-        
-        <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-          Copy the link or click the mail icon to share it with your students via Outlook.
-        </p>
-        
-        <div className="action-row">
-          <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
-            {surveyUrl}
-          </a>
+      <div className="link-page-container top-gap">
+        <div className="card-container">
+          <h2 className="card-title">Student Survey Link</h2>
+          
+          <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
+            Copy the link or click the mail icon to share it with your students via Outlook.
+          </p>
+          
+          <div className="action-row">
+            <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
+              {surveyUrl}
+            </a>
 
-          <div className="icon-group">
-            <button className="icon-btn" onClick={handleCopy} title="Copy Link">
-              📋
-            </button>
-            <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
-              ✉️
-            </button>
+            <div className="icon-group">
+              <button className="icon-btn" onClick={handleCopy} title="Copy Link">
+                📋
+              </button>
+              <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
+                ✉️
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
-        <div className="button-group">
-          <button className="button" onClick={handleEdit}>
-            Edit Survey
-          </button>
+        
+          <div className="button-group">
+            <button className="button" onClick={handleEdit}>
+              Edit Survey
+            </button>
 
-          <button 
-            className="button" 
-            onClick={handleViewStatus}
-          >
-            View Submission Status
-          </button>
-        </div>
-    </div>
+            <button 
+              className="button" 
+              onClick={handleViewStatus}
+            >
+              View Submission Status
+            </button>
+          </div>
+      </div>
     </div>
   );
 };
