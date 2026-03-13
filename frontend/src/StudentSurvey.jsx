@@ -176,6 +176,7 @@ export default function StudentSurvey() {
       <Header variant="large" />
       <div className="survey-page">
       <div className="survey-card">
+        <h1>{surveyTitle}</h1>
         <form onSubmit={handleSubmit} className="survey-form">
           <FullNameQuestion 
             fullName={fullName}
