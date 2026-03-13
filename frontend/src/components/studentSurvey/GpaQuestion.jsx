@@ -39,7 +39,7 @@ export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError, prevCo
         step="0.1"
         min="1.0"
         max="4.0"
-        value={gpa ? parseFloat(gpa).toFixed(1) : ""}
+        value={gpa ? (Number.isInteger(gpa) ? gpa : gpa.toFixed(1)) : ""}
         onChange={(e) => handleGpaChange(e.target.value)}
         className="gpa-input"
       />

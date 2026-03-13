@@ -13,7 +13,7 @@ export default function StudentSurvey() {
 
   const [fullName, setFullName] = useState("");
   const [gender, setGender] = useState("");
-  const [gpa, setGpa] = useState(2.0);
+  const [gpa, setGpa] = useState(2.5);
   const [gpaError, setGpaError] = useState("");
   const [commitment, setCommitment] = useState("");
   const [availability, setAvailability] = useState({});
