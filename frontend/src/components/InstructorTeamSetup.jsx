@@ -230,14 +230,14 @@ const InstructorTeamSetup = () => {
           <div className="button-group">
             <button 
               type="button" 
-              className="btn-cancel" 
+              className="button"
               onClick={() => navigate(-1)}
             >
               Cancel
             </button>
             <button 
               type="submit" 
-              className="btn-create"
+              className="button"
               disabled={!hasSavedKey} 
             >
               Create Student Survey

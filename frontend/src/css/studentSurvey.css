@@ -155,29 +155,6 @@ span {
     line-height: 1.5;
 }
 
-.survey-submit {
-    background-color: #A8C4C0;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 36px;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 15px;
-    width: 250px;
-    transition: all 0.2s ease;
-}
-
-.survey-submit:hover {
-    background-color: #90a9a5;
-    transform: translateY(-1px);
-}
-
-.survey-submit:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
-
 .gpa-error {
     font-size: 14px;
     color: #dc2626;

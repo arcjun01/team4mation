@@ -222,7 +222,7 @@ export default function StudentSurvey() {
             <button
               type="submit"
               disabled={loading}
-              className="survey-submit"
+              className="button"
             >
               {loading ? "Submitting..." : "Submit Survey"}
             </button>

@@ -64,14 +64,13 @@ const LinkGeneration = () => {
       </div>
       
       <div className="footer-action-row">
-        <button className="footer-btn" onClick={handleEdit}>
+        <button className="button" onClick={handleEdit}>
           Edit Survey
         </button>
 
         <button 
-          className="footer-btn" 
+          className="button" 
           onClick={handleViewStatus}
-          style={{ backgroundColor: '#a3c1ad', fontWeight: 'bold' }}
         >
           View Submission Status
         </button>

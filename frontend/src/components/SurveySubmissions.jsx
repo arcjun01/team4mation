@@ -76,9 +76,8 @@ const SurveySubmissions = () => {
                                             {stats.submissions} students have submitted, but names are encrypted.
                                         </p>
                                         <button 
-                                            className="footer-btn" 
+                                            className="button" 
                                             onClick={() => navigate(`/instructor/decrypt/${surveyId}`)}
-                                            style={{ backgroundColor: '#b2dfdb', color: '#004d40' }}
                                         >
                                             Decrypt & View Names
                                         </button>
@@ -127,7 +126,7 @@ const SurveySubmissions = () => {
                     </div>
 
                     <div className="button-tray" style={{ marginTop: '30px' }}>
-                        <button className="btn-secondary" onClick={() => navigate(`/generate-link/${surveyId}`)}>
+                        <button className="button" onClick={() => navigate(`/generate-link/${surveyId}`)}>
                             Back to Link
                         </button>
                     </div>
