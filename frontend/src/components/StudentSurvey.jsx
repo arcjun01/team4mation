@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import FullNameQuestion from "./FullNameQuestion";
 import GenderQuestion from "./GenderQuestion";
 import GpaQuestion from "./GpaQuestion";
+import CommitmentQuestion from "./studentSurvey/CommitmentQuestion";
 import AvailabilityQuestion from "./AvailabilityQuestion";
 
 export default function StudentSurvey() {
@@ -14,6 +15,7 @@ export default function StudentSurvey() {
   const [gender, setGender] = useState("");
   const [gpa, setGpa] = useState(2.0);
   const [gpaError, setGpaError] = useState("");
+  const [commitment, setCommitment] = useState("");
   const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -33,6 +35,11 @@ export default function StudentSurvey() {
 
     if (gpaError || gpa < 1.0 || gpa > 4.0) {
       setMessage("Please enter a valid GPA between 1.0 and 4.0.");
+      return;
+    }
+
+    if (!commitment) {
+      setMessage("Please select a commitment level before submitting.");
       return;
     }
 
@@ -58,8 +65,9 @@ export default function StudentSurvey() {
           fullName,
           gender,
           gpa,
+          commitment,
           availability_schedule: JSON.stringify(availability),
-          survey_id: id,
+          surveyId: id,
         }),
       });
 
@@ -77,6 +85,7 @@ export default function StudentSurvey() {
       setGender("");
       setGpa(2.0);
       setGpaError("");
+      setCommitment("");
       setAvailability({});
     } catch (err) {
       console.error(err);
@@ -108,6 +117,11 @@ export default function StudentSurvey() {
             gpaError={gpaError}
             setGpa={setGpa}
             setGpaError={setGpaError}
+          />
+
+          <CommitmentQuestion
+            commitment={commitment}
+            setCommitment={setCommitment}
           />
 
           <AvailabilityQuestion

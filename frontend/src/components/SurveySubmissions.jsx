@@ -127,7 +127,7 @@ const SurveySubmissions = () => {
                     </div>
 
                     <div className="button-tray" style={{ marginTop: '30px' }}>
-                        <button className="btn-secondary" onClick={() => navigate(-1)}>
+                        <button className="btn-secondary" onClick={() => navigate(`/generate-link/${surveyId}`)}>
                             Back to Link
                         </button>
                     </div>

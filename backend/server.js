@@ -28,22 +28,22 @@ app.get("/api/survey/stats/:surveyId", async (req, res) => {
             return res.status(404).json({ error: "Survey configuration not found" });
         }
 
-        const [students] = await pool.execute(
-            "SELECT full_name FROM students LIMIT ?",
-            [config[0].class_size || 100]
+        const [submissions] = await pool.execute(
+            "SELECT COUNT(*) as count FROM student_survey_entries WHERE survey_id = ?",
+            [surveyId]
         );
 
         const classSize = config[0].class_size || 0;
         const status = config[0].status || 'open';
-        const submissions = students.length;
-        const pending = Math.max(0, classSize - submissions);
+        const submissionCount = submissions[0].count || 0;
+        const pending = Math.max(0, classSize - submissionCount);
 
         res.json({
             classSize,
-            submissions,
+            submissions: submissionCount,
             pending,
             status,
-            studentList: students ? students.map(s => s.full_name) : []
+            studentList: []
         });
     } catch (err) {
         console.error("Stats Error:", err.message);
@@ -78,12 +78,13 @@ app.get("/api/config/:surveyId", async (req, res) => {
 // Config Save Endpoint
 app.post("/api/config/save-setup", async (req, res) => {
     console.log("POST request received at /api/config/save-setup");
-    const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse } = req.body;
+
+    const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse, encryptionSalt } = req.body;
 
     try {
         await pool.execute(
-            "INSERT INTO survey_configurations (id, course_name, class_size, min_size, max_size, use_gpa, prev_course) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse || null]
+            "INSERT INTO survey_configurations (id, course_name, class_size, min_size, max_size, use_gpa, prev_course, encryption_salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse || null, encryptionSalt || null]
         );
         console.log("Success: Saved to DB");
         res.status(201).json({ success: true });

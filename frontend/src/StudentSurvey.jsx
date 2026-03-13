@@ -106,6 +106,7 @@ export default function StudentSurvey() {
           gender, 
           gpa: surveyConfig?.useGpa ? gpa : null,
           commitment,
+          surveyId,
           availability_schedule: JSON.stringify(availability)
         }),
       });
