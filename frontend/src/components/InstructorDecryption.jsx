@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/studentSurvey.css';
+import Header from './Header';
 
 function InstructorDecryption() {
     const [decryptionKey, setDecryptionKey] = useState("");
@@ -44,7 +45,9 @@ function InstructorDecryption() {
 };
 
     return (
-        <div className="survey-page">
+        <>
+            <Header variant="page" />
+            <div className="survey-page">
             <div className="survey-wrapper">
                 <form className="survey-card" onSubmit={handleDecrypt}>
                     <h2 className="survey-title">View Survey Submissions</h2>
@@ -80,6 +83,7 @@ function InstructorDecryption() {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

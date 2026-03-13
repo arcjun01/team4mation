@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/SurveySubmissions.css';
+import Header from './Header';
 
 const SurveySubmissions = () => {
     const { id: urlId } = useParams();
@@ -52,12 +53,12 @@ const SurveySubmissions = () => {
 };
 
     return (
-        <div className="page-wrapper">
+        <>
+            <Header variant="page" />
+            <div className="page-wrapper">
             <div className="main-viewport">
                 <div className="content-container">
-                    <div className="title-card">
-                        <h1>{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1>
-                    </div>
+                    <h1 className="title">{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1>
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
@@ -133,6 +134,7 @@ const SurveySubmissions = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

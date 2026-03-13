@@ -6,6 +6,7 @@ import GpaQuestion from "./components/studentSurvey/GpaQuestion";
 import AvailabilityQuestion from "./components/studentSurvey/AvailabilityQuestion";
 import CommitmentQuestion from "./components/studentSurvey/CommitmentQuestion";
 import ConfirmationModal from "./components/ConfirmationModal";
+import Header from "./components/Header";
 import "./css/studentSurvey.css";
 
 export default function StudentSurvey() {
@@ -171,10 +172,10 @@ export default function StudentSurvey() {
     : "Group Formation Survey";
 
   return (
-    <div className="survey-page">
+    <>
+      <Header variant="large" />
+      <div className="survey-page">
       <div className="survey-card">
-        <h1 className="title">{surveyTitle}</h1>
-
         <form onSubmit={handleSubmit} className="survey-form">
           <FullNameQuestion 
             fullName={fullName}
@@ -236,5 +237,6 @@ export default function StudentSurvey() {
         onCancel={handleCancel}
       />
     </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
-import largeHeaderImg from '../assets/largeHeader.svg';
+import Header from './Header';
 
 const LinkGeneration = () => {
   const { id } = useParams();
@@ -32,13 +32,7 @@ const LinkGeneration = () => {
 
   return (
     <div className="link-page-wrapper">
-      <header className="link-page-header">
-        <img
-          src={largeHeaderImg}
-          alt="Team4mation header"
-          className="link-page-header-image"
-        />
-      </header>
+      <Header variant="large" />
     <div className="link-page-container">
       <div className="card-container">
         <h2 className="card-title">Student Survey Link</h2>

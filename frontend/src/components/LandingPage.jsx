@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/LandingPage.css';
-import largeHeaderImg from '../assets/largeHeader.svg';
+import Header from './Header';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -11,13 +11,7 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
-      <header className="landing-header">
-        <img
-          src={largeHeaderImg}
-          alt="Team4mation header"
-          className="landing-header-image"
-        />
-      </header>
+      <Header variant="large" />
 
       <main className="landing-main">
         <section className="landing-card">

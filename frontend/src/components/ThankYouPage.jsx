@@ -1,17 +1,11 @@
 import React from 'react';
 import '../css/studentSurvey.css';
-import largeHeaderImg from '../assets/largeHeader.svg';
+import Header from './Header';
 
 const ThankYouPage = () => {
   return (
     <div className="thank-you-page">
-      <header className="thank-you-header">
-        <img
-          src={largeHeaderImg}
-          alt="Team4mation header"
-          className="thank-you-header-image"
-        />
-      </header>
+      <Header variant="large" />
       <div className="survey-page">
       <div className="survey-card">
         <h1 className="survey-title">Team Availability Match</h1>

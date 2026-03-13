@@ -1,6 +1,5 @@
 /* GLOBAL WRAPPERS */
 .page-wrapper {
-    background: #f9fafb;
     min-height: 100vh;
     width: 100%;
     display: flex;
@@ -19,20 +18,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-/* TITLE SECTION */
-.title-card {
-    background: white;
-    padding: 25px 40px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.title-card h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #111827;
 }
 
 /* MAIN CONTENT LAYOUT */

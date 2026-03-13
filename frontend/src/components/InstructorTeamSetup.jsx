@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
+import Header from './Header';
 
 const InstructorTeamSetup = () => {
   const navigate = useNavigate();
@@ -83,7 +84,9 @@ const InstructorTeamSetup = () => {
   };
 
   return (
-    <div className="setup-wrapper">
+    <>
+      <Header variant="page" />
+      <div className="setup-wrapper">
       <div className="setup-container">
         <h1 className="title">Setting Up Student Surveys</h1>
 
@@ -244,6 +247,7 @@ const InstructorTeamSetup = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
