@@ -5,7 +5,8 @@
 }
 
 .setup-container {
-    max-width: 800px;
+    padding-top: 30px;
+    max-width: 880px;
     margin: 0 auto;
     font-family: sans-serif;
 }
@@ -119,12 +120,6 @@ label {
 
 
 /* Buttons */
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
 .btn-cancel {
     background-color: #b2dfdb;
     color: #2c3e50;

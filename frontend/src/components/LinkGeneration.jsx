@@ -63,18 +63,18 @@ const LinkGeneration = () => {
         </div>
       </div>
       
-      <div className="footer-action-row">
-        <button className="button" onClick={handleEdit}>
-          Edit Survey
-        </button>
+        <div className="button-group">
+          <button className="button" onClick={handleEdit}>
+            Edit Survey
+          </button>
 
-        <button 
-          className="button" 
-          onClick={handleViewStatus}
-        >
-          View Submission Status
-        </button>
-      </div>
+          <button 
+            className="button" 
+            onClick={handleViewStatus}
+          >
+            View Submission Status
+          </button>
+        </div>
     </div>
     </div>
   );

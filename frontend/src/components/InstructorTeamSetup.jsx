@@ -94,7 +94,7 @@ const InstructorTeamSetup = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="setup-card">
+          <div className="question-container">
             <label htmlFor="courseName">For which course is this team set-up for?</label>
             <input 
               id="courseName"
@@ -108,7 +108,7 @@ const InstructorTeamSetup = () => {
             />
           </div>
 
-          <div className="setup-card">
+          <div className="question-container">
             <label htmlFor="classSize">Enter or adjust class size</label>
             <input 
               id="classSize"
@@ -122,7 +122,7 @@ const InstructorTeamSetup = () => {
             />
           </div>
 
-          <div className="setup-card">
+          <div className="question-container">
             <label>Enter or adjust group size</label>
             <div className="size-inputs">
               <div className="input-group">
@@ -183,7 +183,7 @@ const InstructorTeamSetup = () => {
           )}
 
           {/* Secure Data Access Key Section */}
-          <div className="setup-card">
+          <div className="question-container">
             <label>Secure Data Access Key</label>
             <p className="info-card p" style={{ marginBottom: '15px' }}>
               Generate a key to decrypt student names later.

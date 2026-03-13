@@ -127,14 +127,6 @@ span {
     margin-top: 20px;
 }
 
-.question-container {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 .question-title {
     font-size: 20px;
     font-weight: 600;
