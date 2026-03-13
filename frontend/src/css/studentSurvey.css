@@ -27,7 +27,6 @@ span {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f9fafb;
     width: 100%;
     padding-top: 10px;
     margin: 0;
@@ -35,21 +34,10 @@ span {
 }
 
 .survey-card {
-    background: #f9fafb;
     border-radius: 16px;
     box-shadow: none;
     margin: 65px;
     width: 880px;
-}
-
-.survey-title {
-    background: white;
-    font-weight: 100;
-    padding: 40px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .results-layout {

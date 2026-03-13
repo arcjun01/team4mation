@@ -85,9 +85,7 @@ const InstructorTeamSetup = () => {
   return (
     <div className="setup-wrapper">
       <div className="setup-container">
-        <div className="setup-card header-card">
-          <h1 className="setup-title">Setting Up Student Surveys</h1>
-        </div>
+        <h1 className="title">Setting Up Student Surveys</h1>
 
         <div className="setup-card info-card">
           <p>Once you complete this setup, a link to a customized student survey will be generated.</p>

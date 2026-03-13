@@ -173,7 +173,7 @@ export default function StudentSurvey() {
   return (
     <div className="survey-page">
       <div className="survey-card">
-        <h1 className="survey-title">{surveyTitle}</h1>
+        <h1 className="title">{surveyTitle}</h1>
 
         <form onSubmit={handleSubmit} className="survey-form">
           <FullNameQuestion 
