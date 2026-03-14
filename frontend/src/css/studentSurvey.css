@@ -332,28 +332,3 @@ span {
     font-weight: 500;
 }
 
-.thank-you-page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #f9fafb;
-    position: relative;
-}
-
-.thank-you-header {
-    width: 100%;
-    max-width: 1440px;
-    align-self: center;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-}
-
-.thank-you-header-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    vertical-align: bottom;
-}

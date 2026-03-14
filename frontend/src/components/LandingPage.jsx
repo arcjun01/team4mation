@@ -14,8 +14,8 @@ const LandingPage = () => {
       <Header variant="large" />
 
       <main className="landing-main">
-        <section className="landing-card">
-          <h1 className="landing-title">Smart Team Formation</h1>
+        <section className="landing-card top-gap-large">
+          <div className="question-container "><h1>Smart Team Formation</h1></div>
           <div className="landing-content-card">
             <button
               className="landing-primary-button"

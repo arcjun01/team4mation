@@ -11,10 +11,10 @@ const ThankYouPage = () => {
         <div className='question-container '><h1>Team Availability Match</h1></div>
         
         <div className="thank-you-card">
-          <p style={{ fontSize: '18px', color: '#333', marginBottom: '10px' }}>
+          <p className="thank-you-message">
             Thank you for completing the survey
           </p>
-          <p style={{ fontSize: '18px', color: '#333' }}>
+          <p className="thank-you-message">
             Your instructor will share the team formation results soon
           </p>
         </div>
