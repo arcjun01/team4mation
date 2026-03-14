@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../css/studentSurvey.css';
 import Header from './Header';
 
 function InstructorDecryption() {

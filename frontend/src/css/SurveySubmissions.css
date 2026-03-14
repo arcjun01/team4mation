@@ -14,16 +14,30 @@
     width: 880px;
 }
 
-/* MAIN CONTENT LAYOUT */
+.survey-card {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    width: 880px;
+}
+
+.results-layout {
+    display: flex;
+    justify-content: space-between;
+    
+    gap: 30px;
+}
 
 /* LEFT SIDE: STUDENT LIST */
 .student-list-container {
     flex: 2; /* Takes up more space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: white;
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    min-height: 400px;
+    min-height: 350px;
 }
 
 .student-grid {
@@ -49,7 +63,7 @@
 /* RIGHT SIDE: THE GREEN STATS SIDEBAR */
 .stats-card-sidebar {
     flex: 1;
-    background-color: #d1fae5; /* Light green background */
+    background-color: #90db673b; /* Light green background */
     padding: 25px;
     border-radius: 16px;
     color: #065f46; /* Dark green text */
@@ -74,6 +88,46 @@
     font-weight: 700;
 }
 
+.student-name {
+    margin-bottom: 10px;
+}
+
+.decrypt-button {
+    background-color:#B2E1CB;
+    width: 60%; 
+    color: balck;
+    border: none;
+    border-radius: 6px; 
+    padding: 10px; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.decrypt-button:hover {
+    background-color: #90D5BA;
+}
+
+
+.close-survey-btn {
+    width: 100%; 
+    padding: 10px; 
+    background-color: #BEE0AC; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: black;
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-survey-btn:hover {
+    background-color: #7fb9508e;
+}
 /* FOOTER / BUTTONS */
 .button-tray {
     margin-top: 10px;

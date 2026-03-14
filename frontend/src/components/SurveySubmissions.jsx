@@ -71,12 +71,12 @@ const SurveySubmissions = () => {
                                         </p>
                                     ))
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                                    <div className="student-name" style={{ textAlign: 'center', padding: '20px' }}>
                                         <p style={{ color: '#666', marginBottom: '15px' }}>
                                             {stats.submissions} students have submitted, but names are encrypted.
                                         </p>
                                         <button 
-                                            className="button" 
+                                            className="decrypt-button" 
                                             onClick={() => navigate(`/instructor/decrypt/${surveyId}`)}
                                         >
                                             Decrypt & View Names
@@ -105,15 +105,6 @@ const SurveySubmissions = () => {
                                 <button 
                                     className="close-survey-btn" 
                                     onClick={handleCloseSurvey}
-                                    style={{ 
-                                        width: '100%', 
-                                        padding: '10px', 
-                                        backgroundColor: '#ff8a65', 
-                                        color: 'white',
-                                        border: 'none', 
-                                        borderRadius: '6px', 
-                                        cursor: 'pointer'
-                                    }}
                                 >
                                     Close Survey
                                 </button>

@@ -31,13 +31,6 @@ span {
     align-items: center;
 }
 
-.results-layout {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    margin-top: 20px;
-}
-
 .survey-question {
     font-size: 18px;
 }
@@ -125,7 +118,7 @@ span {
     line-height: 1.5;
 }
 
-.survey-card .gpa-info {
+.gpa-info {
     font-size: 1.1rem;
     margin-bottom: 25px;
     line-height: 1.5;
