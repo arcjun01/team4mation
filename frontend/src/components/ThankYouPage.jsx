@@ -1,25 +1,26 @@
 import React from 'react';
-import '../css/studentSurvey.css';
+import '../css/ThankYouPage.css';
 import Header from './Header';
 
 const ThankYouPage = () => {
   return (
-    <div className="thank-you-page">
+    <>
       <Header variant="large" />
-      <div className="survey-page">
-      <div className="survey-card">
-        <h1 className="survey-title">Team Availability Match</h1>
-        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+      <div className="thank-you-page">
+      <div className="thank-you-wrapper top-gap-large">
+        <div className='question-container '><h1>Team Availability Match</h1></div>
+        
+        <div className="thank-you-card">
           <p style={{ fontSize: '18px', color: '#333', marginBottom: '10px' }}>
-            Thank you for completing the survey.
+            Thank you for completing the survey
           </p>
           <p style={{ fontSize: '18px', color: '#333' }}>
-            Your instructor will share the team formation results soon.
+            Your instructor will share the team formation results soon
           </p>
         </div>
       </div>
       </div>
-    </div>
+    </>
   );
 };
 
