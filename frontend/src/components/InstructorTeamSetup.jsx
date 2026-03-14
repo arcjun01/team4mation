@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
 import Header from './Header';
+import ConfirmationModal from './ConfirmationModal';
 
 const InstructorTeamSetup = () => {
   const navigate = useNavigate();
@@ -24,11 +25,16 @@ const InstructorTeamSetup = () => {
   const [showKey, setShowKey] = useState(false);
   const [hasSavedKey, setHasSavedKey] = useState(false);
 
+  // Validation and confirmation states
+  const [errors, setErrors] = useState({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   // Function to generate a secure 32-character hex key
   const handleGenerateKey = () => {
     const randomKey = Array.from(crypto.getRandomValues(new Uint8Array(16)))
       .map(b => b.toString(16).padStart(2, '0')).join('');
     setGeneratedKey(randomKey);
+    clearError('key');
   };
 
   const handleChange = (e) => {
@@ -37,6 +43,7 @@ const InstructorTeamSetup = () => {
     // Handle checkbox separately
     if (type === 'checkbox') {
       setFormData({ ...formData, [name]: checked });
+      clearError(name);
       return;
     }
 
@@ -44,10 +51,77 @@ const InstructorTeamSetup = () => {
       if (parseInt(value) < 1) return;
     }
     setFormData({ ...formData, [name]: value });
+    clearError(name);
   };
 
-  const handleSubmit = async (e) => {
+  const clearError = (field) => {
+    setErrors(prev => ({
+      ...prev,
+      [field]: ""
+    }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+
+    // Validate courseName
+    if (!formData.courseName.trim()) {
+      newErrors.courseName = "Please enter a course name.";
+    }
+
+    // Validate classSize
+    if (!formData.classSize || parseInt(formData.classSize, 10) < 1) {
+      newErrors.classSize = "Please enter a valid class size.";
+    }
+
+    // Validate maxSize
+    if (!formData.maxSize || parseInt(formData.maxSize, 10) < 1) {
+      newErrors.maxSize = "Please enter a valid max group size.";
+    }
+
+    // Validate minSize if provided
+    if (formData.minSize && parseInt(formData.minSize, 10) < 1) {
+      newErrors.minSize = "Min size must be at least 1.";
+    }
+
+    // Validate that minSize <= maxSize
+    if (formData.minSize && formData.maxSize) {
+      const min = parseInt(formData.minSize, 10);
+      const max = parseInt(formData.maxSize, 10);
+      if (min > max) {
+        newErrors.minSize = "Min size cannot be greater than max size.";
+      }
+    }
+
+    // Validate useGpa - prevCourse is required if useGpa is true
+    if (formData.useGpa && !formData.prevCourse.trim()) {
+      newErrors.prevCourse = "Please enter the prerequisite course name.";
+    }
+
+    // Validate key generation and confirmation
+    if (!generatedKey) {
+      newErrors.key = "Please generate a decryption key.";
+    }
+
+    if (!hasSavedKey) {
+      newErrors.saveConfirm = "Please confirm that you have saved the decryption key.";
+    }
+
+    setErrors(newErrors);
+
+    // If there are errors, don't submit
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    // Show confirmation modal if all validations pass
+    setShowConfirmation(true);
+  };
+
+  const handleConfirm = async () => {
+    setShowConfirmation(false);
     const uniqueId = crypto.randomUUID(); 
 
     // Coerce numbers and handle optional fields
@@ -83,6 +157,10 @@ const InstructorTeamSetup = () => {
     }
   };
 
+  const handleCancel = () => {
+    setShowConfirmation(false);
+  };
+
   return (
     <>
       <Header variant="page" />
@@ -101,12 +179,12 @@ const InstructorTeamSetup = () => {
               id="courseName"
               className="input-field full-input"
               type="text" 
-              required
               name="courseName" 
               value={formData.courseName} 
               onChange={handleChange} 
               placeholder="e.g., SDEV 100"
             />
+            {errors.courseName && <div className="error-message">{errors.courseName}</div>}
           </div>
 
           <div className="question-container">
@@ -115,12 +193,12 @@ const InstructorTeamSetup = () => {
               id="classSize"
               className="input-field numeric-input"
               type="number" 
-              required
               name="classSize" 
               value={formData.classSize} 
               onChange={handleChange} 
               placeholder="20"
             />
+            {errors.classSize && <div className="error-message">{errors.classSize}</div>}
           </div>
 
           <div className="question-container">
@@ -142,7 +220,6 @@ const InstructorTeamSetup = () => {
                 <input 
                   className="input-field numeric-input"
                   type="number" 
-                  required
                   name="maxSize" 
                   placeholder="4" 
                   value={formData.maxSize} 
@@ -150,6 +227,8 @@ const InstructorTeamSetup = () => {
                 />
               </div>
             </div>
+            {errors.minSize && <div className="error-message">{errors.minSize}</div>}
+            {errors.maxSize && <div className="error-message">{errors.maxSize}</div>}
           </div>
 
           {/* Question 4: The Optional Checkbox */}
@@ -174,12 +253,12 @@ const InstructorTeamSetup = () => {
                 id="prevCourse"
                 className="input-field full-input"
                 type="text" 
-                required={formData.useGpa} 
                 name="prevCourse" 
                 value={formData.prevCourse} 
                 onChange={handleChange} 
                 placeholder="e.g., SDEV 90"
               />
+              {errors.prevCourse && <div className="error-message">{errors.prevCourse}</div>}
             </div>
           )}
 
@@ -218,14 +297,19 @@ const InstructorTeamSetup = () => {
                     type="checkbox" 
                     id="saveConfirm" 
                     checked={hasSavedKey} 
-                    onChange={(e) => setHasSavedKey(e.target.checked)} 
+                    onChange={(e) => {
+                      setHasSavedKey(e.target.checked);
+                      if (e.target.checked) clearError('saveConfirm');
+                    }} 
                   />
-                  <label htmlFor="saveConfirm" style={{ color: '#d9534f', fontWeight: 'bold' }}>
+                  <label htmlFor="saveConfirm" style={{ color: '#60a328', fontWeight: 'bold' }}>
                     I have saved this key. I understand it cannot be recovered.
                   </label>
                 </div>
+                {errors.saveConfirm && <div className="error-message">{errors.saveConfirm}</div>}
               </div>
             )}
+            {errors.key && <div className="error-message">{errors.key}</div>}
           </div>
 
           <div className="button-group">
@@ -239,7 +323,6 @@ const InstructorTeamSetup = () => {
             <button 
               type="submit" 
               className="button"
-              disabled={!hasSavedKey} 
             >
               Create Student Survey
             </button>
@@ -247,6 +330,12 @@ const InstructorTeamSetup = () => {
         </form>
       </div>
     </div>
+
+    <ConfirmationModal 
+      isOpen={showConfirmation}
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
     </>
   );
 };

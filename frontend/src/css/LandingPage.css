@@ -58,7 +58,7 @@
   width: 100%;
   max-width: 880px;
   background-color: #ffffff;
-  border-radius: 18px;
+  border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   padding: 120px 40px;
   display: flex;
@@ -68,7 +68,7 @@
 
 .landing-primary-button {
   padding: 14px 80px;
-  border-radius: 18px;
+  border-radius: 10px;
   border: none;
   background-color: #a4beb7;
   color: #000;
