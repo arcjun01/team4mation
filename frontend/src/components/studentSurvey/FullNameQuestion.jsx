@@ -1,17 +1,19 @@
 import React from "react";
 
-export default function FullNameQuestion({ fullName, setFullName }) {
+export default function FullNameQuestion({ fullName, setFullName, error, onClear }) {
   return (
     <div className="question-container">
-      <label className="gpa-question">What is your full name?</label>
+      <h2 className="question-title">What is your full name?</h2>
       <input
         type="text"
         className="full-name-input"
-        placeholder="Enter your name..."
         value={fullName}
-        onChange={(e) => setFullName(e.target.value)}
-        required
+        onChange={(e) => {
+          setFullName(e.target.value);
+          if (error) onClear();
+        }}
       />
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

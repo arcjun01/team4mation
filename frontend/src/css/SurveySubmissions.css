@@ -1,62 +1,50 @@
-/* GLOBAL WRAPPERS */
-.page-wrapper {
-    background: #f9fafb;
-    min-height: 100vh;
+/* GLOBAL LAYOUT */
+.survey-page-wrapper {
+    max-height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 50px;
-}
 
-.main-viewport {
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
 }
 
 .content-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    width: 880px;
 }
 
-/* TITLE SECTION */
-.title-card {
-    background: white;
-    padding: 25px 40px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.survey-card {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    width: 880px;
 }
 
-.title-card h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #111827;
-}
-
-/* MAIN CONTENT LAYOUT */
 .results-layout {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    
     gap: 30px;
 }
 
 /* LEFT SIDE: STUDENT LIST */
 .student-list-container {
     flex: 2; /* Takes up more space */
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
     background: white;
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    min-height: 300px;
+    min-height: 350px;
 }
 
 .student-grid {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
 }
 
 .student-name {
@@ -76,7 +64,7 @@
 /* RIGHT SIDE: THE GREEN STATS SIDEBAR */
 .stats-card-sidebar {
     flex: 1;
-    background-color: #d1fae5; /* Light green background */
+    background-color: #90db673b; /* Light green background */
     padding: 25px;
     border-radius: 16px;
     color: #065f46; /* Dark green text */
@@ -101,22 +89,47 @@
     font-weight: 700;
 }
 
+.student-name {
+    margin-bottom: 10px;
+}
+
+.decrypt-button {
+    background-color:#B2E1CB;
+    width: 60%; 
+    color: balck;
+    border: none;
+    border-radius: 6px; 
+    padding: 10px; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.decrypt-button:hover {
+    background-color: #90D5BA;
+}
+
+
+.close-survey-btn {
+    width: 100%; 
+    padding: 10px; 
+    background-color: #BEE0AC; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: black;
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-survey-btn:hover {
+    background-color: #7fb9508e;
+}
 /* FOOTER / BUTTONS */
 .button-tray {
     margin-top: 10px;
-}
-
-.btn-secondary {
-    padding: 12px 24px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    background: white;
-    color: #374151;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-secondary:hover {
-    background: #f3f4f6;
 }
