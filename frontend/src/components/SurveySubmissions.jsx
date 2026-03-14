@@ -55,10 +55,9 @@ const SurveySubmissions = () => {
     return (
         <>
             <Header variant="page" />
-            <div className="page-wrapper">
-            <div className="main-viewport">
+            <div className="survey-page-wrapper top-gap">
                 <div className="content-container">
-                    <h1 className="title">{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1>
+                    <div className='question-container'><h1>{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1></div>
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
@@ -133,7 +132,6 @@ const SurveySubmissions = () => {
                     </div>
                 </div>
             </div>
-        </div>
         </>
     );
 };

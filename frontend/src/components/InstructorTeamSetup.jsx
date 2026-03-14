@@ -88,7 +88,7 @@ const InstructorTeamSetup = () => {
       <Header variant="page" />
       <div className="setup-wrapper">
       <div className="setup-container">
-        <h1 className="title">Setting Up Student Surveys</h1>
+        <div className='question-container'><h1>Setting Up Student Surveys</h1></div>
 
         <div className="setup-card info-card">
           <p>Once you complete this setup, a link to a customized student survey will be generated.</p>

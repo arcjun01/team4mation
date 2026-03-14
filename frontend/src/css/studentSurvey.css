@@ -4,12 +4,6 @@
     margin: 0;
 }
 
-.main-container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
 input[type="text"] {
   border-radius: 5px;
   width: 386px;
@@ -22,22 +16,19 @@ span {
     font-weight: 400;
 }
 
-.survey-page {
-    min-height: 100vh;
+.page-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding-top: 10px;
-    margin: 0;
-    overflow-x: hidden;
+    padding:0px;
 }
 
-.survey-card {
-    border-radius: 16px;
-    box-shadow: none;
-    margin: 65px;
+.page-container {
     width: 880px;
+    padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .results-layout {
@@ -121,6 +112,11 @@ span {
     display: block;
     margin-bottom: 25px;
     text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .details {
@@ -133,6 +129,7 @@ span {
     font-size: 1.1rem;
     margin-bottom: 25px;
     line-height: 1.5;
+    width: 880px;
 }
 
 .gpa-error {
@@ -322,7 +319,8 @@ span {
     display: flex;
     flex-direction: column;
     gap: 0;
-
+    width: 100%;
+    min-width: 0;
 }
 
 .survey-actions {

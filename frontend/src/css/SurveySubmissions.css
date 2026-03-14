@@ -1,32 +1,20 @@
-/* GLOBAL WRAPPERS */
-.page-wrapper {
-    min-height: 100vh;
+/* GLOBAL LAYOUT */
+.survey-page-wrapper {
+    max-height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 50px;
-}
 
-.main-viewport {
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
 }
 
 .content-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    width: 880px;
 }
 
 /* MAIN CONTENT LAYOUT */
-.results-layout {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 30px;
-}
 
 /* LEFT SIDE: STUDENT LIST */
 .student-list-container {
@@ -35,7 +23,7 @@
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    min-height: 300px;
+    min-height: 400px;
 }
 
 .student-grid {

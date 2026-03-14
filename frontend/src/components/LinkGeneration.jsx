@@ -31,9 +31,9 @@ const LinkGeneration = () => {
   };
 
   return (
-    <div className="link-page-wrapper">
+    <div className="page-wrapper">
       <Header variant="large" />
-      <div className="link-page-container top-gap">
+      <div className="page-container top-gap-large">
         <div className="card-container">
           <h2 className="card-title">Student Survey Link</h2>
           
