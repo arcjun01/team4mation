@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import '../css/InstructorDecryption.css';
 import Header from './Header';
 
 function InstructorDecryption() {
@@ -45,41 +46,46 @@ function InstructorDecryption() {
 
     return (
         <>
-            <Header variant="page" />
-            <div className="survey-page">
-            <div className="survey-wrapper">
-                <form className="survey-card" onSubmit={handleDecrypt}>
-                    <h2 className="survey-title">View Survey Submissions</h2>
-                    
-                    <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        <p className="gpa-info" style={{ color: '#666' }}>
+            <Header variant="large" />
+            <div className="decryption-page">
+            <div className="decryption-wrapper top-gap-large">
+                <div className='question-container '><h1>View Survey Submissions</h1></div>
+                
+                <form className="decryption-card" onSubmit={handleDecrypt}>
+                    <div className="decryption-info-section">
+                        <p className="decryption-info">
                             To view survey submissions, please enter your decryption key:
                         </p>
                     </div>
 
                     <input 
                         type="password" 
-                        className="full-name-input" 
+                        className="decryption-input" 
                         placeholder="Enter 32-character key..."
                         value={decryptionKey}
                         onChange={(e) => setDecryptionKey(e.target.value)}
                         required
                     />
-
-                    <div className="survey-actions" style={{ marginTop: '20px', display: 'flex'}}>
-                        <button 
-                            type="submit" 
-                            className="survey-submit"
-                            disabled={isDecrypting}
-                            style={{ 
-                                backgroundColor: isDecrypting ? '#ccc' : '#b2dfdb',
-                                cursor: isDecrypting ? 'not-allowed' : 'pointer'
-                            }}
-                        >
-                            {isDecrypting ? "Checking..." : "Decrypt"}
-                        </button>
-                    </div>
                 </form>
+
+                <div className='decryption-button-group'>
+                    <button 
+                        type="button" 
+                        className="button"
+                        onClick={() => navigate(-1)}
+                        >
+                        Back to Submissions
+                    </button>
+
+                    <button 
+                        type="submit" 
+                        className="button"
+                        disabled={isDecrypting}
+                        onClick={handleDecrypt}
+                    >
+                        {isDecrypting ? "Checking..." : "Decrypt"}
+                    </button>
+                </div>
             </div>
         </div>
         </>

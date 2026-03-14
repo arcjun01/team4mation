@@ -66,7 +66,7 @@ const LinkGeneration = () => {
               className="button" 
               onClick={handleViewStatus}
             >
-              View Submission Status
+              View Submissions
             </button>
           </div>
       </div>
