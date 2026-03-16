@@ -4,53 +4,31 @@
     margin: 0;
 }
 
-.main-container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
 input[type="text"] {
   border-radius: 5px;
   width: 386px;
   height: 30px;
 }
 
-.survey-page {
-    min-height: 100vh;
+span {
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.page-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: #f9fafb;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    overflow-x: hidden;
+    padding:0px;
 }
 
-.survey-card {
-    background: #f9fafb;
-    border-radius: 16px;
-    box-shadow: none;
-    padding: 40px;
-    margin: 65px;
-    width: 830px;
-}
-
-.survey-title {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.results-layout {
+.page-container {
+    width: 880px;
+    padding-bottom: 60px;
     display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
 }
 
 .survey-question {
@@ -121,55 +99,30 @@ input[type="text"] {
     margin-top: 20px;
 }
 
-.question-container {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 .question-title {
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 600;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 25px;
     text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .details {
     color: #666;
-    margin-bottom: 16px;
+    margin-bottom: 45px;
     line-height: 1.5;
 }
 
-.survey-card .gpa-info {
+.gpa-info {
     font-size: 1.1rem;
     margin-bottom: 25px;
     line-height: 1.5;
-}
-
-.survey-submit {
-    background-color: #A8C4C0;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 36px;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 15px;
-    width: 250px;
-    transition: all 0.2s ease;
-}
-
-.survey-submit:hover {
-    background-color: #90a9a5;
-    transform: translateY(-1px);
-}
-
-.survey-submit:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
+    width: 880px;
 }
 
 .gpa-error {
@@ -178,18 +131,47 @@ input[type="text"] {
     margin-top: 4px;
 }
 
+.error-message {
+    font-size: 14px;
+    color: #dc2626;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.gpa-input {
+    background-color: #B2E1CB;
+    border: none;
+    width: 90px;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.gpa-input:hover {
+    background-color: #a0cdc5;
+}
+
+.gpa-input:focus {
+    outline: none;
+    background-color: #a0cdc5;
+}
+
+/* Show the number input spinner */
+.gpa-input::-webkit-outer-spin-button,
+.gpa-input::-webkit-inner-spin-button {
+    -webkit-appearance: auto;
+}
+
 /* Availability Question Styles */
 
 .availability-section {
     display: flex;
     flex-direction: column;
     gap: 16px;
-}
-
-.question-label {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111827;
 }
 
 .availability-info {
@@ -330,6 +312,8 @@ input[type="text"] {
     display: flex;
     flex-direction: column;
     gap: 0;
+    width: 100%;
+    min-width: 0;
 }
 
 .survey-actions {
@@ -348,28 +332,3 @@ input[type="text"] {
     font-weight: 500;
 }
 
-.thank-you-page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #f9fafb;
-    position: relative;
-}
-
-.thank-you-header {
-    width: 100%;
-    max-width: 1440px;
-    align-self: center;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-}
-
-.thank-you-header-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    vertical-align: bottom;
-}

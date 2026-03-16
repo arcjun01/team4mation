@@ -11,7 +11,7 @@ const ALL_TIME_SLOTS = [
   "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
 ];
 
-export default function AvailabilityQuestion({ availability, setAvailability }) {
+export default function AvailabilityQuestion({ availability, setAvailability, error, onClear }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const toggleAvailability = (day, time) => {
@@ -20,6 +20,7 @@ export default function AvailabilityQuestion({ availability, setAvailability }) 
       ...prev,
       [key]: !prev[key],
     }));
+    if (error) onClear();
   };
 
   const handleMouseEnter = (day, time) => {
@@ -98,6 +99,7 @@ export default function AvailabilityQuestion({ availability, setAvailability }) 
           </div>
         </div>
       </div>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }
