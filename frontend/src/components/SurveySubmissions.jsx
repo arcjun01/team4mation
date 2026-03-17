@@ -20,7 +20,7 @@ const SurveySubmissions = () => {
     });
 
     const [isClosed, setIsClosed] = useState(false);
-
+    
     useEffect(() => {
     if (surveyId) {
         fetch(`http://localhost:3001/api/survey/stats/${surveyId}`)
@@ -44,13 +44,18 @@ const SurveySubmissions = () => {
             });
 
             if (response.ok) {
-                setIsClosed(true); // Updates the UI
+                setIsClosed(true);
             }
         } catch (error) {
             alert("Error closing survey. Check your connection.");
         }
     }
 };
+
+    const confirmGenerateAndNavigate = () => {
+        // This navigates to the dashboard where the groups are actually displayed
+        navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedResults } });
+    };
 
     return (
         <>
@@ -112,6 +117,16 @@ const SurveySubmissions = () => {
                                 <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center' }}>
                                     Survey Closed
                                 </div>
+                            )}
+
+                            {/* GENERATE GROUPS BUTTON (Only if names are decrypted) */}
+                            {decryptedResults.length > 0 && (
+                                <button 
+                                    className="generate-groups-btn" 
+                                    onClick={confirmGenerateAndNavigate}
+                                >
+                                    Generate Groups
+                                </button>
                             )}
                         </div>
                     </div>
