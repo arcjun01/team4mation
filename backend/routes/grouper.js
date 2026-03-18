@@ -23,7 +23,7 @@ function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
 
     // Logic for Min vs Max number of groups
     let groupNum;
-    if (limitType === 'Minimum') {
+    if (limitType === 'Minimum' || limitType === 'min') {
         // e.g. 10 students, min 4 per team = 2 groups (5 each)
         groupNum = Math.floor(studentsList.length / targetSize);
     } else {
@@ -36,19 +36,22 @@ function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
 
     let minSize, maxSize;
 
-    if(limitType === "Maximum"){
+    if (limitType === "Maximum" || limitType === "max") {
         minSize = 2;
         maxSize = targetSize;
-    } else{
-        minSize =targetSize;
+    } else {
+        minSize = targetSize;
         maxSize = studentsList.length;
     }
 
     const availabilityMap = buildAvailabilityMap(availabilityData);
     const { males, others } = seperateGenders(studentsList);
-    
+
     // Create the basic groups
     const groups = makeBasicGroups(males, others, groupNum, targetSize);
+
+    // Enforce group size constraints
+    enforceGroupSizes(groups, minSize, maxSize);
 
     improveGroups(groups, availabilityMap);
 
@@ -94,7 +97,7 @@ function enforceGroupSizes(groups, minSize, maxSize) {
     return groups;
 }
 
-function seperateGenders(studentsList) { 
+function seperateGenders(studentsList) {
     const males = [];
     const others = [];
 
@@ -160,7 +163,7 @@ function improveGroups(groups, availabilityMap) {
                         if (evalulateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
                             const indexA = groups[i].findIndex(s => s.id === studentA.id || s.student_id === studentA.student_id);
                             const indexB = groups[j].findIndex(s => s.id === studentB.id || s.student_id === studentB.student_id);
-                            
+
                             groups[i][indexA] = studentB;
                             groups[j][indexB] = studentA;
                             improvementMade = true;
@@ -251,14 +254,21 @@ function checkGenderRule(testA, testB) {
 }
 
 function isGenderBalanced(group) {
+    // If group has 0 or 1 student, it's considered balanced
+    if (group.length <= 1) return true;
+
     let maleCount = 0, otherCount = 0;
     for (const student of group) {
         const genderStr = student.gender ? student.gender.trim().toLowerCase() : "";
         if (genderStr === "male") maleCount++;
         else otherCount++;
     }
-    // Simple check: don't let males outweigh everyone else
-    return maleCount <= otherCount;
+
+    if (otherCount === 0) return true; // All males is ok
+    if (maleCount === 0) return true;  // All others is ok
+
+    // Allow grouping if ratio isn't extreme (max 2:1)
+    return maleCount <= (otherCount * 2) && otherCount <= (maleCount * 2);
 }
 
 export {
