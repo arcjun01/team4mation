@@ -5,7 +5,11 @@
 
 .setup-container {
     padding-top: 30px;
+    width: 100%;
     max-width: 880px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
     margin: 0 auto;
     font-family: sans-serif;
 }
@@ -48,6 +52,7 @@ label {
 .full-input {
     width: 100%;
     max-width: 400px;
+    box-sizing: border-box;
 }
 
 .numeric-input {

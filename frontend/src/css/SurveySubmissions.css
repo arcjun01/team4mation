@@ -11,20 +11,31 @@
 .content-container {
     display: flex;
     flex-direction: column;
-    width: 880px;
+    width: 100%;
+    max-width: 880px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin: 0 auto;
 }
 
 .survey-card {
     font-size: 1.1rem;
     line-height: 1.5;
-    width: 880px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .results-layout {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    
     gap: 30px;
+}
+
+@media (max-width: 1024px) {
+    .results-layout {
+        flex-direction: column;
+    }
 }
 
 /* LEFT SIDE: STUDENT LIST */
@@ -134,8 +145,8 @@
     width: 100%;
     margin-top: 10px;
     padding: 10px;
-    background-color: #6b8e8e; 
-    color: white;
+    background-color: #BEE0AC;
+    color: black;
     border: none;
     border-radius: 6px;
     font-weight: 400;
@@ -146,7 +157,7 @@
 }
 
 .generate-groups-btn:hover {
-    background-color: #567373;
+    background-color: #7fb9508e;
 }
 
 /* FOOTER / BUTTONS */

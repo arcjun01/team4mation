@@ -10,15 +10,19 @@
 
 .thank-you-wrapper {
     flex-direction: column;
-    width: 880px;
+    width: 100%;
+    max-width: 880px;
+    padding: 0 20px;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
+    margin: 0 auto;
 }
 
 .thank-you-card {
     background: white;
     min-height: 280px;
-    padding: 40px;
+    padding: clamp(20px, 5vw, 40px);
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     display: flex;
@@ -27,6 +31,8 @@
     align-items: center;
     text-align: center;
     margin-bottom: 30px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .thank-you-title {
