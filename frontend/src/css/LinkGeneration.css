@@ -1,18 +1,30 @@
-.link-page-container {
-    background-color: #f9fafb; 
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 50px;
-    font-family: sans-serif;
+.link-page-header {
+    width: 100%;
+    max-width: 1440px;
+    align-self: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.link-page-header-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: bottom;
+}
+
+.button-container {
+    width: 100%;
 }
 
 .card-container {
     background: white;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 40px;
     padding-bottom: 60px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -76,53 +88,12 @@
 }
 
 .footer-action-row {
-    margin-top: 40px;
-    display: flex;
-    gap: 560px;
-}
-
-.footer-btn {
-    background-color: #b2dfdb;
-    border: none;
-    padding: 12px 35px;
-    border-radius: 10px;
-    font-weight: bold;
-    color: #4b5563;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-}
-
-.footer-action-row {
   display: flex;
   justify-content: center;
   gap: 15px; /* Spacing between the three buttons */
   margin-top: 30px;
   width: 100%;
 }
-
-.footer-btn {
-  flex: 1; /* Ensures equal width for all three buttons */
-  max-width: 180px;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  background-color: #97b4a8; /* Sage green theme */
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.footer-btn:hover {
-  filter: brightness(0.9);
-}
-
-.footer-btn:hover {
-    background-color: #80cbc4;
-}
-
 
 .footer-action-row.centered {
     display: flex;
@@ -131,20 +102,14 @@
     width: 100%;
 }
 
-.open-submissions-btn {
-    display: block !important;
-    visibility: visible !important;
-    background-color: #6ab0b0 !important;
-    color: white !important;
-    min-width: 200px;
-}
-
-.open-submissions-btn:hover {
-    background-color: #589696 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
 h2 {
     text-align: center;
+}
+
+.page-container .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
 }

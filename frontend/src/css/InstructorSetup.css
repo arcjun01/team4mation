@@ -1,11 +1,11 @@
 .setup-wrapper {
-    background-color: #f4f7f6; 
     min-height: 100vh;
     padding: 40px 20px;
 }
 
 .setup-container {
-    max-width: 800px;
+    padding-top: 30px;
+    max-width: 880px;
     margin: 0 auto;
     font-family: sans-serif;
 }
@@ -21,12 +21,6 @@
 
 .header-card {
     text-align: center;
-}
-
-.setup-title {
-    font-size: 24px;
-    color: #333;
-    margin: 0;
 }
 
 .info-card p {
@@ -119,12 +113,6 @@ label {
 
 
 /* Buttons */
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
 .btn-cancel {
     background-color: #b2dfdb;
     color: #2c3e50;
@@ -147,4 +135,18 @@ label {
 
 .btn-cancel:hover, .btn-create:hover {
     opacity: 0.8;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.error-message {
+    font-size: 14px;
+    color: #dc2626;
+    margin-top: 8px;
+    font-weight: 500;
 }

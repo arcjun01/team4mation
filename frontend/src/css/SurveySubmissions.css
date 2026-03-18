@@ -1,112 +1,135 @@
-:root {
-  --sage-green: #a7bcaf;
-  --dark-green: #2d6a4f;
-  --light-bg: #e9edeb;
-  --stat-green: #b7d1c1;
-}
+/* GLOBAL LAYOUT */
+.survey-page-wrapper {
+    max-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-.page-wrapper {
-  background-color: var(--light-bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-
-.main-viewport {
-  margin-top: -40px; /* Pulls content into the sage area */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding-bottom: 40px;
 }
 
 .content-container {
-  width: 90%;
-  max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    width: 880px;
 }
 
-/* Title Panel */
-.title-card {
-  background: white;
-  border-radius: 15px 15px 0 0;
-  padding: 40px;
-  text-align: center;
-  border-bottom: 2px solid var(--light-bg);
+.survey-card {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    width: 880px;
 }
 
-.title-card h1 {
-  font-weight: 400;
-  color: #333;
-  margin: 0;
+.results-layout {
+    display: flex;
+    justify-content: space-between;
+    
+    gap: 30px;
 }
 
-/* Main White Data Area */
-.data-card {
-  background: white;
-  border-radius: 0 0 15px 15px;
-  padding: 60px;
-  display: flex;
-  justify-content: space-between;
-  min-height: 450px;
+/* LEFT SIDE: STUDENT LIST */
+.student-list-container {
+    flex: 2; /* Takes up more space */
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 350px;
 }
 
-/* Two-column student list */
 .student-grid {
-  column-count: 2;
-  column-gap: 50px;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
 }
 
 .student-name {
-  margin: 0 0 15px 0;
-  color: #333;
-  font-size: 1rem;
+    font-size: 16px;
+    color: #374151;
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .name-number {
-  color: var(--dark-green);
-  font-weight: bold;
-  margin-right: 8px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 8px;
 }
 
-/* Right Stats Box */
-.stats-sidebar {
-  background-color: var(--stat-green);
-  padding: 40px 30px;
-  border-radius: 15px;
-  width: 220px;
-  height: fit-content;
+/* RIGHT SIDE: THE GREEN STATS SIDEBAR */
+.stats-card-sidebar {
+    flex: 1;
+    background-color: #90db673b; /* Light green background */
+    padding: 25px;
+    border-radius: 16px;
+    color: #065f46; /* Dark green text */
+    height: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .stats-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  color: var(--dark-green);
-  font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 15px;
 }
 
-/* Footer Buttons */
+.stats-row span {
+    font-weight: 500;
+}
+
+.stats-row strong {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.student-name {
+    margin-bottom: 10px;
+}
+
+.decrypt-button {
+    background-color:#B2E1CB;
+    width: 60%; 
+    color: balck;
+    border: none;
+    border-radius: 6px; 
+    padding: 10px; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.decrypt-button:hover {
+    background-color: #90D5BA;
+}
+
+
+.close-survey-btn {
+    width: 100%; 
+    padding: 10px; 
+    background-color: #BEE0AC; 
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: black;
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-survey-btn:hover {
+    background-color: #7fb9508e;
+}
+/* FOOTER / BUTTONS */
 .button-tray {
-  width: 90%;
-  max-width: 1000px;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 40px;
-}
-
-.nav-btn {
-  background-color: var(--sage-green);
-  border: none;
-  padding: 15px 50px;
-  border-radius: 15px;
-  font-size: 1rem;
-  color: #333;
-  cursor: pointer;
-}
-
-.nav-btn:hover {
-  filter: brightness(0.9);
+    margin-top: 10px;
 }
