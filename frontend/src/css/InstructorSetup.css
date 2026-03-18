@@ -1,17 +1,6 @@
 .setup-wrapper {
     min-height: 100vh;
-    padding: 40px 20px;
-}
-
-.setup-container {
-    padding-top: 30px;
-    width: 100%;
-    max-width: 880px;
-    padding-left: 20px;
-    padding-right: 20px;
-    box-sizing: border-box;
-    margin: 0 auto;
-    font-family: sans-serif;
+    padding: 85px 20px 40px 20px;
 }
 
 /* Individual Cards */
@@ -291,4 +280,52 @@ label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Smart Teams Dashboard Styles */
+.smart-teams-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.smart-teams-config-section {
+    margin-bottom: 30px;
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.config-box {
+    padding: 15px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}
+
+.config-label {
+    margin: 0 0 5px 0;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.config-value {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.groups-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.smart-teams-button-tray {
+    margin-top: 40px;
+    text-align: center;
 }
