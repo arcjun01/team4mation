@@ -277,9 +277,9 @@ label {
     text-align: left;
     font-size: 12px;
     color: #666;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
 }
 
 /* Smart Teams Dashboard Styles */

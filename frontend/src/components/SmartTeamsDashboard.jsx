@@ -31,6 +31,82 @@ const SmartTeamsDashboard = () => {
         return availability;
     };
 
+    // Helper function to format consecutive times into ranges (e.g., "THU 3 PM - 8 PM")
+    const formatAvailabilityRanges = (availabilityArray) => {
+        if (!availabilityArray || availabilityArray.length === 0) return 'N/A';
+
+        // Convert time string to numeric hour (0-23)
+        const timeToNumber = (timeStr) => {
+            const match = timeStr.match(/(\d+)\s+(AM|PM)/);
+            if (!match) return null;
+            let hour = parseInt(match[1]);
+            const period = match[2];
+            
+            if (period === 'AM') {
+                if (hour === 12) hour = 0; // 12 AM is 0
+            } else {
+                if (hour !== 12) hour += 12; // 1 PM is 13, etc.
+            }
+            return hour;
+        };
+
+        // Parse a slot like "MON-9 AM"
+        const parseSlot = (slot) => {
+            const lastDashIndex = slot.lastIndexOf('-');
+            const day = slot.substring(0, lastDashIndex).trim();
+            const time = slot.substring(lastDashIndex + 1).trim();
+            const hour = timeToNumber(time);
+            return { day, time, hour };
+        };
+
+        // Group slots by day
+        const byDay = {};
+        for (const slot of availabilityArray) {
+            const parsed = parseSlot(slot);
+            if (!byDay[parsed.day]) {
+                byDay[parsed.day] = [];
+            }
+            byDay[parsed.day].push(parsed);
+        }
+
+        // Format each day's slots into ranges
+        const results = [];
+        const dayOrder = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        
+        for (const day of dayOrder) {
+            if (!byDay[day]) continue;
+            
+            const slots = byDay[day].sort((a, b) => a.hour - b.hour);
+            let rangeStart = slots[0];
+            let rangeEnd = slots[0];
+
+            for (let i = 1; i < slots.length; i++) {
+                if (slots[i].hour === rangeEnd.hour + 1) {
+                    // Consecutive hour
+                    rangeEnd = slots[i];
+                } else {
+                    // Gap found, save the range
+                    if (rangeStart.hour === rangeEnd.hour) {
+                        results.push(`${day} ${rangeStart.time}`);
+                    } else {
+                        results.push(`${day} ${rangeStart.time} - ${rangeEnd.time}`);
+                    }
+                    rangeStart = slots[i];
+                    rangeEnd = slots[i];
+                }
+            }
+
+            // Add the last range
+            if (rangeStart.hour === rangeEnd.hour) {
+                results.push(`${day} ${rangeStart.time}`);
+            } else {
+                results.push(`${day} ${rangeStart.time} - ${rangeEnd.time}`);
+            }
+        }
+
+        return results.join(', ');
+    };
+
     // Fetch survey configuration and availability data on mount
     useEffect(() => {
         const fetchData = async () => {
@@ -153,9 +229,7 @@ const SmartTeamsDashboard = () => {
                                                 </div>
                                                 {group.members.map((student, idx) => {
                                                     const availability = getStudentAvailability(student);
-                                                    const availabilityText = availability.length > 0 
-                                                        ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
-                                                        : 'N/A';
+                                                    const availabilityText = formatAvailabilityRanges(availability);
                                                     return (
                                                         <div key={idx} className="group-table-row">
                                                             <div className="group-table-cell">{idx + 1}</div>
