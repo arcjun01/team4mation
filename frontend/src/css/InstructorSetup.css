@@ -155,3 +155,140 @@ label {
     margin-top: 8px;
     font-weight: 500;
 }
+
+/* Student Survey Table Styles */
+.student-table {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 100px 80px;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f3f4f6;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.table-body {
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 100px 80px;
+    gap: 15px;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+}
+
+.table-row:hover {
+    background-color: #f9fafb;
+}
+
+.table-cell {
+    font-size: 14px;
+}
+
+.cell-number {
+    text-align: center;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.cell-name {
+    color: #374151;
+}
+
+.cell-gender {
+    text-align: center;
+    color: #374151;
+}
+
+.cell-gpa {
+    text-align: center;
+    color: #374151;
+}
+
+/* Group Card Styles for SmartTeamsDashboard */
+.group-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.group-header {
+    background-color: #BEE0AC;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+}
+
+.group-body {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.group-table-header {
+    display: grid;
+    grid-template-columns: 35px 1fr 80px 70px 150px;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.group-table-row {
+    display: grid;
+    grid-template-columns: 35px 1fr 80px 70px 150px;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    font-size: 13px;
+}
+
+.group-table-row:last-child {
+    border-bottom: none;
+}
+
+.group-table-row:hover {
+    background-color: #f9fafb;
+}
+
+.group-table-cell {
+    text-align: center;
+    color: #374151;
+}
+
+.group-table-cell:nth-child(2) {
+    text-align: left;
+}
+
+.group-table-cell:nth-child(5) {
+    text-align: left;
+    font-size: 12px;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
