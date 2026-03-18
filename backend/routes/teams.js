@@ -4,6 +4,29 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
+router.get("/form", async (req, res) => {
+    //const { surveyId } = req.params;
+    const teamSize = parseInt(req.query.teamSize) || 3;
+
+    try {
+        const [studentRows] = await pool.execute("SELECT * FROM students");
+        const [availabilityRows] = await pool.execute("SELECT * FROM availability");
+
+        const teams = grouper(studentRows, availabilityRows, teamSize);
+
+        res.json({
+            teams: teams,
+            studentCount: studentRows.length,
+            teamSize: teamSize
+        });
+
+    } catch (err) {
+        console.error("Database Error:", err);
+        res.status(500).json({ error: "Failed to generate teams" });
+    }
+});
+
+// For instructor: This generates and shows the teams based on DB data and survey config
 router.get("/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
 
@@ -39,7 +62,7 @@ router.get("/:surveyId", async (req, res) => {
             },
             teams: teams
         });
-        
+
     } catch (err) {
         console.error("Database Error:", err);
         res.status(500).json({ error: "Failed to generate teams" });

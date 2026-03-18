@@ -1,6 +1,6 @@
-import studentData from "../data/students.js";
-const { students, settings } = studentData;
-import { availabilityData } from "../data/availibility.js";
+const studentData = require("../data/students.js")
+const { students, settings } = studentData
+const { availabilityData } = require("../data/availibility.js")
 
 function buildAvailabilityMap(availabilityData) {
     const availibilityMap = {}
@@ -13,7 +13,7 @@ function buildAvailabilityMap(availabilityData) {
     return availibilityMap;
 }
 
-function grouper(studentsParam, teamLimitParam, limitType) {
+function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
     const studentsList = studentsParam || students;
     // Fallback to settings if the DB limit isn't provided
     const targetSize = parseInt(teamLimitParam) || settings.teamSize || 4;
@@ -241,8 +241,8 @@ function calculateGPASimilarity(group) {
 function calculateGroupScore(group, availabilityMap) {
     const GPA_WEIGHT = 2, SCHEDULE_WEIGHT = 3, COMMITMENT_WEIGHT = 1;
     return (calculateGPASimilarity(group) * GPA_WEIGHT) +
-           (calculateScheduleOverlap(group, availabilityMap) * SCHEDULE_WEIGHT) +
-           (calculateCommitmentSimilarity(group) * COMMITMENT_WEIGHT);
+        (calculateScheduleOverlap(group, availabilityMap) * SCHEDULE_WEIGHT) +
+        (calculateCommitmentSimilarity(group) * COMMITMENT_WEIGHT);
 }
 
 function checkGenderRule(testA, testB) {
