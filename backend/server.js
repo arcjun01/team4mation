@@ -97,6 +97,30 @@ app.patch("/api/survey/close/:id", async (req, res) => {
     }
 });
 
+// Purge Survey Data Endpoint
+app.delete("/api/survey/purge/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Deletes all student entries to protect privacy
+        const [studentResult] = await pool.execute(
+            "DELETE FROM student_survey_entries WHERE survey_id = ?",
+            [id]
+        );
+        
+        // Deletes the survey configuration so it leaves the DB entirely
+        const [configResult] = await pool.execute(
+            "DELETE FROM survey_configurations WHERE id = ?",
+            [id]
+        );
+        
+        console.log(`Purge success: ${studentResult.affectedRows} entries and config for survey ${id} removed.`);
+        res.json({ success: true, message: "Survey data and configuration successfully purged from the database." });
+    } catch (err) {
+        console.error("Purge Error:", err.message);
+        res.status(500).json({ error: "Database error during purge", details: err.message });
+    }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`SERVER RUNNING ON PORT ${PORT}`);
