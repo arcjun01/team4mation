@@ -4,7 +4,7 @@ import Header from './Header';
 import PurgeModal from "./PurgeModal";
 import '../css/InstructorSetup.css'; 
 
-const SmartTeamsDashboard = () => {
+const FormingGroups = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -14,7 +14,6 @@ const SmartTeamsDashboard = () => {
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [availabilityMap, setAvailabilityMap] = useState({});
 
     // Helper function to get availability for a student
@@ -138,8 +137,6 @@ const SmartTeamsDashboard = () => {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
             }
         };
         fetchData();
@@ -267,4 +264,4 @@ const SmartTeamsDashboard = () => {
     );
 };
 
-export default SmartTeamsDashboard;
+export default FormingGroups;

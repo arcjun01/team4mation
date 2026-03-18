@@ -7,7 +7,7 @@ import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
 import SurveySubmissions from "./components/SurveySubmissions";
-import SmartTeamsDashboard from "./components/SmartTeamsDashboard";
+import FormingGroups from "./components/FormingGroups";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
           <Route path="/survey/:id" element={<StudentSurvey />} />
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
-          <Route path="/instructor/smart-teams/:id" element={<SmartTeamsDashboard />} />
+          <Route path="/instructor/smart-teams/:id" element={<FormingGroups />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
