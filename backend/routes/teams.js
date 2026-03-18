@@ -1,11 +1,29 @@
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
 const { grouper } = require("./grouper.js");
-=======
-const grouper = require("./grouper.js");
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 const { pool } = require("../db.js");
+
+router.get("/form", async (req, res) => {
+    //const { surveyId } = req.params;
+    const teamSize = parseInt(req.query.teamSize) || 3;
+
+    try {
+        const [studentRows] = await pool.execute("SELECT * FROM students");
+        const [availabilityRows] = await pool.execute("SELECT * FROM availability");
+
+        const teams = grouper(studentRows, availabilityRows, teamSize);
+
+        res.json({
+            teams: teams,
+            studentCount: studentRows.length,
+            teamSize: teamSize
+        });
+
+    } catch (err) {
+        console.error("Database Error:", err);
+        res.status(500).json({ error: "Failed to generate teams" });
+    }
+});
 
 // For instructor: This generates and shows the teams based on DB data and survey config
 router.get("/:surveyId", async (req, res) => {
@@ -13,17 +31,9 @@ router.get("/:surveyId", async (req, res) => {
     console.log(`Instructor's view: Fetching data for Survey ID: ${surveyId}`);
 
     try {
-<<<<<<< HEAD
         const [rows] = await pool.execute("SELECT * FROM student_survey_entries");
 
         const teamSize = parseInt(req.query.teamSize) || 3;
-=======
-        // 1. Get the settings for THIS specific survey from the new table
-        const [configRows] = await pool.execute(
-            "SELECT * FROM survey_configurations WHERE id = ?", 
-            [surveyId]
-        );
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 
         // Check if the survey exists
         if (configRows.length === 0) {
@@ -38,7 +48,7 @@ router.get("/:surveyId", async (req, res) => {
 
         // 3. Pass real DB settings (max_size) into the grouper
         // We use settings.max_size which comes from your InstructorSetup form
-        const teams = grouper(studentRows, settings.max_size); 
+        const teams = grouper(studentRows, settings.max_size);
 
         res.json({
             message: `Teams generated for course: ${settings.course_name}`,
@@ -50,21 +60,22 @@ router.get("/:surveyId", async (req, res) => {
             },
             teams: teams
         });
-        
+
     } catch (err) {
         console.error("Database Error:", err);
         res.status(500).json({ error: "Failed to generate teams from database data" });
     }
 });
 
+
 // For students: This just records the survey 
 router.post("/", (req, res) => {
-  const studentData = req.body;
-  console.log("Data received from survey:", studentData);
+    const studentData = req.body;
+    console.log("Data received from survey:", studentData);
 
-  const teams = grouper();
+    const teams = grouper();
 
-  res.status(201).json({ message: "Student response recorded successfully" });
+    res.status(201).json({ message: "Student response recorded successfully" });
 });
 
 module.exports = router;

@@ -14,7 +14,7 @@ function buildAvailabilityMap(availabilityData) {
     return availibilityMap;
 }
 
-function grouper(studentsParam, teamSizeParam) {
+function grouper(studentsParam, availabilityData, teamSizeParam) {
     // Use your branch logic for local teamSize
     const settingsLocal = { teamSize: teamSizeParam || settings.teamSize };
     const studentsList = studentsParam || students;
@@ -30,7 +30,7 @@ function grouper(studentsParam, teamSizeParam) {
     return groups;
 }
 
-function seperateGenders(studentsList) { 
+function seperateGenders(studentsList) {
     const males = [];
     const others = [];
 
@@ -135,12 +135,9 @@ function calculateScheduleOverlap(group, availabilityMap) {
     }
 
     let totalOverlap = 0;
-<<<<<<< HEAD
 
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-=======
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
     for (const slot of Object.keys(availibilitySlots)) {
         const count = availibilitySlots[slot];
         if (count >= minOverlap) {
@@ -157,14 +154,10 @@ function calculateCommitmentSimilarity(group) {
         if (student.commitment > max) max = student.commitment;
         if (student.commitment < min) min = student.commitment;
     }
-<<<<<<< HEAD
 
     let commitmentRange = max - min
 
     return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
-=======
-    return -1 * (max - min);
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 }
 
 function calculateGPASimilarity(group) {
@@ -173,21 +166,17 @@ function calculateGPASimilarity(group) {
         if (student.gpa > max) max = student.gpa;
         if (student.gpa < min) min = student.gpa;
     }
-<<<<<<< HEAD
 
     let gpaSpread = max - min
 
     return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
-=======
-    return -1 * (max - min);
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
 }
 
 function calculateGroupScore(group, availabilityMap) {
     const GPA_WEIGHT = 2, SCHEDULE_WEIGHT = 3, COMMITMENT_WEIGHT = 1;
     return (calculateGPASimilarity(group) * GPA_WEIGHT) +
-           (calculateScheduleOverlap(group, availabilityMap) * SCHEDULE_WEIGHT) +
-           (calculateCommitmentSimilarity(group) * COMMITMENT_WEIGHT);
+        (calculateScheduleOverlap(group, availabilityMap) * SCHEDULE_WEIGHT) +
+        (calculateCommitmentSimilarity(group) * COMMITMENT_WEIGHT);
 }
 
 function checkGenderRule(testA, testB) {
@@ -202,7 +191,7 @@ function isGenderBalanced(group) {
     }
     return maleCount <= otherCount;
 }
-<<<<<<< HEAD
+
 module.exports = {
     grouper,
     buildAvailabilityMap,
@@ -213,7 +202,3 @@ module.exports = {
     isGenderBalanced,
     makeBasicGroups
 };
-=======
-
-module.exports = grouper;
->>>>>>> 00d9ea48df0831cbf4d29d432e6cd3cb823850f8
