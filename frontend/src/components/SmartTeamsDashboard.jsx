@@ -86,12 +86,12 @@ const SmartTeamsDashboard = () => {
 
                         {/* RIGHT SIDE: Using the stats sidebar container for action buttons */}
                         <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-                            <button className="sidebar-btn" title="Export" style={{ padding: '12px', width: '100%' }}>
+                            {/* <button className="sidebar-btn" title="Export" style={{ padding: '12px', width: '100%' }}>
                                 <span className="icon">Share 📤</span>
-                            </button>
-                            <button className="sidebar-btn" title="Reshuffle" style={{ padding: '12px', width: '100%' }}>
+                            </button> */}
+                            {/* <button className="sidebar-btn" title="Reshuffle" style={{ padding: '12px', width: '100%' }}>
                                 <span className="icon">Shuffle 🔄</span> 
-                            </button>
+                            </button> */}
                             <button 
                                 className="sidebar-btn trash-btn" 
                                 onClick={() => setIsPurgeModalOpen(true)}

@@ -133,15 +133,8 @@ const SurveySubmissions = () => {
 
                             <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #eee' }} />
 
-                            {!isClosed ? (
-                                <button 
-                                    className="close-survey-btn" 
-                                    onClick={handleCloseSurvey}
-                                >
-                                    Close Survey
-                                </button>
-                            ) : (
-                                <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center' }}>
+                            {isClosed && (
+                                <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
                                     Survey Closed
                                 </div>
                             )}

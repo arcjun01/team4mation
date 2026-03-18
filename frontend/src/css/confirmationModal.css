@@ -24,11 +24,12 @@
 .modal-content {
   background: white;
   border-radius: 12px;
-  padding: 40px;
+  padding: clamp(20px, 5vw, 40px);
   max-width: 500px;
   width: 90%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.3s ease-in-out;
+  box-sizing: border-box;
 }
 
 @keyframes slideUp {
