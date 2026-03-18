@@ -1,4 +1,7 @@
-const express = require("express");
+import express from "express";
+import grouper from "./grouper.js";
+import { pool } from "../db.js";
+
 const router = express.Router();
 const { grouper } = require("./grouper.js");
 const { pool } = require("../db.js");
@@ -78,4 +81,4 @@ router.post("/", (req, res) => {
     res.status(201).json({ message: "Student response recorded successfully" });
 });
 
-module.exports = router;
+export default router;

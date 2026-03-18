@@ -1,30 +1,30 @@
-import React from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import '../css/LinkGeneration.css';
 
 const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [isClosed, setIsClosed] = useState(false);
 
   const formData = location.state?.formData;
-  
   const surveyUrl = `${window.location.origin}/survey/${id}`;
 
   const handleEdit = () => {
-    // Navigate back to setup and pass the data back to populate the fields
     navigate('/', { state: { formData } });
   };
 
   const handleClose = () => {
-    if (window.confirm("Are you sure you want to exit?")) {
-      navigate('/'); // Redirects to start
+    if (window.confirm("Are you sure you want to close this survey? This will stop data collection and allow you to view submissions.")) {
+      setIsClosed(true);
     }
   };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(surveyUrl);
-    alert("Unique link copied to clipboard!"); 
+    alert("Unique link copied to clipboard!");
   };
 
   const handleEmailClick = () => {
@@ -33,7 +33,6 @@ const LinkGeneration = () => {
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
-  // NEW: Navigate to the submissions status page
   const handleViewStatus = () => {
     navigate(`/survey-stats/${id}`);
   };
@@ -44,30 +43,56 @@ const LinkGeneration = () => {
         <h2 className="card-title">Student Survey Link</h2>
         
         <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-          Copy the link or click Share to send it via Outlook.
+          {isClosed 
+            ? "Survey is now closed. You can proceed to view and decrypt submissions." 
+            : "Copy the link or click Share to send it via Outlook."}
         </p>
         
         <div className="action-row">
           <div className="url-box">
-            {surveyUrl}
+            <Link to={`/survey/${id}`} className="survey-active-link">
+              {surveyUrl}
+            </Link>
           </div>
 
           <div className="icon-group">
-            <button className="icon-btn" onClick={handleCopy} title="Copy Link">
+            <button className="icon-btn" onClick={handleCopy} title="Copy Link" disabled={isClosed}>
               📋
             </button>
-            <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
+            <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook" disabled={isClosed}>
               ✉️
             </button>
           </div>
         </div>
       </div>
       
-      <div className="footer-action-row">
-        <button className="footer-btn" onClick={handleEdit}>Edit Survey</button>
-        
-        <button className="footer-btn" onClick={handleViewStatus} style={{ backgroundColor: '#a3c1ad' }}>View Submissions</button>
-        <button className="footer-btn" onClick={handleClose}>Close Survey</button>
+      <div className={`footer-action-row ${isClosed ? 'centered' : ''}`}>
+        {isClosed ? (
+          <button 
+            className="footer-btn open-submissions-btn"
+            onClick={() => navigate(`/instructor/decrypt/${id}`)}
+          >
+            Open Submissions
+          </button>
+        ) : (
+          <>
+            <button className="footer-btn" onClick={handleEdit}>
+              Edit Survey
+            </button>
+
+            <button 
+              className="footer-btn"
+              onClick={handleViewStatus}
+              style={{ backgroundColor: '#a3c1ad' }}
+            >
+              View Submissions
+            </button>
+
+            <button className="footer-btn" onClick={handleClose}>
+              Close Survey
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

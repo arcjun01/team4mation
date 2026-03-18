@@ -122,3 +122,29 @@
 .footer-btn:hover {
     background-color: #80cbc4;
 }
+
+
+.footer-action-row.centered {
+    display: flex;
+    justify-content: center;
+    gap: 0 !important; 
+    width: 100%;
+}
+
+.open-submissions-btn {
+    display: block !important;
+    visibility: visible !important;
+    background-color: #6ab0b0 !important;
+    color: white !important;
+    min-width: 200px;
+}
+
+.open-submissions-btn:hover {
+    background-color: #589696 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
