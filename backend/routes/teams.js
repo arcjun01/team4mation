@@ -49,9 +49,13 @@ router.get("/:surveyId", async (req, res) => {
             [surveyId]
         );
 
-        // 3. Pass settings to grouper
-        // We pass team_limit and limit_type so the algorithm knows the instructor's choice
-        const teams = grouper(studentRows, settings.team_limit, settings.limit_type); 
+        // 3. Fetch availability data for all students
+        const [availabilityRows] = await pool.execute(
+            "SELECT * FROM availability"
+        );
+
+        // 4. Pass students, availability data, team_limit, and limit_type to grouper
+        const teams = grouper(studentRows, availabilityRows, settings.team_limit, settings.limit_type); 
 
         res.json({
             message: `Teams generated for course: ${settings.course_name}`,
