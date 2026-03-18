@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import PurgeModal from "./PurgeModal";
-import '../css/InstructorSetup.css'; 
+import '../css/FormingGroups.css'; 
 
 const FormingGroups = () => {
     const { id } = useParams();
@@ -184,24 +184,24 @@ const FormingGroups = () => {
                     <div className="content-container">
                         
                         <div className="question-container">
-                            <h1>Setting Up Smart Teams</h1>
+                            <h1>Forming Groups</h1>
                         </div>
 
                         {/* Survey Configuration Details */}
                         {surveyConfig && (
-                            <div className="question-container smart-teams-config-section">
-                                <div className="config-grid">
-                                    <div className="config-box">
-                                        <p className="config-label">Class Name</p>
-                                        <p className="config-value">{surveyConfig.courseName || 'N/A'}</p>
+                            <div className="question-container forming-groups-config-section">
+                                <div className="forming-groups-config-grid">
+                                    <div className="forming-groups-config-box">
+                                        <p className="forming-groups-config-label">Class Name</p>
+                                        <p className="forming-groups-config-value">{surveyConfig.courseName || 'N/A'}</p>
                                     </div>
-                                    <div className="config-box">
-                                        <p className="config-label">Total Submissions</p>
-                                        <p className="config-value">{students.length}</p>
+                                    <div className="forming-groups-config-box">
+                                        <p className="forming-groups-config-label">Total Submissions</p>
+                                        <p className="forming-groups-config-value">{students.length}</p>
                                     </div>
-                                    <div className="config-box">
-                                        <p className="config-label">Group Size</p>
-                                        <p className="config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
+                                    <div className="forming-groups-config-box">
+                                        <p className="forming-groups-config-label">Group Size</p>
+                                        <p className="forming-groups-config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +210,7 @@ const FormingGroups = () => {
                         <div className="results-layout">
                             {/* LEFT SIDE: teams grid */}
                             <div className="student-groups-container">
-                                <div className="groups-grid">
+                                <div className="forming-groups-grid">
                                     {groups.map((group) => (
                                         <div key={group.number} className="group-card">
                                             <div className="group-header">
@@ -245,7 +245,7 @@ const FormingGroups = () => {
 
                         </div>
 
-                        <div className="button-tray smart-teams-button-tray">
+                        <div className="button-tray forming-groups-button-tray">
                             <button className="button" onClick={() => navigate(-1)}>
                                 Back to Submissions
                             </button>
