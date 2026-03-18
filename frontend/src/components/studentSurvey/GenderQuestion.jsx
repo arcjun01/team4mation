@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 
-export default function GenderQuestion({ setGender }) {
+export default function GenderQuestion({ setGender, error, onClear }) {
 
   const [genderSelection, setGenderSelection] = useState("");
 
   const handleGenderChange = (value) => {
 
-    setGenderSelection(value); // controls which radio is selected
+    setGenderSelection(value);
 
     if (value === "prefer_not") {
-      setGender("other"); // backend value
+      setGender("other");
     } else {
       setGender(value);
     }
-  };
+    if (error) onClear();  };
 
   return (
     <div className="question-container">
@@ -32,7 +32,6 @@ export default function GenderQuestion({ setGender }) {
           <span>Male</span>
         </label>
 
-
         <label className="survey-option">
           <input
             type="radio"
@@ -43,7 +42,6 @@ export default function GenderQuestion({ setGender }) {
           />
           <span>Female</span>
         </label>
-
 
         <label className="survey-option">
           <input
@@ -56,14 +54,12 @@ export default function GenderQuestion({ setGender }) {
           <span>Other</span>
         </label>
 
-
         {genderSelection === "other" && (
           <div className="other-input">
             <label>Please specify:</label>
             <input type="text" />
           </div>
         )}
-
 
         <label className="survey-option">
           <input
@@ -77,6 +73,7 @@ export default function GenderQuestion({ setGender }) {
         </label>
 
       </div>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

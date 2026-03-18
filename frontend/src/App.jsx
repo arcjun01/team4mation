@@ -14,9 +14,9 @@ function App() {
       <div className="main-container">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/setup" element={<><Header /><InstructorTeamSetup /></>} />
+          <Route path="/setup" element={<InstructorTeamSetup />} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
-          <Route path="/survey/:id" element={<><Header /><StudentSurvey /></>} />
+          <Route path="/survey/:id" element={<StudentSurvey />} />
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
           <Route path="/thank-you" element={<ThankYouPage />} />

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-export default function CommitmentQuestion({ commitment, setCommitment }) {
+export default function CommitmentQuestion({ commitment, setCommitment, error, onClear }) {
   const [commitmentSelection, setCommitmentSelection] = useState(commitment || "");
 
   const handleCommitmentChange = (value) => {
     setCommitmentSelection(value);
-    setCommitment(value);
-  };
+    setCommitment(value);    if (error) onClear();  };
 
   return (
     <div className="question-container">
@@ -57,6 +56,7 @@ export default function CommitmentQuestion({ commitment, setCommitment }) {
           <span>10+ hr (Whatever it takes)</span>
         </label>
       </div>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

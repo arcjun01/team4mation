@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/SurveySubmissions.css';
+import Header from './Header';
 
 const SurveySubmissions = () => {
     const { id: urlId } = useParams();
@@ -52,12 +53,11 @@ const SurveySubmissions = () => {
 };
 
     return (
-        <div className="page-wrapper">
-            <div className="main-viewport">
+        <>
+            <Header variant="page" />
+            <div className="survey-page-wrapper top-gap">
                 <div className="content-container">
-                    <div className="title-card">
-                        <h1>{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1>
-                    </div>
+                    <div className='question-container'><h1>{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1></div>
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
@@ -71,14 +71,13 @@ const SurveySubmissions = () => {
                                         </p>
                                     ))
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                                    <div className="student-name" style={{ textAlign: 'center', padding: '20px' }}>
                                         <p style={{ color: '#666', marginBottom: '15px' }}>
                                             {stats.submissions} students have submitted, but names are encrypted.
                                         </p>
                                         <button 
-                                            className="footer-btn" 
+                                            className="decrypt-button" 
                                             onClick={() => navigate(`/instructor/decrypt/${surveyId}`)}
-                                            style={{ backgroundColor: '#b2dfdb', color: '#004d40' }}
                                         >
                                             Decrypt & View Names
                                         </button>
@@ -106,15 +105,6 @@ const SurveySubmissions = () => {
                                 <button 
                                     className="close-survey-btn" 
                                     onClick={handleCloseSurvey}
-                                    style={{ 
-                                        width: '100%', 
-                                        padding: '10px', 
-                                        backgroundColor: '#ff8a65', 
-                                        color: 'white',
-                                        border: 'none', 
-                                        borderRadius: '6px', 
-                                        cursor: 'pointer'
-                                    }}
                                 >
                                     Close Survey
                                 </button>
@@ -127,13 +117,13 @@ const SurveySubmissions = () => {
                     </div>
 
                     <div className="button-tray" style={{ marginTop: '30px' }}>
-                        <button className="btn-secondary" onClick={() => navigate(`/generate-link/${surveyId}`)}>
+                        <button className="button" onClick={() => navigate(`/generate-link/${surveyId}`)}>
                             Back to Link
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
