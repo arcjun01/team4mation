@@ -89,103 +89,78 @@ const SmartTeamsDashboard = () => {
             <Header variant="page" />
             
             <div className="survey-page-wrapper top-gap">
-                <div className="content-container">
-                    
-                    <div className="header-flex" style={{ textAlign: 'center', marginBottom: '30px' }}>
-                        <h1>Setting Up Smart Teams</h1>
-                    </div>
-
-                    {/* Survey Configuration Details */}
-                    {surveyConfig && (
-                        <div className="question-container" style={{ marginBottom: '30px' }}>
-                            <h2 style={{ marginBottom: '20px', fontSize: '18px' }}>Survey Configuration</h2>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
-                                <div style={{ padding: '15px', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
-                                    <p style={{ margin: '0 0 5px 0', color: '#666', fontSize: '12px', fontWeight: '500' }}>Class Name</p>
-                                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', color: '#333' }}>{surveyConfig.courseName || 'N/A'}</p>
-                                </div>
-                                <div style={{ padding: '15px', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
-                                    <p style={{ margin: '0 0 5px 0', color: '#666', fontSize: '12px', fontWeight: '500' }}>Total Submissions</p>
-                                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', color: '#333' }}>{students.length}</p>
-                                </div>
-                                <div style={{ padding: '15px', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
-                                    <p style={{ margin: '0 0 5px 0', color: '#666', fontSize: '12px', fontWeight: '500' }}>Group Size</p>
-                                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', color: '#333' }}>{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
-                                </div>
-                            </div>
+                <div className="main-container">
+                    <div className="content-container">
+                        
+                        <div className="question-container">
+                            <h1>Setting Up Smart Teams</h1>
                         </div>
-                    )}
 
-                    <div className="header-flex" style={{ textAlign: 'center', marginBottom: '30px' }}>
-                        <h2>Generated Groups</h2>
-                    </div>
-
-                    <div className="results-layout">
-                        {/* LEFT SIDE: teams grid */}
-                        <div className="student-groups-container">
-                            <div className="groups-grid" style={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: '1fr', 
-                                gap: '20px', 
-                                width: '100%' 
-                            }}>
-                                {groups.map((group) => (
-                                    <div key={group.number} className="group-card">
-                                        <div className="group-header">
-                                            <span>Group #{group.number}</span>
-                                        </div>
-                                        <div className="group-body">
-                                            <div className="group-table-header">
-                                                <div className="group-table-cell">#</div>
-                                                <div className="group-table-cell">Name</div>
-                                                <div className="group-table-cell">Gender</div>
-                                                <div className="group-table-cell">GPA</div>
-                                                <div className="group-table-cell">Availability</div>
-                                            </div>
-                                            {group.members.map((student, idx) => {
-                                                const availability = getStudentAvailability(student);
-                                                const availabilityText = availability.length > 0 
-                                                    ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
-                                                    : 'N/A';
-                                                return (
-                                                    <div key={idx} className="group-table-row">
-                                                        <div className="group-table-cell">{idx + 1}</div>
-                                                        <div className="group-table-cell">{student.name}</div>
-                                                        <div className="group-table-cell">{student.gender}</div>
-                                                        <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                                                        <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                        {/* Survey Configuration Details */}
+                        {surveyConfig && (
+                            <div className="question-container smart-teams-config-section">
+                                <div className="config-grid">
+                                    <div className="config-box">
+                                        <p className="config-label">Class Name</p>
+                                        <p className="config-value">{surveyConfig.courseName || 'N/A'}</p>
                                     </div>
-                                ))}
+                                    <div className="config-box">
+                                        <p className="config-label">Total Submissions</p>
+                                        <p className="config-value">{students.length}</p>
+                                    </div>
+                                    <div className="config-box">
+                                        <p className="config-label">Group Size</p>
+                                        <p className="config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
+                                    </div>
+                                </div>
                             </div>
+                        )}
+
+                        <div className="results-layout">
+                            {/* LEFT SIDE: teams grid */}
+                            <div className="student-groups-container">
+                                <div className="groups-grid">
+                                    {groups.map((group) => (
+                                        <div key={group.number} className="group-card">
+                                            <div className="group-header">
+                                                <span>Group #{group.number}</span>
+                                            </div>
+                                            <div className="group-body">
+                                                <div className="group-table-header">
+                                                    <div className="group-table-cell">#</div>
+                                                    <div className="group-table-cell">Name</div>
+                                                    <div className="group-table-cell">Gender</div>
+                                                    <div className="group-table-cell">GPA</div>
+                                                    <div className="group-table-cell">Availability</div>
+                                                </div>
+                                                {group.members.map((student, idx) => {
+                                                    const availability = getStudentAvailability(student);
+                                                    const availabilityText = availability.length > 0 
+                                                        ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
+                                                        : 'N/A';
+                                                    return (
+                                                        <div key={idx} className="group-table-row">
+                                                            <div className="group-table-cell">{idx + 1}</div>
+                                                            <div className="group-table-cell">{student.name}</div>
+                                                            <div className="group-table-cell">{student.gender}</div>
+                                                            <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
+                                                            <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                         </div>
 
-                        {/* RIGHT SIDE: Using the stats sidebar container for action buttons */}
-                        <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-                            {/* <button className="sidebar-btn" title="Export" style={{ padding: '12px', width: '100%' }}>
-                                <span className="icon">Share 📤</span>
-                            </button> */}
-                            {/* <button className="sidebar-btn" title="Reshuffle" style={{ padding: '12px', width: '100%' }}>
-                                <span className="icon">Shuffle 🔄</span> 
-                            </button> */}
-                            <button 
-                                className="sidebar-btn trash-btn" 
-                                onClick={() => setIsPurgeModalOpen(true)}
-                                title="Purge Data"
-                                style={{ padding: '12px', width: '100%' }}
-                            >
-                                <span className="icon">Purge 🗑️</span>
+                        <div className="button-tray smart-teams-button-tray">
+                            <button className="button" onClick={() => navigate(-1)}>
+                                Back to Submissions
                             </button>
                         </div>
-                    </div>
-
-                    <div className="button-tray" style={{ marginTop: '40px', textAlign: 'center' }}>
-                        <button className="button" onClick={() => navigate(-1)}>
-                            Back to Submissions
-                        </button>
                     </div>
                 </div>
             </div>

@@ -12,7 +12,7 @@ import SmartTeamsDashboard from "./components/SmartTeamsDashboard";
 function App() {
   return (
     <Router basename="/team4mation">
-      <div className="main-container">
+      <>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/setup" element={<InstructorTeamSetup />} />
@@ -24,7 +24,7 @@ function App() {
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </div>
+      </>
     </Router>
   );
 }
