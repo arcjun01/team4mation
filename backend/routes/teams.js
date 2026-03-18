@@ -4,6 +4,76 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
+// Debug endpoint to check availability data and student entries
+router.get("/debug/data", async (req, res) => {
+    try {
+        const [students] = await pool.execute("SELECT student_id, gender, gpa, survey_id FROM student_survey_entries LIMIT 5");
+        const [availability] = await pool.execute("SELECT * FROM availability LIMIT 10");
+        
+        res.json({
+            students: {
+                count: students.length,
+                data: students
+            },
+            availability: {
+                count: availability.length,
+                data: availability
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Debug endpoint to populate test availability data
+router.post("/debug/seed-availability", async (req, res) => {
+    try {
+        // Get all students with survey entries
+        const [students] = await pool.execute(
+            "SELECT DISTINCT se.student_id FROM student_survey_entries se"
+        );
+
+        if (students.length === 0) {
+            return res.json({ message: "No student survey entries found" });
+        }
+
+        // Sample availability data
+        const sampleSlots = [
+            { day: "MON", time: "9 AM" },
+            { day: "MON", time: "1 PM" },
+            { day: "TUE", time: "10 AM" },
+            { day: "TUE", time: "2 PM" },
+            { day: "WED", time: "9 AM" },
+            { day: "THU", time: "11 AM" },
+            { day: "FRI", time: "10 AM" }
+        ];
+
+        let inserted = 0;
+        for (const student of students) {
+            const studentId = student.student_id;
+            // Assign random subset of slots to each student
+            const numSlots = Math.floor(Math.random() * 4) + 2;
+            const selectedSlots = sampleSlots.sort(() => 0.5 - Math.random()).slice(0, numSlots);
+            
+            for (const slot of selectedSlots) {
+                await pool.execute(
+                    "INSERT IGNORE INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
+                    [studentId, slot.day, slot.time]
+                );
+                inserted++;
+            }
+        }
+
+        res.json({
+            message: "Test availability data seeded",
+            studentsProcessed: students.length,
+            recordsInserted: inserted
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.get("/form", async (req, res) => {
     //const { surveyId } = req.params;
     const teamSize = parseInt(req.query.teamSize) || 3;
@@ -49,9 +119,25 @@ router.get("/:surveyId", async (req, res) => {
             [surveyId]
         );
 
-        // 3. Pass settings to grouper
+        // 3. Fetch availability data only for students in this survey
+        const [availabilityRows] = await pool.execute(
+            "SELECT a.* FROM availability a INNER JOIN student_survey_entries se ON a.student_id = se.student_id WHERE se.survey_id = ?",
+            [surveyId]
+        );
+
+        // 4. Pass settings to grouper
         // We pass team_limit and limit_type so the algorithm knows the instructor's choice
-        const teams = grouper(studentRows, settings.team_limit, settings.limit_type); 
+        const teams = grouper(studentRows, availabilityRows, settings.team_limit, settings.limit_type); 
+
+        // Build availability map for frontend
+        const availabilityMap = {};
+        for (const availability of availabilityRows) {
+            const key = availability.student_id;
+            if (!availabilityMap[key]) {
+                availabilityMap[key] = [];
+            }
+            availabilityMap[key].push(`${availability.day_of_week}-${availability.time_slot}`);
+        }
 
         res.json({
             message: `Teams generated for course: ${settings.course_name}`,
@@ -60,7 +146,8 @@ router.get("/:surveyId", async (req, res) => {
                 teamLimit: settings.team_limit,
                 limitType: settings.limit_type
             },
-            teams: teams
+            teams: teams,
+            availabilityMap: availabilityMap
         });
 
     } catch (err) {
