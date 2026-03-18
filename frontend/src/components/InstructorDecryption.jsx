@@ -29,7 +29,8 @@ function InstructorDecryption() {
             // SUCCESS: Pass the decrypted names and survey ID to the dashboard
             navigate(`/survey-submissions/${id}`, { 
                 state: { 
-                    names: data.names, 
+                    names: data.names,
+                    userKey: decryptionKey, 
                     id: id 
                 } 
             });

@@ -8,10 +8,10 @@ const SurveySubmissions = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Names passed back after the instructor enters the decryption key
-    const decryptedResults = location.state?.names || [];
+    // Use surveyId from URL or Location State
     const surveyId = urlId || location.state?.id;
 
+    // State for statistics
     const [stats, setStats] = useState({ 
         classSize: 0, 
         submissions: 0, 
@@ -21,40 +21,66 @@ const SurveySubmissions = () => {
 
     const [isClosed, setIsClosed] = useState(false);
     
+    // Manage decrypted names in state so they can update automatically
+    const [decryptedNames, setDecryptedNames] = useState(location.state?.names || []);
+    const [userKey, setUserKey] = useState(location.state?.userKey || ""); // Store the key for polling
+
     useEffect(() => {
-    if (surveyId) {
-        fetch(`http://localhost:3001/api/survey/stats/${surveyId}`)
-            .then(res => res.json())
-            .then(data => {
-                setStats(data);
-                // Set the initial UI state based on the DB status
-                if (data.status === 'closed') {
-                    setIsClosed(true);
+        if (surveyId) {
+            const fetchAndDecrypt = async () => {
+                try {
+                    // 1. Fetch basic stats (count, class size)
+                    const statsRes = await fetch(`http://localhost:3001/api/survey/stats/${surveyId}`);
+                    const statsData = await statsRes.json();
+                    setStats(statsData);
+
+                    // Update UI if survey is closed
+                    if (statsData.status === 'closed') {
+                        setIsClosed(true);
+                    }
+
+                    // 2. If we have a key, fetch and decrypt names automatically
+                    if (userKey) {
+                        const revealRes = await fetch('http://localhost:3001/api/survey/reveal', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ decryptionKey: userKey, surveyId })
+                        });
+                        const revealData = await revealRes.json();
+                        if (revealData.success) {
+                            setDecryptedNames(revealData.names);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Polling fetch error:", error);
                 }
-            })
-            .catch(err => console.error("Stats fetch error:", err));
+            };
+
+            fetchAndDecrypt();
+            const interval = setInterval(fetchAndDecrypt, 5000); // Update every 5 seconds
+            return () => clearInterval(interval);
         }
-    }, [surveyId]);
+    }, [surveyId, userKey]);
 
     const handleCloseSurvey = async () => {
-    if (window.confirm("Stop all new submissions? Students will no longer be able to access the link.")) {
-        try {
-            const response = await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
-                method: 'PATCH'
-            });
+        if (window.confirm("Stop all new submissions? Students will no longer be able to access the link.")) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
+                    method: 'PATCH'
+                });
 
-            if (response.ok) {
-                setIsClosed(true);
+                if (response.ok) {
+                    setIsClosed(true);
+                }
+            } catch (error) {
+                alert("Error closing survey. Check your connection.");
             }
-        } catch (error) {
-            alert("Error closing survey. Check your connection.");
         }
-    }
-};
+    };
 
     const confirmGenerateAndNavigate = () => {
-        // This navigates to the dashboard where the groups are finally displayed
-        navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedResults } });
+        // Navigates to the dashboard passing the latest decrypted names
+        navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedNames } });
     };
 
     return (
@@ -62,14 +88,16 @@ const SurveySubmissions = () => {
             <Header variant="page" />
             <div className="survey-page-wrapper top-gap">
                 <div className="content-container">
-                    <div className='question-container'><h1>{decryptedResults.length > 0 ? "Current Student List" : "Submission Status"}</h1></div>
+                    <div className='question-container'>
+                        <h1>{decryptedNames.length > 0 ? "Current Student List" : "Submission Status"}</h1>
+                    </div>
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
                         <div className="survey-card student-list-container">
                             <div className="student-grid">
-                                {decryptedResults.length > 0 ? (
-                                    decryptedResults.map((student, index) => (
+                                {decryptedNames.length > 0 ? (
+                                    decryptedNames.map((student, index) => (
                                         <p key={index} className="student-name">
                                             <span className="name-number">{index + 1}.</span> 
                                             {student.name}
@@ -105,7 +133,6 @@ const SurveySubmissions = () => {
 
                             <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #eee' }} />
 
-                            {/* CLOSE BUTTON: Always visible unless already closed */}
                             {!isClosed ? (
                                 <button 
                                     className="close-survey-btn" 
@@ -119,8 +146,7 @@ const SurveySubmissions = () => {
                                 </div>
                             )}
 
-                            {/* GENERATE GROUPS BUTTON (Only if names are decrypted) */}
-                            {decryptedResults.length > 0 && (
+                            {decryptedNames.length > 0 && (
                                 <button 
                                     className="generate-groups-btn" 
                                     onClick={confirmGenerateAndNavigate}
