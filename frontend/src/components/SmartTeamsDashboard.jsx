@@ -19,9 +19,16 @@ const SmartTeamsDashboard = () => {
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
-        if (!student || !student.id) return [];
-        // Use the student id directly as it's the numeric student_id from the database
-        return availabilityMap[student.id] || [];
+        if (!student || !student.id) {
+            console.warn("⚠️ Student object missing id:", student);
+            return [];
+        }
+        const availability = availabilityMap[student.id] || [];
+        if (availability.length === 0 && Object.keys(availabilityMap).length > 0) {
+            // Only warn if we have availability data for other students
+            console.warn(`⚠️ No availability found for student ID ${student.id}. Available ID keys:`, Object.keys(availabilityMap).slice(0, 5));
+        }
+        return availability;
     };
 
     // Fetch survey configuration and availability data on mount
@@ -38,9 +45,20 @@ const SmartTeamsDashboard = () => {
                 const teamResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
                 if (teamResponse.ok) {
                     const teamData = await teamResponse.json();
+                    console.log("🔍 Team data received:", {
+                        studentCount: teamData.studentCount,
+                        availabilityMapKeys: Object.keys(teamData.availabilityMap || {}).length,
+                        availabilityMapSample: Object.entries(teamData.availabilityMap || {}).slice(0, 3)
+                    });
+                    
                     if (teamData.availabilityMap) {
+                        console.log("✅ Availability map found with", Object.keys(teamData.availabilityMap).length, "students");
                         setAvailabilityMap(teamData.availabilityMap);
+                    } else {
+                        console.warn("⚠️ No availability map in response");
                     }
+                } else {
+                    console.error("❌ Failed to fetch team data:", teamResponse.status);
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);

@@ -71,17 +71,43 @@ router.post("/", async (req, res) => {
     const availabilityData = JSON.parse(availability_schedule);
     const insertPromises = [];
 
+    console.log(`\n=== AVAILABILITY SUBMISSION DEBUG for Student ID: ${studentId} ===`);
+    console.log(`Received availability_schedule:`, JSON.stringify(availabilityData, null, 2));
+    const selectedSlots = Object.keys(availabilityData).filter(key => availabilityData[key]);
+    console.log(`Number of selected slots: ${selectedSlots.length}`);
+    console.log(`Selected time slots: ${selectedSlots.slice(0, 5).join(', ')}${selectedSlots.length > 5 ? '...' : ''}`);
+
     for (const [key, isSelected] of Object.entries(availabilityData)) {
       if (isSelected) {
-        const [dayOfWeek, timeSlot] = key.split("-");
+        // More robust parsing: find the last "-" to separate day from time
+        const lastDashIndex = key.lastIndexOf("-");
+        if (lastDashIndex === -1) {
+          console.warn(`Invalid key format: "${key}" - skipping`);
+          continue;
+        }
+        const dayOfWeek = key.substring(0, lastDashIndex);
+        const timeSlot = key.substring(lastDashIndex + 1);
+        
+        console.log(`Processing: key="${key}" -> day="${dayOfWeek.trim()}", time="${timeSlot.trim()}"`);
+        
+        // Validate day of week
+        const validDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        if (!validDays.includes(dayOfWeek.trim())) {
+          console.warn(`Invalid day: "${dayOfWeek}" - skipping`);
+          continue;
+        }
+        
         insertPromises.push(
           connection.execute(
             "INSERT INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
-            [studentId, dayOfWeek, timeSlot]
+            [studentId, dayOfWeek.trim(), timeSlot.trim()]
           )
         );
       }
     }
+
+    console.log(`Total availability records to insert: ${insertPromises.length}`);
+    console.log(`=== END DEBUG ===\n`);
 
     // Execute all availability inserts
     if (insertPromises.length > 0) {

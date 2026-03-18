@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/teams", teamRoutes);
+app.use("/api/teams", teamRoutes);
 app.use("/api/survey", surveyRoutes);
 app.use("/api/config", configRoutes);
 
