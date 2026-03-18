@@ -4,6 +4,69 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
+// Endpoint to fetch all open surveys
+router.get("/open", async (req, res) => {
+    try {
+        const [surveys] = await pool.execute(
+            "SELECT id, course_name, class_size, team_limit, limit_type, status FROM survey_configurations WHERE status = 'open' ORDER BY created_at DESC"
+        );
+        
+        res.json({
+            surveys: surveys || [],
+            count: surveys.length
+        });
+    } catch (err) {
+        console.error("Error fetching open surveys:", err);
+        res.status(500).json({ error: "Failed to fetch surveys" });
+    }
+});
+
+// Endpoint to fetch all students and their availability for a survey (no decryption needed)
+router.get("/:surveyId/submissions", async (req, res) => {
+    const { surveyId } = req.params;
+
+    try {
+        // Fetch all students for this survey
+        const [students] = await pool.execute(
+            "SELECT student_id, gender, gpa, commitment FROM student_survey_entries WHERE survey_id = ? ORDER BY student_id ASC",
+            [surveyId]
+        );
+
+        if (students.length === 0) {
+            return res.json({
+                students: [],
+                availabilityMap: {},
+                count: 0
+            });
+        }
+
+        // Fetch availability data for all students in this survey
+        const [availability] = await pool.execute(
+            "SELECT a.* FROM availability a INNER JOIN student_survey_entries se ON a.student_id = se.student_id WHERE se.survey_id = ? ORDER BY a.student_id ASC",
+            [surveyId]
+        );
+
+        // Build availability map
+        const availabilityMap = {};
+        for (const slot of availability) {
+            const key = slot.student_id;
+            if (!availabilityMap[key]) {
+                availabilityMap[key] = [];
+            }
+            availabilityMap[key].push(`${slot.day_of_week}-${slot.time_slot}`);
+        }
+
+        res.json({
+            students: students,
+            availabilityMap: availabilityMap,
+            count: students.length
+        });
+    } catch (err) {
+        console.error("Error fetching submissions:", err);
+        res.status(500).json({ error: "Failed to fetch submissions" });
+    }
+});
+
 // Debug endpoint to check availability data and student entries
 router.get("/debug/data", async (req, res) => {
     try {

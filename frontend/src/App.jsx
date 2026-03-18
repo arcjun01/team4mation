@@ -8,6 +8,7 @@ import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
 import SurveySubmissions from "./components/SurveySubmissions";
 import SmartTeamsDashboard from "./components/SmartTeamsDashboard";
+import ViewSurveys from "./components/ViewSurveys";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/setup" element={<InstructorTeamSetup />} />
+          <Route path="/view-surveys" element={<ViewSurveys />} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
           <Route path="/survey/:id" element={<StudentSurvey />} />
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />

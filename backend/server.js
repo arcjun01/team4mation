@@ -16,6 +16,7 @@ app.use(express.json());
 app.use("/teams", teamRoutes);
 app.use("/api/survey", surveyRoutes);
 app.use("/api/config", configRoutes);
+app.use("/api/surveys", teamRoutes);
 
 // Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {

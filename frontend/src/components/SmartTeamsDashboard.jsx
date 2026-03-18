@@ -9,56 +9,66 @@ const SmartTeamsDashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Receiving names from the previous page state
-    const students = location.state?.names || [];
-    const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
-    const [isPurging, setIsPurging] = useState(false);
+    // State for submissions and teams
+    const [students, setStudents] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const [availabilityMap, setAvailabilityMap] = useState({});
+    const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
+    const [isPurging, setIsPurging] = useState(false);
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
-        if (!student || !student.id) return [];
-        // Use the student id directly as it's the numeric student_id from the database
-        return availabilityMap[student.id] || [];
+        if (!student || !student.student_id) return [];
+        return availabilityMap[student.student_id] || [];
     };
 
-    // Fetch survey configuration and availability data on mount
+    // Fetch survey configuration, students, and generate teams
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/config/${id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setSurveyConfig(data);
+                setLoading(true);
+                setError('');
+
+                // 1. Fetch survey configuration
+                const configResponse = await fetch(`http://localhost:3001/api/config/${id}`);
+                if (configResponse.ok) {
+                    const configData = await configResponse.json();
+                    setSurveyConfig(configData);
                 }
 
-                // Fetch availability data from the team generation endpoint
-                const teamResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
-                if (teamResponse.ok) {
-                    const teamData = await teamResponse.json();
-                    if (teamData.availabilityMap) {
-                        setAvailabilityMap(teamData.availabilityMap);
+                // 2. Fetch student submissions and availability
+                const submissionsResponse = await fetch(`http://localhost:3001/api/surveys/${id}/submissions`);
+                if (!submissionsResponse.ok) {
+                    throw new Error('Failed to fetch student submissions');
+                }
+                
+                const submissionsData = await submissionsResponse.json();
+                setStudents(submissionsData.students || []);
+                setAvailabilityMap(submissionsData.availabilityMap || {});
+
+                // 3. Fetch grouped teams data
+                const teamsResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
+                if (teamsResponse.ok) {
+                    const teamsData = await teamsResponse.json();
+                    if (teamsData.groups && teamsData.groups.length > 0) {
+                        setGroups(teamsData.groups);
                     }
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                setError('Failed to load survey data. Please try again.');
             } finally {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, [id]);
 
-    // Basic logic to split students into groups of 4. This is a demo only!
-    const groups = [];
-    for (let i = 0; i < students.length; i += 4) {
-        groups.push({
-            number: (i / 4) + 1,
-            members: students.slice(i, i + 4)
-        });
-    }
+        if (id) {
+            fetchData();
+        }
+    }, [id]);
 
     // Function to handle the actual data deletion
     const handlePurge = async () => {
@@ -71,7 +81,6 @@ const SmartTeamsDashboard = () => {
             if (response.ok) {
                 setIsPurgeModalOpen(false);
                 alert("All survey responses have been successfully erased from the database.");
-                // After purging, we send the user back since the data is gone
                 navigate(`/survey-submissions/${id}`, { state: { names: [] } });
             } else {
                 alert("Failed to purge data. Please check your server connection.");
@@ -83,6 +92,44 @@ const SmartTeamsDashboard = () => {
             setIsPurging(false);
         }
     };
+
+    if (loading) {
+        return (
+            <>
+                <Header variant="page" />
+                <div className="survey-page-wrapper top-gap">
+                    <div className="main-container">
+                        <div className="content-container">
+                            <div className="question-container">
+                                <h1>Loading Smart Teams...</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    if (error) {
+        return (
+            <>
+                <Header variant="page" />
+                <div className="survey-page-wrapper top-gap">
+                    <div className="main-container">
+                        <div className="content-container">
+                            <div className="question-container">
+                                <h1>Error Loading Survey</h1>
+                                <p style={{color: 'red'}}>{error}</p>
+                                <button className="button" onClick={() => navigate('/view-surveys')}>
+                                    Back to Surveys
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -110,55 +157,104 @@ const SmartTeamsDashboard = () => {
                                     </div>
                                     <div className="config-box">
                                         <p className="config-label">Group Size</p>
-                                        <p className="config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
+                                        <p className="config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || surveyConfig.team_limit || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
                         <div className="results-layout">
-                            {/* LEFT SIDE: teams grid */}
+                            {/* Teams grid */}
                             <div className="student-groups-container">
                                 <div className="groups-grid">
-                                    {groups.map((group) => (
-                                        <div key={group.number} className="group-card">
-                                            <div className="group-header">
-                                                <span>Group #{group.number}</span>
-                                            </div>
-                                            <div className="group-body">
-                                                <div className="group-table-header">
-                                                    <div className="group-table-cell">#</div>
-                                                    <div className="group-table-cell">Name</div>
-                                                    <div className="group-table-cell">Gender</div>
-                                                    <div className="group-table-cell">GPA</div>
-                                                    <div className="group-table-cell">Availability</div>
+                                    {groups.length > 0 ? (
+                                        groups.map((group) => (
+                                            <div key={group.number || group.id} className="group-card">
+                                                <div className="group-header">
+                                                    <span>Group #{group.number || group.id}</span>
                                                 </div>
-                                                {group.members.map((student, idx) => {
-                                                    const availability = getStudentAvailability(student);
-                                                    const availabilityText = availability.length > 0 
-                                                        ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
-                                                        : 'N/A';
-                                                    return (
-                                                        <div key={idx} className="group-table-row">
-                                                            <div className="group-table-cell">{idx + 1}</div>
-                                                            <div className="group-table-cell">{student.name}</div>
-                                                            <div className="group-table-cell">{student.gender}</div>
-                                                            <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                                                            <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
-                                                        </div>
-                                                    );
-                                                })}
+                                                <div className="group-body">
+                                                    <div className="group-table-header">
+                                                        <div className="group-table-cell">#</div>
+                                                        <div className="group-table-cell">ID</div>
+                                                        <div className="group-table-cell">Gender</div>
+                                                        <div className="group-table-cell">GPA</div>
+                                                        <div className="group-table-cell">Commitment</div>
+                                                        <div className="group-table-cell">Availability</div>
+                                                    </div>
+                                                    {group.members && group.members.map((student, idx) => {
+                                                        const availability = getStudentAvailability(student);
+                                                        const availabilityText = availability.length > 0 
+                                                            ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
+                                                            : 'N/A';
+                                                        return (
+                                                            <div key={idx} className="group-table-row">
+                                                                <div className="group-table-cell">{idx + 1}</div>
+                                                                <div className="group-table-cell">{student.student_id}</div>
+                                                                <div className="group-table-cell">{student.gender}</div>
+                                                                <div className="group-table-cell">{student.gpa ? parseFloat(student.gpa).toFixed(2) : 'N/A'}</div>
+                                                                <div className="group-table-cell">{student.commitment || 'N/A'}</div>
+                                                                <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
+                                        ))
+                                    ) : students.length > 0 ? (
+                                        // If we have students but no groups, display them in groups of 4
+                                        Array.from({ length: Math.ceil(students.length / 4) }).map((_, groupIdx) => {
+                                            const groupMembers = students.slice(groupIdx * 4, (groupIdx + 1) * 4);
+                                            return (
+                                                <div key={groupIdx} className="group-card">
+                                                    <div className="group-header">
+                                                        <span>Group #{groupIdx + 1}</span>
+                                                    </div>
+                                                    <div className="group-body">
+                                                        <div className="group-table-header">
+                                                            <div className="group-table-cell">#</div>
+                                                            <div className="group-table-cell">ID</div>
+                                                            <div className="group-table-cell">Gender</div>
+                                                            <div className="group-table-cell">GPA</div>
+                                                            <div className="group-table-cell">Commitment</div>
+                                                            <div className="group-table-cell">Availability</div>
+                                                        </div>
+                                                        {groupMembers.map((student, idx) => {
+                                                            const availability = getStudentAvailability(student);
+                                                            const availabilityText = availability.length > 0 
+                                                                ? availability.slice(0, 2).join(', ') + (availability.length > 2 ? '...' : '')
+                                                                : 'N/A';
+                                                            return (
+                                                                <div key={idx} className="group-table-row">
+                                                                    <div className="group-table-cell">{idx + 1}</div>
+                                                                    <div className="group-table-cell">{student.student_id}</div>
+                                                                    <div className="group-table-cell">{student.gender}</div>
+                                                                    <div className="group-table-cell">{student.gpa ? parseFloat(student.gpa).toFixed(2) : 'N/A'}</div>
+                                                                    <div className="group-table-cell">{student.commitment || 'N/A'}</div>
+                                                                    <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="group-card" style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px'}}>
+                                            <p>No student submissions yet.</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
 
                         </div>
 
                         <div className="button-tray smart-teams-button-tray">
-                            <button className="button" onClick={() => navigate(-1)}>
-                                Back to Submissions
+                            <button className="button" onClick={() => navigate('/view-surveys')}>
+                                Back to Surveys
+                            </button>
+                            <button className="button" onClick={() => setIsPurgeModalOpen(true)} style={{background: '#dc3545'}}>
+                                Purge Data
                             </button>
                         </div>
                     </div>
