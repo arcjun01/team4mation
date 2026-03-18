@@ -4,6 +4,7 @@ import cors from "cors";
 import { pool } from "./db.js";
 import teamRoutes from "./routes/teams.js";
 import surveyRoutes from "./routes/survey.js";
+import configRoutes from "./routes/config.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/teams", teamRoutes);
 app.use("/api/survey", surveyRoutes);
+app.use("/api/config", configRoutes);
 
 // Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {
@@ -72,25 +74,6 @@ app.get("/api/config/:surveyId", async (req, res) => {
     } catch (err) {
         console.error("Config Fetch Error:", err.message);
         res.status(500).json({ error: "Internal Server Error", details: err.message });
-    }
-});
-
-// Config Save Endpoint
-app.post("/api/config/save-setup", async (req, res) => {
-    console.log("POST request received at /api/config/save-setup");
-
-    const { uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse, encryptionSalt } = req.body;
-
-    try {
-        await pool.execute(
-            "INSERT INTO survey_configurations (id, course_name, class_size, min_size, max_size, use_gpa, prev_course, encryption_salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [uniqueId, courseName, classSize, minSize, maxSize, useGpa, prevCourse || null, encryptionSalt || null]
-        );
-        console.log("Success: Saved to DB");
-        res.status(201).json({ success: true });
-    } catch (err) {
-        console.error("Database Error:", err.message);
-        res.status(500).json({ error: "DB Error", details: err.message });
     }
 });
 

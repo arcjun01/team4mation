@@ -12,16 +12,29 @@ const InstructorTeamSetup = () => {
   const [formData, setFormData] = useState(savedData || {
     courseName: '',
     classSize: '',
-    minSize: '',
-    maxSize: '',
+    teamLimit: '4',
+    limitType: 'Maximum', 
     prevCourse: '',
-    useGpa: false 
+    useGpa: false
   });
 
   // States for Secure Key Generation
   const [generatedKey, setGeneratedKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [hasSavedKey, setHasSavedKey] = useState(false);
+
+  // Helper function to calculate errors for inline display
+  const getTeamSizeError = () => {
+    const limit = parseInt(formData.teamLimit, 10);
+    const totalStudents = parseInt(formData.classSize, 10);
+
+    if (!formData.teamLimit) return null;
+    if (limit < 2) return "Team size must be at least 2."; 
+    if (totalStudents && limit > totalStudents) return "Team size cannot be greater than the total class size."; 
+    return null;
+  };
+
+  const teamSizeError = getTeamSizeError();
 
   // Function to generate a secure 32-character hex key
   const handleGenerateKey = () => {
@@ -38,29 +51,32 @@ const InstructorTeamSetup = () => {
       setFormData({ ...formData, [name]: checked });
       return;
     }
-
-    if ((name === 'minSize' || name === 'maxSize' || name === 'classSize') && value !== '') {
+    if ((name === 'teamLimit' || name === 'classSize' ) && value !== '') {
       if (parseInt(value) < 1) return;
     }
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
-    const uniqueId = crypto.randomUUID(); 
+    if (teamSizeError) return;
 
-    // Coerce numbers and handle optional fields
-    const payload = {
-      uniqueId,
-      courseName: formData.courseName,
-      classSize: formData.classSize !== '' ? parseInt(formData.classSize, 10) : null,
-      maxSize: formData.maxSize !== '' ? parseInt(formData.maxSize, 10) : null,
-      minSize: formData.minSize !== '' ? parseInt(formData.minSize, 10) : null,
-      useGpa: formData.useGpa ? 1 : 0,
-      prevCourse: formData.prevCourse || null,
-      // Include the salt/key for the database encryption process
-      encryptionSalt: generatedKey
-    };
+    const uniqueId = crypto.randomUUID(); 
+    
+  const payload = {
+    uniqueId: uniqueId ?? null,
+    courseName: formData.courseName?.trim() || null,
+    classSize: parseInt(formData.classSize, 10) || null,
+    teamLimit: parseInt(formData.teamLimit, 10) || null,
+    limitType: formData.limitType ?? 'Maximum',
+    useGpa: formData.useGpa ? 1 : 0,
+    prevCourse: (formData.useGpa && formData.prevCourse?.trim() !== "") 
+      ? formData.prevCourse.trim() 
+      : null,
+    encryptionSalt: generatedKey || null
+};
+
+    console.log("Payload being sent:", payload);
 
     try {
       const response = await fetch('http://localhost:3001/api/config/save-setup', {
@@ -70,17 +86,16 @@ const InstructorTeamSetup = () => {
       });
 
       if (response.ok) {
-        console.log("Configuration Saved to DB");
         navigate(`/generate-link/${uniqueId}`, { state: { formData } });
       } else {
-        const errorInfo = await response.json().catch(() => ({}));
-        console.error("Save failed:", errorInfo);
-        alert("Failed to save configuration: " + (errorInfo.error || response.statusText));
+        const errorInfo = await response.json();
+        console.error("Save failed details:", errorInfo.details); 
+        alert("Failed to save: " + errorInfo.details);
       }
     } catch (error) {
-      console.error("Error connecting to server:", error);
+      console.error("Connection Error:", error);
     }
-  };
+};
 
   return (
     <div className="setup-wrapper">
@@ -123,32 +138,35 @@ const InstructorTeamSetup = () => {
           </div>
 
           <div className="setup-card">
-            <label>Enter or adjust group size</label>
-            <div className="size-inputs">
-              <div className="input-group">
-                <span>Min:</span>
-                <input 
-                  className="input-field numeric-input"
-                  type="number" 
-                  name="minSize" 
-                  placeholder="3" 
-                  value={formData.minSize} 
-                  onChange={handleChange} 
-                />
-              </div>
-              <div className="input-group">
-                <span>Max:</span>
-                <input 
-                  className="input-field numeric-input"
-                  type="number" 
-                  required
-                  name="maxSize" 
-                  placeholder="4" 
-                  value={formData.maxSize} 
-                  onChange={handleChange} 
-                />
-              </div>
+            <label>Select team size constraint</label>
+            <div className="size-inputs" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <select 
+                name="limitType" 
+                value={formData.limitType} 
+                onChange={handleChange}
+                className="input-field"
+                style={{ padding: '8px' }}
+              >
+                <option value="Minimum">Minimum</option>
+                <option value="Maximum">Maximum</option>
+              </select>
+              <span>team size:</span>
+              <input 
+                name="teamLimit" 
+                type="number" 
+                required 
+                className={`input-field numeric-input ${teamSizeError ? 'input-error' : ''}`} 
+                value={formData.teamLimit} 
+                onChange={handleChange} 
+                placeholder="4" 
+              />
             </div>
+            {/* Inline Error Message displayed under the question */}
+            {teamSizeError && (
+              <p style={{ color: '#d9534f', fontSize: '14px', marginTop: '8px', fontWeight: 'bold' }}>
+                {teamSizeError}
+              </p>
+            )}
           </div>
 
           {/* Question 4: The Optional Checkbox */}
