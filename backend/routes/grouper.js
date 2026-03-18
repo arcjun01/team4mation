@@ -1,6 +1,7 @@
-const studentData = require("../data/students.js")
+import studentData from "../data/students.js"
+import { availabilityData } from "../data/availibility.js"
+
 const { students, settings } = studentData
-const { availabilityData } = require("../data/availibility.js")
 
 function buildAvailabilityMap(availabilityData) {
     const availibilityMap = {}
