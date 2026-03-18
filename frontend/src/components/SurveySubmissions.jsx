@@ -53,7 +53,7 @@ const SurveySubmissions = () => {
 };
 
     const confirmGenerateAndNavigate = () => {
-        // This navigates to the dashboard where the groups are actually displayed
+        // This navigates to the dashboard where the groups are finally displayed
         navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedResults } });
     };
 
