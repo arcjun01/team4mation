@@ -30,7 +30,7 @@
 
 /* LEFT SIDE: STUDENT LIST */
 .student-list-container {
-    flex: 2; /* Takes up more space */
+    flex: 2;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -39,6 +39,21 @@
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     min-height: 350px;
+    outline: none !important;
+    border: none !important;
+    transition: box-shadow 0.2s ease;
+}
+
+.student-list-container:focus,
+.student-list-container:focus-within,
+.student-list-container:focus-visible {
+    outline: none !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+.survey-card {
+    outline: none;
+    border: none;
 }
 
 .student-table {
