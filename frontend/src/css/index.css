@@ -67,9 +67,7 @@ h2 {
 
 .content-container {
     padding-bottom: 40px;
-    width: 100%;
-
-    min-width: 880px;
+    width: 880px;
     padding-left: 20px;
     padding-right: 20px;
     box-sizing: border-box;

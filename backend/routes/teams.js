@@ -159,6 +159,51 @@ router.get("/form", async (req, res) => {
     }
 });
 
+// Debug endpoint to check availability data in DB
+router.get("/debug/availability/:surveyId", async (req, res) => {
+    const { surveyId } = req.params;
+    try {
+        // Get students for this survey
+        const [students] = await pool.execute(
+            "SELECT student_id FROM student_survey_entries WHERE survey_id = ? LIMIT 10",
+            [surveyId]
+        );
+
+        // Get availability for these students
+        const [availability] = await pool.execute(
+            "SELECT * FROM availability a INNER JOIN student_survey_entries se ON a.student_id = se.student_id WHERE se.survey_id = ? LIMIT 20",
+            [surveyId]
+        );
+
+        // Check if ANY availability exists for these student IDs
+        let allAvailability = [];
+        if (students.length > 0) {
+            const studentIds = students.map(s => s.student_id);
+            const [check] = await pool.execute(
+                `SELECT * FROM availability WHERE student_id IN (${studentIds.join(',')}) LIMIT 30`
+            );
+            allAvailability = check;
+        }
+
+        res.json({
+            surveyId,
+            studentCount: students.length,
+            studentIds: students.map(s => s.student_id),
+            availabilityViaJoin: {
+                count: availability.length,
+                sample: availability.slice(0, 5)
+            },
+            allAvailabilityForStudents: {
+                count: allAvailability.length,
+                sample: allAvailability.slice(0, 5)
+            }
+        });
+    } catch (err) {
+        console.error("Debug error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // For instructor: This generates and shows the teams based on DB data and survey config
 router.get("/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
@@ -188,6 +233,16 @@ router.get("/:surveyId", async (req, res) => {
             [surveyId]
         );
 
+        console.log(`\n=== AVAILABILITY DEBUG for Survey ${surveyId} ===`);
+        console.log(`Total students in survey: ${studentRows.length}`);
+        console.log(`Total availability records found: ${availabilityRows.length}`);
+        if (availabilityRows.length === 0) {
+            console.log("⚠️  WARNING: No availability data found for this survey!");
+            console.log("Checking if availability table has any data for these student IDs...");
+            const studentIds = studentRows.map(s => s.student_id);
+            console.log(`Student IDs in survey: ${studentIds.slice(0, 5).join(', ')}${studentIds.length > 5 ? '...' : ''}`);
+        }
+
         // 4. Pass settings to grouper
         // We pass team_limit and limit_type so the algorithm knows the instructor's choice
         const teams = grouper(studentRows, availabilityRows, settings.team_limit, settings.limit_type); 
@@ -201,6 +256,9 @@ router.get("/:surveyId", async (req, res) => {
             }
             availabilityMap[key].push(`${availability.day_of_week}-${availability.time_slot}`);
         }
+
+        console.log(`Availability map keys: ${Object.keys(availabilityMap).slice(0, 5).join(', ')}${Object.keys(availabilityMap).length > 5 ? '...' : ''}`);
+        console.log(`=== END DEBUG ===\n`);
 
         res.json({
             message: `Teams generated for course: ${settings.course_name}`,
