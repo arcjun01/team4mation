@@ -135,17 +135,18 @@
 .button {
   padding: 12px 30px;
   border: none;
-  border-radius: 6px;
-  font-size: 1em;
-  font-weight: 600;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #6c757d;
-  color: white;
+  background: #b2c9c5;
+  color: #2c3e50;  
+
 }
 
 .button:hover:not(:disabled) {
-  background: #5a6268;
+  background: #789893;;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
