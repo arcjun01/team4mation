@@ -146,7 +146,7 @@
 }
 
 .button:hover:not(:disabled) {
-  background: #5a6268;
+  background: #789893;;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
