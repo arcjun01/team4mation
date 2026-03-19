@@ -60,7 +60,7 @@ const ViewSurveys = () => {
   return (
     <div className="page-wrapper">
       <Header variant="large" />
-      <div className="page-container top-gap-large">
+      <div className="view-surveys-container top-gap-large">
         <div className="survey-container">
           <div className="question-container">
             <h1>Select a Survey</h1>
@@ -100,11 +100,7 @@ const ViewSurveys = () => {
                         <p><strong>Previous Course:</strong> {survey.prev_course}</p>
                       )}
                     </div>
-                    {selectedSurveyId === survey.id && (
-                      <div className="survey-card-selected-indicator">
-                        ✓ Selected
-                      </div>
-                    )}
+                  
                   </div>
                 ))}
               </div>
