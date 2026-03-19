@@ -5,10 +5,11 @@ dotenv.config({ path: '.env' });
 
 /**
  * Seed script to populate the database with test data.
- * Creates three survey configurations with different constraints:
+ * Creates four survey configurations with different constraints:
  * 1. Class with only 1 female
  * 2. Class with max group size 4 and class size 23
  * 3. Class with min group size 2 and class size 19
+ * 4. Class with max group size 3 and class size 20
  */
 
 const seedData = async () => {
@@ -713,16 +714,251 @@ const seedData = async () => {
         }
         console.log(`✓ ${availabilityDataSurvey3.length} availability slots added for survey 3\n`);
 
+        // ===== SURVEY CONFIGURATION 4: Max Group Size 3, Class Size 20 =====
+        const surveyId4 = 'SURVEY-MAX-GROUP-3-001';
+        console.log(`📝 Creating Survey Configuration 4: ${surveyId4}`);
+
+        await connection.query(
+            `INSERT INTO survey_configurations (id, course_name, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                surveyId4,
+                'Database Design',
+                20,
+                3,
+                'max',
+                false,
+                null,
+                'salt_survey_4',
+                'open',
+            ]
+        );
+        console.log('✓ Survey configuration 4 created');
+
+        // Insert 20 students for survey 4
+        const survey4Students = [
+            { name: 'encrypted_s4_m1', iv: 'iv_s4_m1', gender: 'Male', gpa: 3.4, commitment: 4 },
+            { name: 'encrypted_s4_m2', iv: 'iv_s4_m2', gender: 'Male', gpa: 2.8, commitment: 3 },
+            { name: 'encrypted_s4_m3', iv: 'iv_s4_m3', gender: 'Male', gpa: 3.7, commitment: 2 },
+            { name: 'encrypted_s4_m4', iv: 'iv_s4_m4', gender: 'Male', gpa: 3.1, commitment: 1 },
+            { name: 'encrypted_s4_m5', iv: 'iv_s4_m5', gender: 'Male', gpa: 2.9, commitment: 4 },
+            { name: 'encrypted_s4_m6', iv: 'iv_s4_m6', gender: 'Male', gpa: 3.5, commitment: 3 },
+            { name: 'encrypted_s4_m7', iv: 'iv_s4_m7', gender: 'Male', gpa: 2.6, commitment: 2 },
+            { name: 'encrypted_s4_f1', iv: 'iv_s4_f1', gender: 'Female', gpa: 3.8, commitment: 1 },
+            { name: 'encrypted_s4_f2', iv: 'iv_s4_f2', gender: 'Female', gpa: 3.2, commitment: 4 },
+            { name: 'encrypted_s4_f3', iv: 'iv_s4_f3', gender: 'Female', gpa: 2.7, commitment: 3 },
+            { name: 'encrypted_s4_f4', iv: 'iv_s4_f4', gender: 'Female', gpa: 3.9, commitment: 2 },
+            { name: 'encrypted_s4_f5', iv: 'iv_s4_f5', gender: 'Female', gpa: 3.0, commitment: 1 },
+            { name: 'encrypted_s4_f6', iv: 'iv_s4_f6', gender: 'Female', gpa: 3.3, commitment: 4 },
+            { name: 'encrypted_s4_f7', iv: 'iv_s4_f7', gender: 'Female', gpa: 2.4, commitment: 3 },
+            { name: 'encrypted_s4_o1', iv: 'iv_s4_o1', gender: 'Other', gpa: 3.6, commitment: 2 },
+            { name: 'encrypted_s4_o2', iv: 'iv_s4_o2', gender: 'Other', gpa: 2.5, commitment: 1 },
+            { name: 'encrypted_s4_o3', iv: 'iv_s4_o3', gender: 'Other', gpa: 3.4, commitment: 4 },
+            { name: 'encrypted_s4_o4', iv: 'iv_s4_o4', gender: 'Other', gpa: 3.1, commitment: 3 },
+            { name: 'encrypted_s4_o5', iv: 'iv_s4_o5', gender: 'Other', gpa: 2.8, commitment: 2 },
+            { name: 'encrypted_s4_o6', iv: 'iv_s4_o6', gender: 'Other', gpa: 3.7, commitment: 1 },
+        ];
+
+        for (const student of survey4Students) {
+            await connection.query(
+                `INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, commitment, survey_id) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+                [student.name, student.iv, student.gender, student.gpa, student.commitment, surveyId4]
+            );
+        }
+        console.log(`✓ ${survey4Students.length} students added to survey 4\n`);
+
+        // Availability data for survey 4 students (20 students)
+        const availabilityDataSurvey4 = [
+            // GROUP 1 (students 1-3) - Common: MON 7-9 PM, THU 6-8 PM
+            { student_id: 67, day_of_week: 'MON', time_slot: '7 PM' },
+            { student_id: 67, day_of_week: 'MON', time_slot: '8 PM' },
+            { student_id: 67, day_of_week: 'MON', time_slot: '9 PM' },
+            { student_id: 67, day_of_week: 'THU', time_slot: '6 PM' },
+            { student_id: 67, day_of_week: 'THU', time_slot: '7 PM' },
+            { student_id: 67, day_of_week: 'THU', time_slot: '8 PM' },
+            { student_id: 67, day_of_week: 'SAT', time_slot: '12 PM' },
+
+            { student_id: 68, day_of_week: 'MON', time_slot: '7 PM' },
+            { student_id: 68, day_of_week: 'MON', time_slot: '8 PM' },
+            { student_id: 68, day_of_week: 'MON', time_slot: '9 PM' },
+            { student_id: 68, day_of_week: 'THU', time_slot: '6 PM' },
+            { student_id: 68, day_of_week: 'THU', time_slot: '7 PM' },
+            { student_id: 68, day_of_week: 'THU', time_slot: '8 PM' },
+            { student_id: 68, day_of_week: 'WED', time_slot: '4 PM' },
+
+            { student_id: 69, day_of_week: 'MON', time_slot: '7 PM' },
+            { student_id: 69, day_of_week: 'MON', time_slot: '8 PM' },
+            { student_id: 69, day_of_week: 'MON', time_slot: '9 PM' },
+            { student_id: 69, day_of_week: 'THU', time_slot: '6 PM' },
+            { student_id: 69, day_of_week: 'THU', time_slot: '7 PM' },
+            { student_id: 69, day_of_week: 'THU', time_slot: '8 PM' },
+            { student_id: 69, day_of_week: 'FRI', time_slot: '6 PM' },
+
+            // GROUP 2 (students 4-6) - Common: TUE 3-5 PM, SAT 2-4 PM
+            { student_id: 70, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 70, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 70, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 70, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 70, day_of_week: 'SAT', time_slot: '3 PM' },
+            { student_id: 70, day_of_week: 'SAT', time_slot: '4 PM' },
+            { student_id: 70, day_of_week: 'SUN', time_slot: '11 AM' },
+
+            { student_id: 71, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 71, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 71, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 71, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 71, day_of_week: 'SAT', time_slot: '3 PM' },
+            { student_id: 71, day_of_week: 'SAT', time_slot: '4 PM' },
+            { student_id: 71, day_of_week: 'MON', time_slot: '6 PM' },
+
+            { student_id: 72, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 72, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 72, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 72, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 72, day_of_week: 'SAT', time_slot: '3 PM' },
+            { student_id: 72, day_of_week: 'SAT', time_slot: '4 PM' },
+            { student_id: 72, day_of_week: 'FRI', time_slot: '5 PM' },
+
+            // GROUP 3 (students 7-9) - Common: WED 5-7 PM, FRI 11 AM-1 PM
+            { student_id: 73, day_of_week: 'WED', time_slot: '5 PM' },
+            { student_id: 73, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 73, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 73, day_of_week: 'FRI', time_slot: '11 AM' },
+            { student_id: 73, day_of_week: 'FRI', time_slot: '12 PM' },
+            { student_id: 73, day_of_week: 'FRI', time_slot: '1 PM' },
+            { student_id: 73, day_of_week: 'TUE', time_slot: '7 PM' },
+
+            { student_id: 74, day_of_week: 'WED', time_slot: '5 PM' },
+            { student_id: 74, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 74, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 74, day_of_week: 'FRI', time_slot: '11 AM' },
+            { student_id: 74, day_of_week: 'FRI', time_slot: '12 PM' },
+            { student_id: 74, day_of_week: 'FRI', time_slot: '1 PM' },
+            { student_id: 74, day_of_week: 'SUN', time_slot: '3 PM' },
+
+            { student_id: 75, day_of_week: 'WED', time_slot: '5 PM' },
+            { student_id: 75, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 75, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 75, day_of_week: 'FRI', time_slot: '11 AM' },
+            { student_id: 75, day_of_week: 'FRI', time_slot: '12 PM' },
+            { student_id: 75, day_of_week: 'FRI', time_slot: '1 PM' },
+            { student_id: 75, day_of_week: 'THU', time_slot: '4 PM' },
+
+            // GROUP 4 (students 10-12) - Common: TUE 1-3 PM, SUN 6-8 PM
+            { student_id: 76, day_of_week: 'TUE', time_slot: '1 PM' },
+            { student_id: 76, day_of_week: 'TUE', time_slot: '2 PM' },
+            { student_id: 76, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 76, day_of_week: 'SUN', time_slot: '6 PM' },
+            { student_id: 76, day_of_week: 'SUN', time_slot: '7 PM' },
+            { student_id: 76, day_of_week: 'SUN', time_slot: '8 PM' },
+            { student_id: 76, day_of_week: 'MON', time_slot: '2 PM' },
+
+            { student_id: 77, day_of_week: 'TUE', time_slot: '1 PM' },
+            { student_id: 77, day_of_week: 'TUE', time_slot: '2 PM' },
+            { student_id: 77, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 77, day_of_week: 'SUN', time_slot: '6 PM' },
+            { student_id: 77, day_of_week: 'SUN', time_slot: '7 PM' },
+            { student_id: 77, day_of_week: 'SUN', time_slot: '8 PM' },
+            { student_id: 77, day_of_week: 'WED', time_slot: '3 PM' },
+
+            { student_id: 78, day_of_week: 'TUE', time_slot: '1 PM' },
+            { student_id: 78, day_of_week: 'TUE', time_slot: '2 PM' },
+            { student_id: 78, day_of_week: 'TUE', time_slot: '3 PM' },
+            { student_id: 78, day_of_week: 'SUN', time_slot: '6 PM' },
+            { student_id: 78, day_of_week: 'SUN', time_slot: '7 PM' },
+            { student_id: 78, day_of_week: 'SUN', time_slot: '8 PM' },
+            { student_id: 78, day_of_week: 'SAT', time_slot: '1 PM' },
+
+            // GROUP 5 (students 13-15) - Common: THU 9-11 AM, SAT 6-8 PM
+            { student_id: 79, day_of_week: 'THU', time_slot: '9 AM' },
+            { student_id: 79, day_of_week: 'THU', time_slot: '10 AM' },
+            { student_id: 79, day_of_week: 'THU', time_slot: '11 AM' },
+            { student_id: 79, day_of_week: 'SAT', time_slot: '6 PM' },
+            { student_id: 79, day_of_week: 'SAT', time_slot: '7 PM' },
+            { student_id: 79, day_of_week: 'SAT', time_slot: '8 PM' },
+            { student_id: 79, day_of_week: 'FRI', time_slot: '9 AM' },
+
+            { student_id: 80, day_of_week: 'THU', time_slot: '9 AM' },
+            { student_id: 80, day_of_week: 'THU', time_slot: '10 AM' },
+            { student_id: 80, day_of_week: 'THU', time_slot: '11 AM' },
+            { student_id: 80, day_of_week: 'SAT', time_slot: '6 PM' },
+            { student_id: 80, day_of_week: 'SAT', time_slot: '7 PM' },
+            { student_id: 80, day_of_week: 'SAT', time_slot: '8 PM' },
+            { student_id: 80, day_of_week: 'MON', time_slot: '11 AM' },
+
+            { student_id: 81, day_of_week: 'THU', time_slot: '9 AM' },
+            { student_id: 81, day_of_week: 'THU', time_slot: '10 AM' },
+            { student_id: 81, day_of_week: 'THU', time_slot: '11 AM' },
+            { student_id: 81, day_of_week: 'SAT', time_slot: '6 PM' },
+            { student_id: 81, day_of_week: 'SAT', time_slot: '7 PM' },
+            { student_id: 81, day_of_week: 'SAT', time_slot: '8 PM' },
+            { student_id: 81, day_of_week: 'TUE', time_slot: '8 PM' },
+
+            // GROUP 6 (students 16-18) - Common: WED 10 AM-12 PM, FRI 4-6 PM
+            { student_id: 82, day_of_week: 'WED', time_slot: '10 AM' },
+            { student_id: 82, day_of_week: 'WED', time_slot: '11 AM' },
+            { student_id: 82, day_of_week: 'WED', time_slot: '12 PM' },
+            { student_id: 82, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 82, day_of_week: 'FRI', time_slot: '5 PM' },
+            { student_id: 82, day_of_week: 'FRI', time_slot: '6 PM' },
+            { student_id: 82, day_of_week: 'THU', time_slot: '3 PM' },
+
+            { student_id: 83, day_of_week: 'WED', time_slot: '10 AM' },
+            { student_id: 83, day_of_week: 'WED', time_slot: '11 AM' },
+            { student_id: 83, day_of_week: 'WED', time_slot: '12 PM' },
+            { student_id: 83, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 83, day_of_week: 'FRI', time_slot: '5 PM' },
+            { student_id: 83, day_of_week: 'FRI', time_slot: '6 PM' },
+            { student_id: 83, day_of_week: 'SUN', time_slot: '2 PM' },
+
+            { student_id: 84, day_of_week: 'WED', time_slot: '10 AM' },
+            { student_id: 84, day_of_week: 'WED', time_slot: '11 AM' },
+            { student_id: 84, day_of_week: 'WED', time_slot: '12 PM' },
+            { student_id: 84, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 84, day_of_week: 'FRI', time_slot: '5 PM' },
+            { student_id: 84, day_of_week: 'FRI', time_slot: '6 PM' },
+            { student_id: 84, day_of_week: 'MON', time_slot: '5 PM' },
+
+            // GROUP 7 (students 19-20) - Common: MON 1-3 PM, THU 2-4 PM
+            { student_id: 85, day_of_week: 'MON', time_slot: '1 PM' },
+            { student_id: 85, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 85, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 85, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 85, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 85, day_of_week: 'THU', time_slot: '4 PM' },
+            { student_id: 85, day_of_week: 'WED', time_slot: '8 PM' },
+
+            { student_id: 86, day_of_week: 'MON', time_slot: '1 PM' },
+            { student_id: 86, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 86, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 86, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 86, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 86, day_of_week: 'THU', time_slot: '4 PM' },
+            { student_id: 86, day_of_week: 'SAT', time_slot: '9 AM' },
+        ];
+
+        for (const availability of availabilityDataSurvey4) {
+            await connection.query(
+                `INSERT INTO availability (student_id, day_of_week, time_slot) 
+         VALUES (?, ?, ?)`,
+                [availability.student_id, availability.day_of_week, availability.time_slot]
+            );
+        }
+        console.log(`✓ ${availabilityDataSurvey4.length} availability slots added for survey 4\n`);
+
         console.log('✅ Database seeding completed successfully!');
         console.log('\n📊 Summary:');
         console.log('   - Survey 1 (Female Only): 24 students');
         console.log('   - Survey 2 (Max Group 4): 23 students');
         console.log('   - Survey 3 (Min Group 2): 19 students');
-        console.log('   - Total: 66 students seeded');
+        console.log('   - Survey 4 (Max Group 3): 20 students');
+        console.log('   - Total: 86 students seeded');
         console.log(`   - Survey 1 availability slots: ${availabilityDataSurvey1.length}`);
         console.log(`   - Survey 2 availability slots: ${availabilityDataSurvey2.length}`);
         console.log(`   - Survey 3 availability slots: ${availabilityDataSurvey3.length}`);
-        console.log(`   - Total availability slots: ${availabilityDataSurvey1.length + availabilityDataSurvey2.length + availabilityDataSurvey3.length}\n`);
+        console.log(`   - Survey 4 availability slots: ${availabilityDataSurvey4.length}`);
+        console.log(`   - Total availability slots: ${availabilityDataSurvey1.length + availabilityDataSurvey2.length + availabilityDataSurvey3.length + availabilityDataSurvey4.length}\n`);
 
     } catch (error) {
         console.error('❌ Error seeding database:', error);
