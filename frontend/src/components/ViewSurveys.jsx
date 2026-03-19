@@ -88,9 +88,6 @@ const ViewSurveys = () => {
                   >
                     <div className="survey-card-header">
                       <h3>{survey.course_name}</h3>
-                      <span className={`status-badge ${survey.status}`}>
-                        {survey.status === 'open' ? 'Open' : 'Closed'}
-                      </span>
                     </div>
                     <div className="survey-card-details">
                       <p><strong>Survey ID:</strong> {survey.id}</p>
