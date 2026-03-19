@@ -205,154 +205,242 @@ const seedData = async () => {
 
         // Availability data for survey 1 students (24 students)
         // Groups are formed: 1-4, 5-8, 9-12, 13-16, 17-20, 21-24
-        // Ensure each group has overlapping times
+        // Using realistic time blocks (consecutive hours representing availability windows)
         const availabilityDataSurvey1 = [
-            // GROUP 1 (students 1-4) - Common times: MON 9 AM, WED 2 PM, FRI 3 PM
-            { student_id: 1, day_of_week: 'MON', time_slot: '9 AM' },
+            // GROUP 1 (students 1-4) - Common: MON 4-7 PM, WED 2-4 PM, FRI 3-5 PM
+            // S1: 6 slots covering common times
+            { student_id: 1, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 1, day_of_week: 'MON', time_slot: '5 PM' },
+            { student_id: 1, day_of_week: 'MON', time_slot: '6 PM' },
             { student_id: 1, day_of_week: 'WED', time_slot: '2 PM' },
+            { student_id: 1, day_of_week: 'WED', time_slot: '3 PM' },
             { student_id: 1, day_of_week: 'FRI', time_slot: '3 PM' },
-            { student_id: 1, day_of_week: 'TUE', time_slot: '10 AM' },
-            { student_id: 1, day_of_week: 'THU', time_slot: '1 PM' },
-            { student_id: 1, day_of_week: 'SAT', time_slot: '11 AM' },
+            { student_id: 1, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 1, day_of_week: 'FRI', time_slot: '5 PM' },
             
-            { student_id: 2, day_of_week: 'MON', time_slot: '9 AM' },
+            // S2: same common times
+            { student_id: 2, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 2, day_of_week: 'MON', time_slot: '5 PM' },
+            { student_id: 2, day_of_week: 'MON', time_slot: '6 PM' },
+            { student_id: 2, day_of_week: 'MON', time_slot: '7 PM' },
             { student_id: 2, day_of_week: 'WED', time_slot: '2 PM' },
+            { student_id: 2, day_of_week: 'WED', time_slot: '3 PM' },
+            { student_id: 2, day_of_week: 'WED', time_slot: '4 PM' },
             { student_id: 2, day_of_week: 'FRI', time_slot: '3 PM' },
-            { student_id: 2, day_of_week: 'TUE', time_slot: '2 PM' },
-            { student_id: 2, day_of_week: 'THU', time_slot: '4 PM' },
+            { student_id: 2, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 2, day_of_week: 'FRI', time_slot: '5 PM' },
+            { student_id: 2, day_of_week: 'FRI', time_slot: '6 PM' },
             
-            { student_id: 3, day_of_week: 'MON', time_slot: '9 AM' },
+            // S3: same common times
+            { student_id: 3, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 3, day_of_week: 'MON', time_slot: '5 PM' },
+            { student_id: 3, day_of_week: 'MON', time_slot: '6 PM' },
             { student_id: 3, day_of_week: 'WED', time_slot: '2 PM' },
+            { student_id: 3, day_of_week: 'WED', time_slot: '3 PM' },
             { student_id: 3, day_of_week: 'FRI', time_slot: '3 PM' },
+            { student_id: 3, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 3, day_of_week: 'FRI', time_slot: '5 PM' },
             { student_id: 3, day_of_week: 'SAT', time_slot: '9 AM' },
-            { student_id: 3, day_of_week: 'SUN', time_slot: '2 PM' },
             
-            { student_id: 4, day_of_week: 'MON', time_slot: '9 AM' },
+            // S4: same common times
+            { student_id: 4, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 4, day_of_week: 'MON', time_slot: '5 PM' },
+            { student_id: 4, day_of_week: 'MON', time_slot: '6 PM' },
+            { student_id: 4, day_of_week: 'MON', time_slot: '7 PM' },
             { student_id: 4, day_of_week: 'WED', time_slot: '2 PM' },
+            { student_id: 4, day_of_week: 'WED', time_slot: '3 PM' },
             { student_id: 4, day_of_week: 'FRI', time_slot: '3 PM' },
-            { student_id: 4, day_of_week: 'TUE', time_slot: '11 AM' },
+            { student_id: 4, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 4, day_of_week: 'SUN', time_slot: '10 AM' },
             
-            // GROUP 2 (students 5-8) - Common times: TUE 10 AM, THU 1 PM, SAT 11 AM
+            // GROUP 2 (students 5-8) - Common: TUE 10 AM-12 PM, THU 1-3 PM, SAT 10-11 AM
+            // S5: 8 slots
             { student_id: 5, day_of_week: 'TUE', time_slot: '10 AM' },
+            { student_id: 5, day_of_week: 'TUE', time_slot: '11 AM' },
+            { student_id: 5, day_of_week: 'TUE', time_slot: '12 PM' },
             { student_id: 5, day_of_week: 'THU', time_slot: '1 PM' },
+            { student_id: 5, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 5, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 5, day_of_week: 'SAT', time_slot: '10 AM' },
             { student_id: 5, day_of_week: 'SAT', time_slot: '11 AM' },
-            { student_id: 5, day_of_week: 'MON', time_slot: '2 PM' },
-            { student_id: 5, day_of_week: 'WED', time_slot: '3 PM' },
-            { student_id: 5, day_of_week: 'FRI', time_slot: '10 AM' },
             
+            // S6: same common times
             { student_id: 6, day_of_week: 'TUE', time_slot: '10 AM' },
+            { student_id: 6, day_of_week: 'TUE', time_slot: '11 AM' },
+            { student_id: 6, day_of_week: 'TUE', time_slot: '12 PM' },
             { student_id: 6, day_of_week: 'THU', time_slot: '1 PM' },
+            { student_id: 6, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 6, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 6, day_of_week: 'SAT', time_slot: '10 AM' },
             { student_id: 6, day_of_week: 'SAT', time_slot: '11 AM' },
             { student_id: 6, day_of_week: 'MON', time_slot: '9 AM' },
-            { student_id: 6, day_of_week: 'FRI', time_slot: '2 PM' },
             
+            // S7: same common times
             { student_id: 7, day_of_week: 'TUE', time_slot: '10 AM' },
+            { student_id: 7, day_of_week: 'TUE', time_slot: '11 AM' },
+            { student_id: 7, day_of_week: 'TUE', time_slot: '12 PM' },
             { student_id: 7, day_of_week: 'THU', time_slot: '1 PM' },
+            { student_id: 7, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 7, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 7, day_of_week: 'SAT', time_slot: '10 AM' },
             { student_id: 7, day_of_week: 'SAT', time_slot: '11 AM' },
-            { student_id: 7, day_of_week: 'WED', time_slot: '9 AM' },
-            { student_id: 7, day_of_week: 'SUN', time_slot: '10 AM' },
+            { student_id: 7, day_of_week: 'WED', time_slot: '6 PM' },
             
+            // S8: same common times
             { student_id: 8, day_of_week: 'TUE', time_slot: '10 AM' },
+            { student_id: 8, day_of_week: 'TUE', time_slot: '11 AM' },
+            { student_id: 8, day_of_week: 'TUE', time_slot: '12 PM' },
             { student_id: 8, day_of_week: 'THU', time_slot: '1 PM' },
+            { student_id: 8, day_of_week: 'THU', time_slot: '2 PM' },
+            { student_id: 8, day_of_week: 'THU', time_slot: '3 PM' },
+            { student_id: 8, day_of_week: 'SAT', time_slot: '10 AM' },
             { student_id: 8, day_of_week: 'SAT', time_slot: '11 AM' },
-            { student_id: 8, day_of_week: 'MON', time_slot: '10 AM' },
-            { student_id: 8, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 8, day_of_week: 'FRI', time_slot: '5 PM' },
             
-            // GROUP 3 (students 9-12) - Common times: WED 11 AM, FRI 2 PM, SUN 3 PM
+            // GROUP 3 (students 9-12) - Common: WED 9-11 AM, FRI 2-4 PM
+            // S9: 7 slots
+            { student_id: 9, day_of_week: 'WED', time_slot: '9 AM' },
+            { student_id: 9, day_of_week: 'WED', time_slot: '10 AM' },
             { student_id: 9, day_of_week: 'WED', time_slot: '11 AM' },
             { student_id: 9, day_of_week: 'FRI', time_slot: '2 PM' },
-            { student_id: 9, day_of_week: 'SUN', time_slot: '3 PM' },
+            { student_id: 9, day_of_week: 'FRI', time_slot: '3 PM' },
+            { student_id: 9, day_of_week: 'FRI', time_slot: '4 PM' },
             { student_id: 9, day_of_week: 'MON', time_slot: '1 PM' },
-            { student_id: 9, day_of_week: 'TUE', time_slot: '3 PM' },
             
+            // S10: same common times
+            { student_id: 10, day_of_week: 'WED', time_slot: '9 AM' },
+            { student_id: 10, day_of_week: 'WED', time_slot: '10 AM' },
             { student_id: 10, day_of_week: 'WED', time_slot: '11 AM' },
             { student_id: 10, day_of_week: 'FRI', time_slot: '2 PM' },
-            { student_id: 10, day_of_week: 'SUN', time_slot: '3 PM' },
+            { student_id: 10, day_of_week: 'FRI', time_slot: '3 PM' },
+            { student_id: 10, day_of_week: 'FRI', time_slot: '4 PM' },
             { student_id: 10, day_of_week: 'THU', time_slot: '9 AM' },
-            { student_id: 10, day_of_week: 'SAT', time_slot: '1 PM' },
             
+            // S11: same common times
+            { student_id: 11, day_of_week: 'WED', time_slot: '9 AM' },
+            { student_id: 11, day_of_week: 'WED', time_slot: '10 AM' },
             { student_id: 11, day_of_week: 'WED', time_slot: '11 AM' },
             { student_id: 11, day_of_week: 'FRI', time_slot: '2 PM' },
-            { student_id: 11, day_of_week: 'SUN', time_slot: '3 PM' },
-            { student_id: 11, day_of_week: 'MON', time_slot: '3 PM' },
-            { student_id: 11, day_of_week: 'TUE', time_slot: '9 AM' },
+            { student_id: 11, day_of_week: 'FRI', time_slot: '3 PM' },
+            { student_id: 11, day_of_week: 'FRI', time_slot: '4 PM' },
+            { student_id: 11, day_of_week: 'TUE', time_slot: '1 PM' },
             
+            // S12: same common times
+            { student_id: 12, day_of_week: 'WED', time_slot: '9 AM' },
+            { student_id: 12, day_of_week: 'WED', time_slot: '10 AM' },
             { student_id: 12, day_of_week: 'WED', time_slot: '11 AM' },
             { student_id: 12, day_of_week: 'FRI', time_slot: '2 PM' },
+            { student_id: 12, day_of_week: 'FRI', time_slot: '3 PM' },
+            { student_id: 12, day_of_week: 'FRI', time_slot: '4 PM' },
             { student_id: 12, day_of_week: 'SUN', time_slot: '3 PM' },
-            { student_id: 12, day_of_week: 'TUE', time_slot: '11 AM' },
-            { student_id: 12, day_of_week: 'THU', time_slot: '2 PM' },
             
-            // GROUP 4 (students 13-16) - Common times: MON 2 PM, THU 10 AM, SAT 3 PM
+            // GROUP 4 (students 13-16) - Common: MON 2-4 PM, THU 9-10 AM
+            // S13: 7 slots
             { student_id: 13, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 13, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 13, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 13, day_of_week: 'THU', time_slot: '9 AM' },
             { student_id: 13, day_of_week: 'THU', time_slot: '10 AM' },
-            { student_id: 13, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 13, day_of_week: 'WED', time_slot: '1 PM' },
             { student_id: 13, day_of_week: 'FRI', time_slot: '9 AM' },
             
+            // S14: same common times
             { student_id: 14, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 14, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 14, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 14, day_of_week: 'THU', time_slot: '9 AM' },
             { student_id: 14, day_of_week: 'THU', time_slot: '10 AM' },
-            { student_id: 14, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 14, day_of_week: 'TUE', time_slot: '1 PM' },
             { student_id: 14, day_of_week: 'SUN', time_slot: '11 AM' },
             
+            // S15: same common times
             { student_id: 15, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 15, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 15, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 15, day_of_week: 'THU', time_slot: '9 AM' },
             { student_id: 15, day_of_week: 'THU', time_slot: '10 AM' },
-            { student_id: 15, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 15, day_of_week: 'WED', time_slot: '3 PM' },
             { student_id: 15, day_of_week: 'FRI', time_slot: '11 AM' },
             
+            // S16: same common times
             { student_id: 16, day_of_week: 'MON', time_slot: '2 PM' },
+            { student_id: 16, day_of_week: 'MON', time_slot: '3 PM' },
+            { student_id: 16, day_of_week: 'MON', time_slot: '4 PM' },
+            { student_id: 16, day_of_week: 'THU', time_slot: '9 AM' },
             { student_id: 16, day_of_week: 'THU', time_slot: '10 AM' },
-            { student_id: 16, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 16, day_of_week: 'TUE', time_slot: '2 PM' },
             
-            // GROUP 5 (students 17-20) - Common times: TUE 4 PM, FRI 11 AM, SUN 2 PM
+            // GROUP 5 (students 17-20) - Common: TUE 4-6 PM, FRI 10-11 AM
+            // S17: 7 slots
             { student_id: 17, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 17, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 17, day_of_week: 'TUE', time_slot: '6 PM' },
+            { student_id: 17, day_of_week: 'FRI', time_slot: '10 AM' },
             { student_id: 17, day_of_week: 'FRI', time_slot: '11 AM' },
-            { student_id: 17, day_of_week: 'SUN', time_slot: '2 PM' },
             { student_id: 17, day_of_week: 'MON', time_slot: '11 AM' },
             { student_id: 17, day_of_week: 'WED', time_slot: '4 PM' },
             
+            // S18: same common times
             { student_id: 18, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 18, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 18, day_of_week: 'TUE', time_slot: '6 PM' },
+            { student_id: 18, day_of_week: 'FRI', time_slot: '10 AM' },
             { student_id: 18, day_of_week: 'FRI', time_slot: '11 AM' },
-            { student_id: 18, day_of_week: 'SUN', time_slot: '2 PM' },
             { student_id: 18, day_of_week: 'THU', time_slot: '3 PM' },
             { student_id: 18, day_of_week: 'SAT', time_slot: '9 AM' },
             
+            // S19: same common times
             { student_id: 19, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 19, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 19, day_of_week: 'TUE', time_slot: '6 PM' },
+            { student_id: 19, day_of_week: 'FRI', time_slot: '10 AM' },
             { student_id: 19, day_of_week: 'FRI', time_slot: '11 AM' },
-            { student_id: 19, day_of_week: 'SUN', time_slot: '2 PM' },
             { student_id: 19, day_of_week: 'MON', time_slot: '3 PM' },
             { student_id: 19, day_of_week: 'WED', time_slot: '10 AM' },
             
+            // S20: same common times
             { student_id: 20, day_of_week: 'TUE', time_slot: '4 PM' },
+            { student_id: 20, day_of_week: 'TUE', time_slot: '5 PM' },
+            { student_id: 20, day_of_week: 'TUE', time_slot: '6 PM' },
+            { student_id: 20, day_of_week: 'FRI', time_slot: '10 AM' },
             { student_id: 20, day_of_week: 'FRI', time_slot: '11 AM' },
-            { student_id: 20, day_of_week: 'SUN', time_slot: '2 PM' },
             { student_id: 20, day_of_week: 'THU', time_slot: '11 AM' },
             
-            // GROUP 6 (students 21-24) - Common times: WED 9 AM, THU 4 PM, SAT 2 PM
-            { student_id: 21, day_of_week: 'WED', time_slot: '9 AM' },
-            { student_id: 21, day_of_week: 'THU', time_slot: '4 PM' },
+            // GROUP 6 (students 21-24) - Common: WED 6-8 PM, SAT 1-3 PM
+            // S21: 7 slots
+            { student_id: 21, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 21, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 21, day_of_week: 'WED', time_slot: '8 PM' },
+            { student_id: 21, day_of_week: 'SAT', time_slot: '1 PM' },
             { student_id: 21, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 21, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 21, day_of_week: 'MON', time_slot: '4 PM' },
-            { student_id: 21, day_of_week: 'FRI', time_slot: '1 PM' },
             
-            { student_id: 22, day_of_week: 'WED', time_slot: '9 AM' },
-            { student_id: 22, day_of_week: 'THU', time_slot: '4 PM' },
+            // S22: same common times
+            { student_id: 22, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 22, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 22, day_of_week: 'WED', time_slot: '8 PM' },
+            { student_id: 22, day_of_week: 'SAT', time_slot: '1 PM' },
             { student_id: 22, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 22, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 22, day_of_week: 'TUE', time_slot: '11 AM' },
-            { student_id: 22, day_of_week: 'SUN', time_slot: '4 PM' },
             
-            { student_id: 23, day_of_week: 'WED', time_slot: '9 AM' },
-            { student_id: 23, day_of_week: 'THU', time_slot: '4 PM' },
+            // S23: same common times
+            { student_id: 23, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 23, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 23, day_of_week: 'WED', time_slot: '8 PM' },
+            { student_id: 23, day_of_week: 'SAT', time_slot: '1 PM' },
             { student_id: 23, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 23, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 23, day_of_week: 'MON', time_slot: '11 AM' },
-            { student_id: 23, day_of_week: 'FRI', time_slot: '4 PM' },
             
-            { student_id: 24, day_of_week: 'WED', time_slot: '9 AM' },
-            { student_id: 24, day_of_week: 'THU', time_slot: '4 PM' },
+            // S24: same common times
+            { student_id: 24, day_of_week: 'WED', time_slot: '6 PM' },
+            { student_id: 24, day_of_week: 'WED', time_slot: '7 PM' },
+            { student_id: 24, day_of_week: 'WED', time_slot: '8 PM' },
+            { student_id: 24, day_of_week: 'SAT', time_slot: '1 PM' },
             { student_id: 24, day_of_week: 'SAT', time_slot: '2 PM' },
+            { student_id: 24, day_of_week: 'SAT', time_slot: '3 PM' },
             { student_id: 24, day_of_week: 'TUE', time_slot: '3 PM' },
         ];
 
