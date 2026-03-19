@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    width: fit-content;
+    width: 430px;
 }
 
 .group-header {
@@ -24,14 +24,35 @@
     flex-direction: column;
     flex-wrap: wrap;
     padding: 10px;
-    width: fit-content;
-    min-width: 430px;
+}
+
+.shared-availability-section {
+    padding: 10px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 10px;
+    background-color: #f9fafc;
+    border-radius: 4px;
+}
+
+.shared-availability-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.shared-availability-content {
+    font-size: 12px;
+    color: #666;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
 }
 
 .group-table-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 12px;
     padding: 10px;
     background-color: #f3f4f6;
     border-radius: 6px;
@@ -42,14 +63,13 @@
 }
 
 .group-table-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 12px;
     padding: 8px;
     border-bottom: 1px solid #f3f4f6;
     align-items: center;
     font-size: 13px;
-    width: 100%;
 }
 
 .group-table-row:last-child {
@@ -59,13 +79,13 @@
 .group-table-cell {
     text-align: left;
     color: #374151;
-    flex: 1;
-    min-width: 0;
+    padding: 0;
+    white-space: nowrap;
 }
 
 .group-table-cell:nth-child(2),
 .group-table-cell:nth-child(3) {
-    flex: 0 0 auto;
+    /* Grid handles column sizing */
 }
 
 .group-table-cell:nth-child(5) {
@@ -74,9 +94,8 @@
     word-break: break-word;
     white-space: normal;
     line-height: 1.4;
-    max-width: 200px;
-    overflow-wrap: break-word;
-    padding-left: 0;
+    min-width: 150px;
+    grid-column: span 2;
 }
 
 /* Configuration Section Styles */
@@ -113,6 +132,7 @@
 /* Groups Grid Styles */
 .forming-groups-grid {
     display: grid;
+    grid-template-columns: repeat(2, 430px);
     gap: 30px;
     width: fit-content;
 }
