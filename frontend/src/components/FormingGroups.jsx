@@ -9,8 +9,8 @@ const FormingGroups = () => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Receiving names from the previous page state
-    const students = location.state?.names || [];
+    // State for students, teams, and submissions
+    const [students, setStudents] = useState(location.state?.names || []);
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
@@ -18,14 +18,14 @@ const FormingGroups = () => {
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
-        if (!student || !student.id) {
-            console.warn("⚠️ Student object missing id:", student);
+        if (!student || !student.student_id) {
+            console.warn("⚠️ Student object missing student_id:", student);
             return [];
         }
-        const availability = availabilityMap[student.id] || [];
+        const availability = availabilityMap[student.student_id] || [];
         if (availability.length === 0 && Object.keys(availabilityMap).length > 0) {
             // Only warn if we have availability data for other students
-            console.warn(`⚠️ No availability found for student ID ${student.id}. Available ID keys:`, Object.keys(availabilityMap).slice(0, 5));
+            console.warn(`⚠️ No availability found for student ID ${student.student_id}. Available ID keys:`, Object.keys(availabilityMap).slice(0, 5));
         }
         return availability;
     };
@@ -141,24 +141,24 @@ const FormingGroups = () => {
                     setSurveyConfig(data);
                 }
 
-                // Fetch availability data from the team generation endpoint
-                const teamResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
-                if (teamResponse.ok) {
-                    const teamData = await teamResponse.json();
-                    console.log("🔍 Team data received:", {
-                        studentCount: teamData.studentCount,
-                        availabilityMapKeys: Object.keys(teamData.availabilityMap || {}).length,
-                        availabilityMapSample: Object.entries(teamData.availabilityMap || {}).slice(0, 3)
-                    });
-                    
-                    if (teamData.availabilityMap) {
-                        console.log("✅ Availability map found with", Object.keys(teamData.availabilityMap).length, "students");
-                        setAvailabilityMap(teamData.availabilityMap);
+                // Fetch students if not provided via navigation state
+                if (students.length === 0) {
+                    const submissionsResponse = await fetch(`http://localhost:3001/api/surveys/${id}/submissions`);
+                    if (submissionsResponse.ok) {
+                        const submissionsData = await submissionsResponse.json();
+                        setStudents(submissionsData.students || []);
+                        setAvailabilityMap(submissionsData.availabilityMap || {});
+                        console.log("✅ Students fetched:", submissionsData.students.length);
                     } else {
-                        console.warn("⚠️ No availability map in response");
+                        console.error("❌ Failed to fetch students:", submissionsResponse.status);
                     }
                 } else {
-                    console.error("❌ Failed to fetch team data:", teamResponse.status);
+                    // If students were passed via location state, fetch just the availability map
+                    const submissionsResponse = await fetch(`http://localhost:3001/api/surveys/${id}/submissions`);
+                    if (submissionsResponse.ok) {
+                        const submissionsData = await submissionsResponse.json();
+                        setAvailabilityMap(submissionsData.availabilityMap || {});
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -243,17 +243,17 @@ const FormingGroups = () => {
                                             </div>
                                             <div className="group-body">
                                                 <div className="group-table-header">
-                                                    <div className="group-table-cell">Name</div>
+                                                    <div className="group-table-cell">Student ID</div>
                                                     <div className="group-table-cell">Gender</div>
                                                     <div className="group-table-cell">GPA</div>
                                                     <div className="group-table-cell">Availability</div>
                                                 </div>
-                                                {group.members.map((student, idx) => {
+                                                {group.members.map((student) => {
                                                     const availability = getStudentAvailability(student);
                                                     const availabilityText = formatAvailabilityRanges(availability);
                                                     return (
-                                                        <div key={idx} className="group-table-row">
-                                                            <div className="group-table-cell">{student.name}</div>
+                                                        <div key={student.student_id} className="group-table-row">
+                                                            <div className="group-table-cell">{student.student_id}</div>
                                                             <div className="group-table-cell">{student.gender}</div>
                                                             <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
                                                             <div className="group-table-cell" title={availability.join(', ')} style={{ whiteSpace: 'pre-wrap' }}>{availabilityText}</div>
