@@ -309,19 +309,19 @@ const FormingGroups = () => {
                         {surveyConfig && (
                             <div className="question-container forming-groups-config-section">
                                 <div className="forming-groups-config-grid">
-                                    <div className="forming-groups-config-box">
-                                        <p className="forming-groups-config-label">Class Name</p>
-                                        <p className="forming-groups-config-value">{surveyConfig.courseName || 'N/A'}</p>
-                                    </div>
-                                    <div className="forming-groups-config-box">
-                                        <p className="forming-groups-config-label">Total Submissions</p>
-                                        <p className="forming-groups-config-value">{students.length}</p>
-                                    </div>
-                                    <div className="forming-groups-config-box">
-                                        <p className="forming-groups-config-label">Group Size</p>
-                                        <p className="forming-groups-config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
-                                    </div>
+                                <div className="forming-groups-config-box">
+                                    <p className="forming-groups-config-label">Class Name</p>
+                                    <p className="forming-groups-config-value">{surveyConfig.course_name || 'N/A'}</p>
                                 </div>
+                                <div className="forming-groups-config-box">
+                                    <p className="forming-groups-config-label">Total Submissions</p>
+                                    <p className="forming-groups-config-value">{students.length}</p>
+                                </div>
+                                <div className="forming-groups-config-box">
+                                    <p className="forming-groups-config-label">Group Size</p>
+                                    <p className="forming-groups-config-value">{surveyConfig.limit_type || 'N/A'}: {surveyConfig.team_limit || 'N/A'}</p>
+                                </div>
+                            </div>
                             </div>
                         )}
 
