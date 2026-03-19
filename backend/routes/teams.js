@@ -32,6 +32,12 @@ router.get("/:surveyId/submissions", async (req, res) => {
             [surveyId]
         );
 
+        console.log(`\n📋 Fetching submissions for survey ${surveyId}:`);
+        console.log(`   Students found: ${students.length}`);
+        if (students.length > 0) {
+            console.log(`   First 3 student IDs:`, students.slice(0, 3).map(s => (`${s.student_id} (type: ${typeof s.student_id})`)));
+        }
+
         if (students.length === 0) {
             return res.json({
                 students: [],
@@ -45,6 +51,11 @@ router.get("/:surveyId/submissions", async (req, res) => {
             "SELECT a.* FROM availability a INNER JOIN student_survey_entries se ON a.student_id = se.student_id WHERE se.survey_id = ? ORDER BY a.student_id ASC",
             [surveyId]
         );
+
+        console.log(`   Availability slots found: ${availability.length}`);
+        if (availability.length > 0) {
+            console.log(`   First 3 availability student IDs:`, availability.slice(0, 3).map(a => (`${a.student_id} (type: ${typeof a.student_id})`)));
+        }
 
         // Build availability map
         const availabilityMap = {};

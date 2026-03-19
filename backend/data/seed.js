@@ -17,6 +17,13 @@ const seedData = async () => {
     try {
         console.log('🌱 Starting database seed...\n');
 
+        // ===== CLEANUP: Delete existing data and reset auto_increment =====
+        console.log('🧹 Cleaning up existing data and resetting auto_increment...');
+        await connection.query('TRUNCATE TABLE availability');
+        await connection.query('TRUNCATE TABLE student_survey_entries');
+        await connection.query('DELETE FROM survey_configurations');
+        console.log('✓ Cleanup completed\n');
+
         // ===== SURVEY CONFIGURATION 1: Only 1 Female =====
         const surveyId1 = 'SURVEY-FEMALE-ONLY-001';
         console.log(`📝 Creating Survey Configuration 1: ${surveyId1}`);
