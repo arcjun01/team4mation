@@ -177,13 +177,13 @@ const InstructorTeamSetup = () => {
             <div className="question-container">
               <label>Secure Data Access Key</label>
               {!generatedKey ? (
-                <button type="button" className="button" style={{ backgroundColor: '#fff', border: '1px solid #ccc' }} onClick={handleGenerateKey}>Generate Decryption Key</button>
+                <button type="button" className="incript-button" onClick={handleGenerateKey}>Generate Decryption Key</button>
               ) : (
                 <div className="key-display-section">
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                     <input className="input-field full-input" type={showKey ? "text" : "password"} value={generatedKey} readOnly />
-                    <button type="button" className="button" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
-                    <button type="button" className="button" onClick={() => { navigator.clipboard.writeText(generatedKey); alert("Key copied!"); }}>Copy</button>
+                    <button type="button" className="incript-button" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
+                    <button type="button" className="incript-button" onClick={() => { navigator.clipboard.writeText(generatedKey); alert("Key copied!"); }}>Copy</button>
                   </div>
                   <div className="checkbox-row">
                     <input type="checkbox" id="saveConfirm" checked={hasSavedKey} onChange={(e) => { setHasSavedKey(e.target.checked); if (e.target.checked) clearError('saveConfirm'); }} />

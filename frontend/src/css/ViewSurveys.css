@@ -136,38 +136,6 @@
   flex-wrap: wrap;
 }
 
-.button {
-  padding: 12px 30px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: #b2c9c5;
-  color: #2c3e50;  
-
-}
-
-.button:hover:not(:disabled) {
-  background: #789893;;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.button.primary {
-  background: #a4beb7;
-}
-
-.button.primary:hover:not(:disabled) {
-  background: #94b0a9;
-}
-
-.button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 @media (max-width: 768px) {
   .surveys-list {
     grid-template-columns: 1fr;
