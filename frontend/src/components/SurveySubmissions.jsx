@@ -94,7 +94,7 @@ const SurveySubmissions = () => {
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
-                        <div className="survey-card student-list-container">
+                        <div className="survey-card student-list-container" tabIndex="-1">
                             {decryptedNames.length > 0 ? (
                                 <div className="student-grid">
                                     {decryptedNames.map((student, index) => (

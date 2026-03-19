@@ -132,14 +132,14 @@ const InstructorTeamSetup = () => {
             <div className="question-container">
               <label htmlFor="courseName">For which course is this team set-up for?</label>
               <input id="courseName" className="input-field full-input" type="text" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="e.g., SDEV 100" />
-              {errors.courseName && <div className="error-message">{errors.courseName}</div>}
+              {errors.courseName && <span className="error-message">{errors.courseName}</span>}
             </div>
 
             {/* Class Size */}
             <div className="question-container">
               <label htmlFor="classSize">Enter or adjust class size</label>
               <input id="classSize" className="input-field numeric-input" type="number" name="classSize" value={formData.classSize} onChange={handleChange} placeholder="20" />
-              {errors.classSize && <div className="error-message">{errors.classSize}</div>}
+              {errors.classSize && <span className="error-message">{errors.classSize}</span>}
             </div>
 
             {/*Min/Max Select and Team Limit Input */}
@@ -153,7 +153,7 @@ const InstructorTeamSetup = () => {
                 <span>team size:</span>
                 <input name="teamLimit" type="number" className="input-field numeric-input" value={formData.teamLimit} onChange={handleChange} placeholder="4" />
               </div>
-              {errors.teamLimit && <div className="error-message" style={{color: '#d9534f', fontWeight: 'bold'}}>{errors.teamLimit}</div>}
+              {errors.teamLimit && <span className="error-message">{errors.teamLimit}</span>}
             </div>
 
             {/* GPA Checkbox */}
@@ -169,7 +169,7 @@ const InstructorTeamSetup = () => {
               <div className="setup-card fade-in">
                 <label htmlFor="prevCourse">Enter the name of the prerequisite course</label>
                 <input id="prevCourse" className="input-field full-input" type="text" name="prevCourse" value={formData.prevCourse} onChange={handleChange} placeholder="e.g., SDEV 90" />
-                {errors.prevCourse && <div className="error-message">{errors.prevCourse}</div>}
+                {errors.prevCourse && <span className="error-message">{errors.prevCourse}</span>}
               </div>
             )}
 
@@ -177,22 +177,22 @@ const InstructorTeamSetup = () => {
             <div className="question-container">
               <label>Secure Data Access Key</label>
               {!generatedKey ? (
-                <button type="button" className="btn-cancel" style={{ backgroundColor: '#fff', border: '1px solid #ccc' }} onClick={handleGenerateKey}>Generate Decryption Key</button>
+                <button type="button" className="button" style={{ backgroundColor: '#fff', border: '1px solid #ccc' }} onClick={handleGenerateKey}>Generate Decryption Key</button>
               ) : (
                 <div className="key-display-section">
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                     <input className="input-field full-input" type={showKey ? "text" : "password"} value={generatedKey} readOnly />
-                    <button type="button" className="btn-cancel" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
-                    <button type="button" className="btn-cancel" onClick={() => { navigator.clipboard.writeText(generatedKey); alert("Key copied!"); }}>Copy</button>
+                    <button type="button" className="button" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
+                    <button type="button" className="button" onClick={() => { navigator.clipboard.writeText(generatedKey); alert("Key copied!"); }}>Copy</button>
                   </div>
                   <div className="checkbox-row">
                     <input type="checkbox" id="saveConfirm" checked={hasSavedKey} onChange={(e) => { setHasSavedKey(e.target.checked); if (e.target.checked) clearError('saveConfirm'); }} />
                     <label htmlFor="saveConfirm" style={{ color: '#60a328', fontWeight: 'bold' }}>I have saved this key. I understand it cannot be recovered.</label>
                   </div>
-                  {errors.saveConfirm && <div className="error-message">{errors.saveConfirm}</div>}
+                  {errors.saveConfirm && <span className="error-message">{errors.saveConfirm}</span>}
                 </div>
               )}
-              {errors.key && <div className="error-message">{errors.key}</div>}
+              {errors.key && <span className="error-message">{errors.key}</span>}
             </div>
 
             <div className="button-group">

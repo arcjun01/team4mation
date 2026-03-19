@@ -311,7 +311,7 @@ const FormingGroups = () => {
                                 <div className="forming-groups-config-grid">
                                     <div className="forming-groups-config-box">
                                         <p className="forming-groups-config-label">Class Name</p>
-                                        <p className="forming-groups-config-value">{surveyConfig.courseName || 'N/A'}</p>
+                                        <p className="forming-groups-config-value">{surveyConfig.courseName || surveyConfig.course_name || 'N/A'}</p>
                                     </div>
                                     <div className="forming-groups-config-box">
                                         <p className="forming-groups-config-label">Total Submissions</p>
@@ -320,10 +320,10 @@ const FormingGroups = () => {
                                     <div className="forming-groups-config-box">
                                         <p className="forming-groups-config-label">Group Size</p>
                                         <p className="forming-groups-config-value">
-                                            {surveyConfig.limitType 
-                                                ? (surveyConfig.limitType === 'max' ? 'Maximum' : 'Minimum')
+                                            {(surveyConfig.limitType || surveyConfig.limit_type)
+                                                ? ((surveyConfig.limitType || surveyConfig.limit_type) === 'max' ? 'Maximum' : 'Minimum')
                                                 : 'Maximum'
-                                            }: {surveyConfig.maxSize || 'N/A'}
+                                            }: {surveyConfig.maxSize || surveyConfig.team_limit || 'N/A'}
                                         </p>
                                     </div>
                                 </div>

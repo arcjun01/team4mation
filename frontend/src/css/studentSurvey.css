@@ -34,6 +34,29 @@ span {
     margin: 0 auto;
 }
 
+.survey-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.survey-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.survey-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #086759;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 .survey-question {
     font-size: 18px;
 }
