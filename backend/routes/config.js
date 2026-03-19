@@ -32,4 +32,21 @@ router.post("/save-setup", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await pool.execute(
+      `SELECT * FROM survey_configurations WHERE id = ?`,
+      [id]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Config not found" });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Database Error:", err.message);
+    res.status(500).json({ error: "DB Error", details: err.message });
+  }
+});
+
 export default router; 
