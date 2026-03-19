@@ -59,7 +59,7 @@ app.get("/api/config/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
     try {
         const [config] = await pool.execute(
-            "SELECT course_name, use_gpa, prev_course FROM survey_configurations WHERE id = ?",
+            "SELECT course_name, use_gpa, prev_course, limit_type, team_limit FROM survey_configurations WHERE id = ?",
             [surveyId]
         );
 
@@ -70,7 +70,9 @@ app.get("/api/config/:surveyId", async (req, res) => {
         res.json({
             courseName: config[0].course_name,
             useGpa: config[0].use_gpa === 1,
-            prevCourse: config[0].prev_course
+            prevCourse: config[0].prev_course,
+            limitType: config[0].limit_type,
+            maxSize: config[0].team_limit
         });
     } catch (err) {
         console.error("Config Fetch Error:", err.message);

@@ -319,7 +319,12 @@ const FormingGroups = () => {
                                     </div>
                                     <div className="forming-groups-config-box">
                                         <p className="forming-groups-config-label">Group Size</p>
-                                        <p className="forming-groups-config-value">{surveyConfig.limitType || 'Maximum'}: {surveyConfig.maxSize || 'N/A'}</p>
+                                        <p className="forming-groups-config-value">
+                                            {surveyConfig.limitType 
+                                                ? (surveyConfig.limitType === 'max' ? 'Maximum' : 'Minimum')
+                                                : 'Maximum'
+                                            }: {surveyConfig.maxSize || 'N/A'}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
