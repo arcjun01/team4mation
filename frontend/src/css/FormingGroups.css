@@ -1,0 +1,124 @@
+/* Group Card Styles for FormingGroups */
+.group-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: fit-content;
+}
+
+.group-header {
+    background-color: #BEE0AC;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+}
+
+.group-body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 10px;
+    width: fit-content;
+    min-width: 430px;
+}
+
+.group-table-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.group-table-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    font-size: 13px;
+    width: 100%;
+}
+
+.group-table-row:last-child {
+    border-bottom: none;
+}
+
+.group-table-cell {
+    text-align: left;
+    color: #374151;
+    flex: 1;
+    min-width: 0;
+}
+
+.group-table-cell:nth-child(2),
+.group-table-cell:nth-child(3) {
+    flex: 0 0 auto;
+}
+
+.group-table-cell:nth-child(5) {
+    font-size: 12px;
+    color: #666;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    max-width: 200px;
+    overflow-wrap: break-word;
+    padding-left: 0;
+}
+
+/* Configuration Section Styles */
+.forming-groups-config-section {
+    margin-bottom: 30px;
+}
+
+.forming-groups-config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.forming-groups-config-box {
+    padding: 15px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}
+
+.forming-groups-config-label {
+    margin: 0 0 5px 0;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.forming-groups-config-value {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Groups Grid Styles */
+.forming-groups-grid {
+    display: grid;
+    gap: 30px;
+    width: fit-content;
+}
+
+/* Button Tray */
+.forming-groups-button-tray {
+    margin-top: 40px;
+    text-align: center;
+}
