@@ -30,7 +30,7 @@ const FormingGroups = () => {
         return availability;
     };
 
-    // Helper function to format consecutive times into ranges (e.g., "THU 3 PM - 8 PM")
+    // Helper function to format consecutive times into ranges (e.g., "TUE: 9-10 AM, 12 PM")
     const formatAvailabilityRanges = (availabilityArray) => {
         if (!availabilityArray || availabilityArray.length === 0) return 'N/A';
 
@@ -47,6 +47,13 @@ const FormingGroups = () => {
                 if (hour !== 12) hour += 12; // 1 PM is 13, etc.
             }
             return hour;
+        };
+
+        // Extract hour and period from time string like "9 AM"
+        const extractHourAndPeriod = (timeStr) => {
+            const match = timeStr.match(/(\d+)\s+(AM|PM)/);
+            if (!match) return { hour: null, period: null };
+            return { hour: parseInt(match[1]), period: match[2] };
         };
 
         // Parse a slot like "MON-9 AM"
@@ -68,7 +75,7 @@ const FormingGroups = () => {
             byDay[parsed.day].push(parsed);
         }
 
-        // Format each day's slots into ranges
+        // Format each day's slots into compact format with all times on one line
         const results = [];
         const dayOrder = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
         
@@ -76,6 +83,7 @@ const FormingGroups = () => {
             if (!byDay[day]) continue;
             
             const slots = byDay[day].sort((a, b) => a.hour - b.hour);
+            const dayTimes = [];
             let rangeStart = slots[0];
             let rangeEnd = slots[0];
 
@@ -86,9 +94,16 @@ const FormingGroups = () => {
                 } else {
                     // Gap found, save the range
                     if (rangeStart.hour === rangeEnd.hour) {
-                        results.push(`${day} ${rangeStart.time}`);
+                        dayTimes.push(rangeStart.time);
                     } else {
-                        results.push(`${day} ${rangeStart.time} - ${rangeEnd.time}`);
+                        // Format as "9-10 AM" or "9 AM-12 PM" if periods differ
+                        const startHourPeriod = extractHourAndPeriod(rangeStart.time);
+                        const endHourPeriod = extractHourAndPeriod(rangeEnd.time);
+                        if (startHourPeriod.period === endHourPeriod.period) {
+                            dayTimes.push(`${startHourPeriod.hour}-${endHourPeriod.hour} ${endHourPeriod.period}`);
+                        } else {
+                            dayTimes.push(`${startHourPeriod.hour} ${startHourPeriod.period}-${endHourPeriod.hour} ${endHourPeriod.period}`);
+                        }
                     }
                     rangeStart = slots[i];
                     rangeEnd = slots[i];
@@ -97,13 +112,23 @@ const FormingGroups = () => {
 
             // Add the last range
             if (rangeStart.hour === rangeEnd.hour) {
-                results.push(`${day} ${rangeStart.time}`);
+                dayTimes.push(rangeStart.time);
             } else {
-                results.push(`${day} ${rangeStart.time} - ${rangeEnd.time}`);
+                // Format as "9-10 AM" or "9 AM-12 PM" if periods differ
+                const startHourPeriod = extractHourAndPeriod(rangeStart.time);
+                const endHourPeriod = extractHourAndPeriod(rangeEnd.time);
+                if (startHourPeriod.period === endHourPeriod.period) {
+                    dayTimes.push(`${startHourPeriod.hour}-${endHourPeriod.hour} ${endHourPeriod.period}`);
+                } else {
+                    dayTimes.push(`${startHourPeriod.hour} ${startHourPeriod.period}-${endHourPeriod.hour} ${endHourPeriod.period}`);
+                }
             }
+
+            // Format as "DAY: time1, time2, etc."
+            results.push(`${day}: ${dayTimes.join(', ')}.`);
         }
 
-        return results.join(', ');
+        return results.join('\n');
     };
 
     // Fetch survey configuration and availability data on mount
@@ -218,7 +243,6 @@ const FormingGroups = () => {
                                             </div>
                                             <div className="group-body">
                                                 <div className="group-table-header">
-                                                    <div className="group-table-cell">#</div>
                                                     <div className="group-table-cell">Name</div>
                                                     <div className="group-table-cell">Gender</div>
                                                     <div className="group-table-cell">GPA</div>
@@ -229,11 +253,10 @@ const FormingGroups = () => {
                                                     const availabilityText = formatAvailabilityRanges(availability);
                                                     return (
                                                         <div key={idx} className="group-table-row">
-                                                            <div className="group-table-cell">{idx + 1}</div>
                                                             <div className="group-table-cell">{student.name}</div>
                                                             <div className="group-table-cell">{student.gender}</div>
                                                             <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                                                            <div className="group-table-cell" title={availability.join(', ')}>{availabilityText}</div>
+                                                            <div className="group-table-cell" title={availability.join(', ')} style={{ whiteSpace: 'pre-wrap' }}>{availabilityText}</div>
                                                         </div>
                                                     );
                                                 })}
