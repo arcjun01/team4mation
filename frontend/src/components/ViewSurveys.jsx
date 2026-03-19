@@ -43,7 +43,7 @@ const ViewSurveys = () => {
 
   const handleViewResults = () => {
     if (!selectedSurveyId) {
-      setError('Please select a survey first.');
+      setError('Please select a dummy data first.');
       return;
     }
     
@@ -63,7 +63,7 @@ const ViewSurveys = () => {
       <div className="view-surveys-container top-gap-large">
         <div className="survey-container">
           <div className="question-container">
-            <h1>Select a Survey</h1>
+            <h1>Select Dummy Data</h1>
           </div>
 
           {loading ? (
