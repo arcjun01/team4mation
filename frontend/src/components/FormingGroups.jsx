@@ -31,6 +31,31 @@ const FormingGroups = () => {
         return availability;
     };
 
+    // Helper function to find shared availability between all group members
+    const getSharedAvailability = (groupMembers) => {
+        if (!groupMembers || groupMembers.length === 0) return [];
+        
+        console.log(`Finding shared availability for ${groupMembers.length} members...`);
+        
+        // Get availability for each member
+        const availabilities = groupMembers.map((member, idx) => {
+            const avail = getStudentAvailability(member);
+            console.log(`  Member ${idx} (ID ${member.id}): ${avail.length} slots`, avail.slice(0, 3));
+            return new Set(avail);
+        });
+
+        // Find intersection of all sets
+        let shared = new Set(availabilities[0]);
+        for (let i = 1; i < availabilities.length; i++) {
+            const before = shared.size;
+            shared = new Set([...shared].filter(x => availabilities[i].has(x)));
+            console.log(`  After member ${i}: ${before} → ${shared.size} shared slots`);
+        }
+
+        console.log(`🎯 Final shared availability: ${shared.size} slots`);
+        return Array.from(shared).sort();
+    };
+
     // Helper function to format consecutive times into ranges (e.g., "TUE: 9-10 AM, 12 PM")
     const formatAvailabilityRanges = (availabilityArray) => {
         if (!availabilityArray || availabilityArray.length === 0) return 'N/A';
@@ -183,6 +208,7 @@ const FormingGroups = () => {
                     if (submissionsData.availabilityMap) {
                         console.log(`✅ Availability map loaded with ${Object.keys(submissionsData.availabilityMap).length} students`);
                         console.log(`   First 3 availability keys:`, Object.keys(submissionsData.availabilityMap).slice(0, 3));
+                        console.log(`   Sample availability:`, Object.entries(submissionsData.availabilityMap).slice(0, 3));
                         setAvailabilityMap(submissionsData.availabilityMap);
                     }
                     return; // Exit after successfully fetching from submissions endpoint
@@ -321,30 +347,42 @@ const FormingGroups = () => {
                                 <div className="forming-groups-grid">
                                     {groups.map((group) => (
                                         <div key={group.number} className="group-card">
-                                            <div className="group-header">
-                                                <span>Group #{group.number}</span>
-                                            </div>
-                                            <div className="group-body">
-                                                <div className="group-table-header">
-                                                    <div className="group-table-cell">Name</div>
-                                                    <div className="group-table-cell">Gender</div>
-                                                    <div className="group-table-cell">GPA</div>
-                                                    <div className="group-table-cell">Availability</div>
+                                                <div className="group-header">
+                                                    <span>Group #{group.number}</span>
                                                 </div>
-                                                {group.members.map((student, idx) => {
-                                                    const availability = getStudentAvailability(student);
-                                                    const availabilityText = formatAvailabilityRanges(availability);
-                                                    return (
-                                                        <div key={idx} className="group-table-row">
-                                                            <div className="group-table-cell">{student.name}</div>
-                                                            <div className="group-table-cell">{student.gender}</div>
-                                                            <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                                                            <div className="group-table-cell" title={availability.join(', ')} style={{ whiteSpace: 'pre-wrap' }}>{availabilityText}</div>
-                                                        </div>
-                                                    );
-                                                })}
+                                                <div className="group-body">
+                                                    <div className="group-table-header">
+                                                        <div className="group-table-cell">Name</div>
+                                                        <div className="group-table-cell">Gender</div>
+                                                        <div className="group-table-cell">GPA</div>
+                                                        <div className="group-table-cell">Availability</div>
+                                                    </div>
+                                                    {group.members.map((student, idx) => {
+                                                        const availability = getStudentAvailability(student);
+                                                        const availabilityText = formatAvailabilityRanges(availability);
+                                                        return (
+                                                            <div key={idx} className="group-table-row">
+                                                                <div className="group-table-cell">{student.name}</div>
+                                                                <div className="group-table-cell">{student.gender}</div>
+                                                                <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
+                                                                <div className="group-table-cell" title={availability.join(', ')} style={{ whiteSpace: 'pre-wrap' }}>{availabilityText}</div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                                <div className="shared-availability-section">
+                                                    <div className="shared-availability-label">Shared Availability:</div>
+                                                    <div className="shared-availability-content">
+                                                        {(() => {
+                                                            const shared = getSharedAvailability(group.members);
+                                                            if (shared.length === 0) {
+                                                                return "No common times";
+                                                            }
+                                                            return formatAvailabilityRanges(shared);
+                                                        })()}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
                                     ))}
                                 </div>
                                 )}
