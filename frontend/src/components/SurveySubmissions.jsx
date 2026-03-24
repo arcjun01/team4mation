@@ -94,29 +94,29 @@ const SurveySubmissions = () => {
 
                     <div className="results-layout">
                         {/* LEFT SIDE: The List */}
-                        <div className="survey-card student-list-container">
-                            <div className="student-grid">
-                                {decryptedNames.length > 0 ? (
-                                    decryptedNames.map((student, index) => (
+                        <div className="survey-card student-list-container" tabIndex="-1">
+                            {decryptedNames.length > 0 ? (
+                                <div className="student-grid">
+                                    {decryptedNames.map((student, index) => (
                                         <p key={index} className="student-name">
                                             <span className="name-number">{index + 1}.</span> 
                                             {student.name}
                                         </p>
-                                    ))
-                                ) : (
-                                    <div className="student-name" style={{ textAlign: 'center', padding: '20px' }}>
-                                        <p style={{ color: '#666', marginBottom: '15px' }}>
-                                            {stats.submissions} students have submitted, but names are encrypted.
-                                        </p>
-                                        <button 
-                                            className="decrypt-button" 
-                                            onClick={() => navigate(`/instructor/decrypt/${surveyId}`)}
-                                        >
-                                            Decrypt & View Names
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="student-name" style={{ textAlign: 'center', padding: '20px', width: '100%' }}>
+                                    <p style={{ color: '#666', marginBottom: '15px' }}>
+                                        {stats.submissions} students have submitted, but names are encrypted.
+                                    </p>
+                                    <button 
+                                        className="decrypt-button" 
+                                        onClick={() => navigate(`/instructor/decrypt/${surveyId}`)}
+                                    >
+                                        Decrypt & View Names
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* RIGHT SIDE: The Stats */}

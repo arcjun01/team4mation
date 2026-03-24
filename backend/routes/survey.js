@@ -58,36 +58,56 @@ router.post("/", async (req, res) => {
 
     await connection.beginTransaction();
 
-    // Insert student record
+    // Insert encrypted name and student data into student_survey_entries
     const [result] = await connection.execute(
-      "INSERT INTO students (full_name, gender, gpa, commitment) VALUES (?, ?, ?, ?)",
-      [fullName, gender, gpaNum, commitment]
+      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, commitment, survey_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [encryptedName, ivHex, gender, gpaNum, commitment, surveyId]
     );
 
     const studentId = result.insertId;
     console.log("Inserted student ID:", studentId);
 
-    // Insert encrypted name into student_survey_entries
-    await connection.execute(
-      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
-      [encryptedName, ivHex, gender, gpaNum, surveyId]
-    );
-
     // Parse availability schedule and insert into availability table
     const availabilityData = JSON.parse(availability_schedule);
     const insertPromises = [];
 
+    console.log(`\n=== AVAILABILITY SUBMISSION DEBUG for Student ID: ${studentId} ===`);
+    console.log(`Received availability_schedule:`, JSON.stringify(availabilityData, null, 2));
+    const selectedSlots = Object.keys(availabilityData).filter(key => availabilityData[key]);
+    console.log(`Number of selected slots: ${selectedSlots.length}`);
+    console.log(`Selected time slots: ${selectedSlots.slice(0, 5).join(', ')}${selectedSlots.length > 5 ? '...' : ''}`);
+
     for (const [key, isSelected] of Object.entries(availabilityData)) {
       if (isSelected) {
-        const [dayOfWeek, timeSlot] = key.split("-");
+        // More robust parsing: find the last "-" to separate day from time
+        const lastDashIndex = key.lastIndexOf("-");
+        if (lastDashIndex === -1) {
+          console.warn(`Invalid key format: "${key}" - skipping`);
+          continue;
+        }
+        const dayOfWeek = key.substring(0, lastDashIndex);
+        const timeSlot = key.substring(lastDashIndex + 1);
+        
+        console.log(`Processing: key="${key}" -> day="${dayOfWeek.trim()}", time="${timeSlot.trim()}"`);
+        
+        // Validate day of week
+        const validDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        if (!validDays.includes(dayOfWeek.trim())) {
+          console.warn(`Invalid day: "${dayOfWeek}" - skipping`);
+          continue;
+        }
+        
         insertPromises.push(
           connection.execute(
             "INSERT INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
-            [studentId, dayOfWeek, timeSlot]
+            [studentId, dayOfWeek.trim(), timeSlot.trim()]
           )
         );
       }
     }
+
+    console.log(`Total availability records to insert: ${insertPromises.length}`);
+    console.log(`=== END DEBUG ===\n`);
 
     // Execute all availability inserts
     if (insertPromises.length > 0) {
@@ -132,7 +152,7 @@ router.post("/reveal", async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      "SELECT encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
+      "SELECT student_id, encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
       [surveyId]
     );
 
@@ -151,13 +171,14 @@ router.post("/reveal", async (req, res) => {
         decrypted += decipher.final('utf8');
 
         return {
+          id: row.student_id,
           name: decrypted,
           gender: row.gender,
           gpa: row.gpa
         };
       } catch (decryptionError) {
         console.error("Row decryption failed:", decryptionError);
-        return { name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
+        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
       }
     });
 

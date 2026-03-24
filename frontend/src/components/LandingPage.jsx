@@ -9,6 +9,10 @@ const LandingPage = () => {
     navigate('/setup');
   };
 
+  const handleViewSurveysClick = () => {
+    navigate('/view-surveys');
+  };
+
   return (
     <div className="landing-page">
       <Header variant="large" />
@@ -22,6 +26,12 @@ const LandingPage = () => {
               onClick={handleFormGroupsClick}
             >
               Form Groups
+            </button>
+            <button
+              className="landing-secondary-button"
+              onClick={handleViewSurveysClick}
+            >
+              View Survey Results
             </button>
           </div>
         </section>

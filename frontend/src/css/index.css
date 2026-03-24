@@ -65,6 +65,13 @@ h2 {
     min-width: 0;
 }
 
+.content-container {
+    padding-bottom: 40px;
+    width: 880px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
 .button {
     background-color:#086759ba;
     color: white;

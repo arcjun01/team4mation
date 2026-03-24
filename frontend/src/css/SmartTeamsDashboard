@@ -10,12 +10,6 @@
     margin-top: 40px; 
 }
 
-.content-container {
-    display: flex;
-    flex-direction: column;
-    width: 880px; 
-}
-
 .results-layout {
     display: flex;
     justify-content: space-between;
@@ -23,9 +17,8 @@
 }
 
 /* THE WHITE CONTAINER (LEFT SIDE) */
-.student-list-container {
+.student-groups-container {
     flex: 3;
-    background: white;
     padding: 30px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -51,16 +44,12 @@
 }
 
 .group-header {
-    background: #6b8e8e;
+    background: #BEE0AC;
     color: white;
     padding: 12px 15px;
     display: flex;
     justify-content: space-between;
     font-weight: 600;
-}
-
-.group-body {
-    padding: 15px;
 }
 
 .member-row {

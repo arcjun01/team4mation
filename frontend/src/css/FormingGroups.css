@@ -1,0 +1,148 @@
+/* Group Card Styles for FormingGroups */
+.group-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 430px;
+}
+
+.group-header {
+    background-color: #BEE0AC;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+}
+
+.group-body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.shared-availability-section {
+    padding: 10px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 10px;
+    background-color: #f9fafc;
+    border-radius: 4px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.shared-availability-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 13px;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.shared-availability-content {
+    font-size: 12px;
+    color: #666;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.group-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 12px;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.group-table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 12px;
+    padding: 8px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    font-size: 13px;
+}
+
+.group-table-row:last-child {
+    border-bottom: none;
+}
+
+.group-table-cell {
+    text-align: left;
+    color: #374151;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.group-table-cell:nth-child(2),
+.group-table-cell:nth-child(3) {
+    /* Grid handles column sizing */
+}
+
+.group-table-cell:nth-child(5) {
+    font-size: 12px;
+    color: #666;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    min-width: 150px;
+    grid-column: span 2;
+}
+
+/* Configuration Section Styles */
+.forming-groups-config-section {
+    margin-bottom: 30px;
+}
+
+.forming-groups-config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.forming-groups-config-box {
+    padding: 15px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+}
+
+.forming-groups-config-label {
+    margin: 0 0 5px 0;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.forming-groups-config-value {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Groups Grid Styles */
+.forming-groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 430px);
+    gap: 20px;
+    width: fit-content;
+}
+
+/* Button Tray */
+.forming-groups-button-tray {
+    margin-top: 40px;
+    text-align: center;
+}
