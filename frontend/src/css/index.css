@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
 
-.large-page-header,
 .page-header {
   display: block;
   width: 100%;
@@ -10,6 +9,68 @@
   height: auto;
   position: absolute;
   z-index: 1;
+  overflow: hidden;
+}
+
+.page-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  max-width: 100%;
+}
+
+.large-page-header {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.large-page-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  max-width: 100%;
+}
+
+/* Responsive header adjustments for smaller screens */
+@media (max-width: 768px) {
+  .page-header,
+  .large-page-header {
+    position: relative;
+    margin-bottom: clamp(10px, 5vw, 20px);
+  }
+
+  .page-header img,
+  .large-page-header img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header,
+  .large-page-header {
+    position: relative;
+    margin-bottom: 15px;
+  }
+
+  .page-header img,
+  .large-page-header img {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
 }
 
 html {
@@ -44,13 +105,35 @@ h2 {
 }
 
 .top-gap {
-    top: 80px;
+    top: clamp(70px, 12vh, 150px);
     position: absolute;
 }
 
 .top-gap-large {
-    top: 185px;
+    top: clamp(150px, 25vh, 300px);
     position: absolute;
+}
+
+/* Responsive gap adjustments for smaller screens */
+@media (max-width: 768px) {
+  .top-gap {
+    top: auto;
+    position: relative;
+    margin-top: clamp(15px, 5vw, 30px);
+  }
+
+  .top-gap-large {
+    top: auto;
+    position: relative;
+    margin-top: clamp(15px, 5vw, 30px);
+  }
+}
+
+@media (max-width: 480px) {
+  .top-gap,
+  .top-gap-large {
+    margin-top: 15px;
+  }
 }
 
 .question-container {
@@ -67,9 +150,11 @@ h2 {
 
 .content-container {
     padding-bottom: 40px;
-    width: 880px;
+    width: clamp(320px, 90vw, 880px);
     box-sizing: border-box;
     margin: 0 auto;
+    padding-left: clamp(16px, 5vw, 40px);
+    padding-right: clamp(16px, 5vw, 40px);
 }
 
 .button {
