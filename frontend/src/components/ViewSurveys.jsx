@@ -63,7 +63,7 @@ const ViewSurveys = () => {
       <div className="view-surveys-container top-gap-large">
         <div className="survey-container">
           <div className="question-container">
-            <h1>Select Dummy Data</h1>
+            <h1>Select Survey</h1>
           </div>
 
           {loading ? (
