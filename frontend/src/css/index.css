@@ -2,13 +2,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
 
-.page-header img {
+.page-header {
   display: block;
-  width: 100vw;
-  min-width: 1440px;
+  width: 100%;
+  max-width: 100%;
   height: auto;
   position: absolute;
-  z-index: 1;  
+  z-index: 1;
+  overflow: hidden;
+}
+
+.page-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  max-width: 100%;
+}
+
+.large-page-header {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.large-page-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  max-width: 100%;
+}
+
+/* Responsive header adjustments for smaller screens */
+@media (max-width: 768px) {
+  .page-header,
+  .large-page-header {
+    position: relative;
+    margin-bottom: clamp(10px, 5vw, 20px);
+  }
+
+  .page-header img,
+  .large-page-header img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header,
+  .large-page-header {
+    position: relative;
+    margin-bottom: 15px;
+  }
+
+  .page-header img,
+  .large-page-header img {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
 }
 
 html {
@@ -17,14 +79,14 @@ html {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  width: 1440px;
 }
 
 body {
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100%;
   overflow-x: hidden;
+  background: #ebebeb8f;
 }
 
 h1, h2 {
@@ -34,6 +96,7 @@ h1, h2 {
 h1 {
     text-align: center;
     margin: 0%;
+    color: #333;
 }
 
 h2 {
@@ -41,3 +104,85 @@ h2 {
     text-align: left;
 }
 
+.top-gap {
+    top: clamp(70px, 12vh, 150px);
+    position: absolute;
+}
+
+.top-gap-large {
+    top: clamp(150px, 25vh, 300px);
+    position: absolute;
+}
+
+/* Responsive gap adjustments for smaller screens */
+@media (max-width: 768px) {
+  .top-gap {
+    top: auto;
+    position: relative;
+    margin-top: clamp(15px, 5vw, 30px);
+  }
+
+  .top-gap-large {
+    top: auto;
+    position: relative;
+    margin-top: clamp(15px, 5vw, 30px);
+  }
+}
+
+@media (max-width: 480px) {
+  .top-gap,
+  .top-gap-large {
+    margin-top: 15px;
+  }
+}
+
+.question-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.content-container {
+    padding-bottom: 40px;
+    width: clamp(320px, 90vw, 880px);
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding-left: clamp(16px, 5vw, 40px);
+    padding-right: clamp(16px, 5vw, 40px);
+}
+
+.button {
+    background-color:#086759ba;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: clamp(10px, 2vw, 16px) clamp(30px, 8vw, 60px);
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-size: clamp(13px, 2vw, 15px);
+    transition: all 0.2s ease;
+}
+
+.button:hover {
+    background-color: #086759;
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    width: 100%;
+}

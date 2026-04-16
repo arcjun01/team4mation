@@ -5,36 +5,52 @@ import crypto from 'crypto';
 const router = express.Router();
 
 const algorithm = 'aes-256-cbc';
-const secretKey = Buffer.from('vperysecretkey32charcheckdigital', 'utf8');
-
 router.post("/", async (req, res) => {
-  const { fullName, survey_id, gender, gpa, availability_schedule } = req.body;
+  const { fullName, gender, gpa, commitment, surveyId, availability_schedule } = req.body;
 
   if (!fullName) {
     return res.status(400).json({ success: false, error: "Full name is required" });
   }
 
+  if (!gender) {
+    return res.status(400).json({ success: false, error: "Gender is required" });
+  }
+
   const gpaNum = parseFloat(gpa ?? 2.0);
   if (isNaN(gpaNum) || gpaNum < 1.0 || gpaNum > 4.0) {
-    return res.status(400).json({ success: false, error: "GPA must be between 1.0 and 4.0" });
+    return res.status(400).json({ success: false, error: "GPA must be 1.0–4.0" });
+  }
+
+  if (!commitment) {
+    return res.status(400).json({ success: false, error: "Commitment is required" });
   }
 
   if (!availability_schedule) {
     return res.status(400).json({ success: false, error: "Availability schedule is required" });
   }
 
-  let connection;
-
+  const connection = await pool.getConnection();
   try {
-    connection = await pool.getConnection();
+    // Fetch the encryption_salt for this specific survey
+    const [config] = await connection.execute(
+        "SELECT encryption_salt FROM survey_configurations WHERE id = ?",
+        [surveyId]
+    );
+
+    if (!config.length || !config[0].encryption_salt) {
+        return res.status(400).json({ success: false, error: "Survey configuration or encryption salt not found" });
+    }
+
+    // Use the salt stored in the DB as the encryption key
+    const currentSecretKey = Buffer.from(config[0].encryption_salt.substring(0, 32), 'utf8');
 
     console.log("--- Incoming Submission ---");
     console.log("Plain-text Name:", fullName);
-    console.log("Target Survey ID:", survey_id);
+    console.log("Target Survey ID:", surveyId);
 
     // Encrypt name with unique IV
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+    const cipher = crypto.createCipheriv(algorithm, currentSecretKey, iv);
 
     let encryptedName = cipher.update(fullName, "utf8", "hex");
     encryptedName += cipher.final("hex");
@@ -42,50 +58,67 @@ router.post("/", async (req, res) => {
 
     await connection.beginTransaction();
 
-    // Insert survey submission
+    // Insert encrypted name and student data into student_survey_entries
     const [result] = await connection.execute(
-      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, survey_id) VALUES (?, ?, ?, ?, ?)",
-      [encryptedName, ivHex, gender, gpaNum, survey_id]
+      "INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, commitment, survey_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [encryptedName, ivHex, gender, gpaNum, commitment, surveyId]
     );
 
     const studentId = result.insertId;
-    console.log("New survey response saved with id:", studentId);
+    console.log("Inserted student ID:", studentId);
 
-    // Parse availability (with safety)
-    let availabilityData = {};
-    try {
-      availabilityData = JSON.parse(availability_schedule);
-    } catch {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid availability schedule format"
-      });
-    }
-
+    // Parse availability schedule and insert into availability table
+    const availabilityData = JSON.parse(availability_schedule);
     const insertPromises = [];
+
+    console.log(`\n=== AVAILABILITY SUBMISSION DEBUG for Student ID: ${studentId} ===`);
+    console.log(`Received availability_schedule:`, JSON.stringify(availabilityData, null, 2));
+    const selectedSlots = Object.keys(availabilityData).filter(key => availabilityData[key]);
+    console.log(`Number of selected slots: ${selectedSlots.length}`);
+    console.log(`Selected time slots: ${selectedSlots.slice(0, 5).join(', ')}${selectedSlots.length > 5 ? '...' : ''}`);
 
     for (const [key, isSelected] of Object.entries(availabilityData)) {
       if (isSelected) {
-        const [dayOfWeek, timeSlot] = key.split("-");
-
+        // More robust parsing: find the last "-" to separate day from time
+        const lastDashIndex = key.lastIndexOf("-");
+        if (lastDashIndex === -1) {
+          console.warn(`Invalid key format: "${key}" - skipping`);
+          continue;
+        }
+        const dayOfWeek = key.substring(0, lastDashIndex);
+        const timeSlot = key.substring(lastDashIndex + 1);
+        
+        console.log(`Processing: key="${key}" -> day="${dayOfWeek.trim()}", time="${timeSlot.trim()}"`);
+        
+        // Validate day of week
+        const validDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        if (!validDays.includes(dayOfWeek.trim())) {
+          console.warn(`Invalid day: "${dayOfWeek}" - skipping`);
+          continue;
+        }
+        
         insertPromises.push(
           connection.execute(
             "INSERT INTO availability (student_id, day_of_week, time_slot) VALUES (?, ?, ?)",
-            [studentId, dayOfWeek, timeSlot]
+            [studentId, dayOfWeek.trim(), timeSlot.trim()]
           )
         );
       }
     }
 
+    console.log(`Total availability records to insert: ${insertPromises.length}`);
+    console.log(`=== END DEBUG ===\n`);
+
+    // Execute all availability inserts
     if (insertPromises.length > 0) {
       await Promise.all(insertPromises);
     }
 
+    // Commit transaction
     await connection.commit();
 
     res.status(201).json({
       success: true,
-      message: "Survey submitted!",
       student_id: studentId
     });
 
@@ -112,21 +145,25 @@ router.post("/", async (req, res) => {
 router.post("/reveal", async (req, res) => {
   const { decryptionKey, surveyId } = req.body;
 
-  if (decryptionKey !== 'vperysecretkey32charcheckdigital') {
-    return res.status(401).json({ success: false, error: "Invalid Decryption Key" });
+  // Validate key length (must be 32 chars for aes-256)
+  if (!decryptionKey || decryptionKey.length !== 32) {
+    return res.status(401).json({ success: false, error: "Invalid Decryption Key Length" });
   }
 
   try {
     const [rows] = await pool.execute(
-      "SELECT encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
+      "SELECT student_id, encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
       [surveyId]
     );
+
+    // Convert the instructor's key into a Buffer
+    const instructorKey = Buffer.from(decryptionKey, 'utf8');
 
     const decryptedResults = rows.map(row => {
       try {
         const decipher = crypto.createDecipheriv(
           algorithm,
-          secretKey,
+          instructorKey,
           Buffer.from(row.iv, 'hex')
         );
 
@@ -134,13 +171,14 @@ router.post("/reveal", async (req, res) => {
         decrypted += decipher.final('utf8');
 
         return {
+          id: row.student_id,
           name: decrypted,
           gender: row.gender,
           gpa: row.gpa
         };
       } catch (decryptionError) {
         console.error("Row decryption failed:", decryptionError);
-        return { name: "Error Decrypting", gender: row.gender, gpa: row.gpa };
+        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
       }
     });
 
@@ -150,8 +188,8 @@ router.post("/reveal", async (req, res) => {
     res.json({ success: true, names: decryptedResults });
 
   } catch (err) {
-    console.error("Decryption Route Error:", err);
-    res.status(500).json({ success: false, error: "Failed to decrypt names" });
+    console.error("Database Error:", err);
+    res.status(500).json({ success: false, error: "Database error" });
   }
 });
 

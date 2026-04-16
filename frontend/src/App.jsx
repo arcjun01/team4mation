@@ -1,40 +1,34 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import InstructorTeamSetup from "./components/InstructorTeamSetup";
-import StudentSurvey from "./components/StudentSurvey";
+import StudentSurvey from "./StudentSurvey";
 import LinkGeneration from "./components/LinkGeneration";
+import ThankYouPage from "./components/ThankYouPage";
+import Header from "./components/Header";
+import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
 import SurveySubmissions from "./components/SurveySubmissions";
-import Header from "./components/Header";
+//import FormingGroups from "./components/FormingGroups";
+import ViewSurveys from "./components/ViewSurveys";
+
+import FormingGroups from "./components/FormingGroups";
 
 function App() {
   return (
-    <Router>
-      <div className="main-container">
-        <Header />
-
+    <Router basename="/team4mation">
+      <>
         <Routes>
-          {/* Default to Instructor Setup */}
-          <Route path="/" element={<InstructorTeamSetup />} />
-
-          {/* Route for the generated link */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/setup" element={<InstructorTeamSetup />} />
+          <Route path="/view-surveys" element={<ViewSurveys />} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
-
-          {/* Student view */}
           <Route path="/survey/:id" element={<StudentSurvey />} />
-
-          {/*Submission status*/ }
-          <Route path="/survey-stats/:id" element={<SurveySubmissions />} />
-
-          {/* Instructor Decryption Entry Point */}
+          <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
-
-          {/* Decrypted Submissions List */}
-          <Route path="/survey-submissions" element={<SurveySubmissions />} />
-
-          {/* Redirect unknown routes */}
+          <Route path="/instructor/smart-teams/:id" element={<FormingGroups />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </div>
+      </>
     </Router>
   );
 }

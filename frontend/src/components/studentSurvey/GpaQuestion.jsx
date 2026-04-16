@@ -1,25 +1,22 @@
 import React from "react";
 
-export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError }) {
+export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear }) {
   const handleGpaChange = (value) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) {
       setGpa("");
-      setGpaError("");
       return;
     }
 
-    if (numValue < 1.0 || numValue > 4.0) {
-      setGpaError("GPA must be between 1.0 and 4.0");
-    } else {
-      setGpaError("");
-    }
     setGpa(numValue);
+    if (error) onClear();
   };
+
+  const courseDisplay = prevCourse || "SDEV 344";
 
   return (
     <div className="question-container">
-      <h2 className="question-title">What was your final GPA in SDEV 344? Enter or adjust below</h2>
+      <h2 className="question-title">What was your final GPA in {courseDisplay}? Enter or adjust below</h2>
       <p className="details">
         You can view your GPA in{" "}
         <a
@@ -37,11 +34,14 @@ export default function GpaQuestion({ gpa, gpaError, setGpa, setGpaError }) {
         step="0.1"
         min="1.0"
         max="4.0"
-        value={gpa ? parseFloat(gpa).toFixed(1) : ""}
+        value={gpa ? (Number.isInteger(gpa) ? gpa : gpa.toFixed(1)) : ""}
         onChange={(e) => handleGpaChange(e.target.value)}
         className="gpa-input"
       />
-      {gpaError && <div className="gpa-error">{gpaError}</div>}
+      <div style={{ fontSize: "14px", color: "#666", fontWeight: "500", marginTop: "8px" }}>
+        {courseDisplay} GPA
+      </div>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 }

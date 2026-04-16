@@ -1,18 +1,18 @@
 import React from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
+import Header from './Header';
 
 const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Grab form data if we came from the setup page so we can edit it
   const formData = location.state?.formData;
-  const surveyUrl = `${window.location.origin}/survey/${id}`;
+  const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
 
   const handleEdit = () => {
-    navigate('/', { state: { formData } });
+    navigate('/setup', { state: { formData } });
   };
 
   const handleCopy = () => {
@@ -27,48 +27,48 @@ const LinkGeneration = () => {
   };
 
   const handleViewStatus = () => {
-    navigate(`/survey-stats/${id}`);
+    navigate(`/survey-submissions/${id}`);
   };
 
   return (
-    <div className="link-page-container">
-      <div className="card-container">
-        <h2 className="card-title">Student Survey Link</h2>
-        
-        <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-          Copy the link or click the mail icon to share it with your students via Outlook.
-        </p>
-        
-        <div className="action-row">
-          <div className="url-box">
-            <Link to={`/survey/${id}`} className="survey-active-link">
+    <div className="page-wrapper">
+      <Header variant="large" />
+      <div className="page-container top-gap-large">
+        <div className="card-container">
+          <h2 className="card-title">Student Survey Link</h2>
+          
+          <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
+            Copy the link or click the mail icon to share it with your students via Outlook.
+          </p>
+          
+          <div className="action-row">
+            <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
               {surveyUrl}
-            </Link>
-          </div>
+            </a>
 
-          <div className="icon-group">
-            <button className="icon-btn" onClick={handleCopy} title="Copy Link">
-              📋
-            </button>
-            <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
-              ✉️
-            </button>
+            <div className="icon-group">
+              <button className="icon-btn" onClick={handleCopy} title="Copy Link">
+                📋
+              </button>
+              <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
+                ✉️
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="footer-action-row">
-        <button className="footer-btn" onClick={handleEdit}>
-          Edit Survey
-        </button>
+        
+          <div className="button-group">
+            <button className="button" onClick={handleEdit}>
+              Edit Survey
+            </button>
 
-        <button 
-          className="footer-btn" 
-          onClick={handleViewStatus}
-          style={{ backgroundColor: '#a3c1ad', fontWeight: 'bold' }}
-        >
-          View Submission Status
-        </button>
+            <button 
+              className="button" 
+              onClick={handleViewStatus}
+            >
+              View Submissions
+            </button>
+          </div>
       </div>
     </div>
   );
