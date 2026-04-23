@@ -121,3 +121,5 @@ function isGenderBalanced(group) {
     // Allow grouping if ratio isn't extreme (max 2:1)
     return maleCount <= (otherCount * 2) && otherCount <= (maleCount * 2);
 }
+
+export { improveGroups };

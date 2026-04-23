@@ -1,6 +1,6 @@
 import studentData from "../data/students.js"
 import { availabilityData } from "../data/availibility.js"
-import
+import { improveGroups } from "./grouperImprover.js"
 
 const { students, settings } = studentData
 
