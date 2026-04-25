@@ -395,11 +395,9 @@ const FormingGroups = () => {
 
                             {/* RIGHT SIDE: Using the stats sidebar container for action buttons */}
                             <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-                                {/* SCRUM-240: Added Preview button to navigate to student-view page */}
                                 <button 
                                     className="sidebar-btn" 
-                                    onClick={() => navigate(`/student-view/teams/${id}`, { state: { groups } })}
-                                    title="Preview Student View"
+                                    onClick={() => window.open(`/team4mation/student-view/teams/${id}`, '_blank')}
                                     style={{ padding: '12px', width: '100%' }}
                                 >
                                     <span className="icon">View 👁️</span>
