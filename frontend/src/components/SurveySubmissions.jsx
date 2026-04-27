@@ -30,7 +30,7 @@ const SurveySubmissions = () => {
             const fetchAndDecrypt = async () => {
                 try {
                     // 1. Fetch basic stats (count, class size)
-                    const statsRes = await fetch(`http://localhost:3001/api/survey/stats/${surveyId}`);
+                    const statsRes = await fetch(`/api/survey/stats/${surveyId}`);
                     const statsData = await statsRes.json();
                     setStats(statsData);
 
@@ -41,7 +41,7 @@ const SurveySubmissions = () => {
 
                     // 2. If we have a key, fetch and decrypt names automatically
                     if (userKey) {
-                        const revealRes = await fetch('http://localhost:3001/api/survey/reveal', {
+                        const revealRes = await fetch('/api/survey/reveal', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ decryptionKey: userKey, surveyId })
@@ -65,7 +65,7 @@ const SurveySubmissions = () => {
     const handleCloseSurvey = async () => {
         if (window.confirm("Stop all new submissions? Students will no longer be able to access the link.")) {
             try {
-                const response = await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
+                const response = await fetch(`/api/survey/close/${surveyId}`, {
                     method: 'PATCH'
                 });
 

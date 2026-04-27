@@ -14,7 +14,7 @@ import FormingGroups from "./components/FormingGroups";
 
 function App() {
   return (
-    <Router basename="/team4mation">
+    <Router>
       <>
         <Routes>
           <Route path="/" element={<LandingPage />} />
