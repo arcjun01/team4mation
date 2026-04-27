@@ -17,6 +17,9 @@ function buildAvailabilityMap(availabilityData) {
 
 function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
     const studentsList = studentsParam || students;
+    const normalizedLimit = limitType?.toLowerCase();
+    const isMax = normalizedLimit?.startsWith('max');
+    const isMin = normalizedLimit?.startsWith('min');
     // Fallback to settings if the DB limit isn't provided
     const targetSize = parseInt(teamLimitParam) || settings.teamSize || 4;
 
@@ -24,7 +27,7 @@ function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
 
     // Logic for Min vs Max number of groups
     let groupNum;
-    if (limitType === 'Minimum' || limitType === 'min') {
+    if (isMin) {
         // e.g. 10 students, min 4 per team = 2 groups (5 each)
         groupNum = Math.floor(studentsList.length / targetSize);
     } else {
@@ -37,7 +40,7 @@ function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
 
     let minSize, maxSize;
 
-    if (limitType === "Maximum" || limitType === "max") {
+    if (isMax) {
         minSize = 2;
         maxSize = targetSize;
     } else {
@@ -275,10 +278,10 @@ function makeBasicGroups(males, others, groupNum, targetSize) {
 export {
     grouper,
     buildAvailabilityMap,
-    calculateScheduleOverlap,
-    calculateGPASimilarity,
-    calculateCommitmentSimilarity,
-    calculateGroupScore,
-    isGenderBalanced,
+    // calculateScheduleOverlap,
+    // calculateGPASimilarity,
+    // calculateCommitmentSimilarity,
+    // calculateGroupScore,
+    // isGenderBalanced,
     makeBasicGroups
 };
