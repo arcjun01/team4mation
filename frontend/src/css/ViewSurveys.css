@@ -102,30 +102,12 @@
   font-weight: bold;
 }
 
-.loading-message,
-.error-message {
-  text-align: center;
-  padding: 40px 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin: 30px 0;
-}
+
 
 .loading-message p {
   color: #666;
   font-size: 1.1em;
   margin: 0;
-}
-
-.error-message {
-  background: #fff5f5;
-  border: 1px solid #f5c6cb;
-}
-
-.error-message p {
-  color: #721c24;
-  font-size: 1em;
-  margin: 0 0 20px 0;
 }
 
 .button-group {

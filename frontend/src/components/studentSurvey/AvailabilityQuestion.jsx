@@ -56,47 +56,54 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
         Select all that apply.
       </div>
 
-      <div className="availability-container">
-        <div 
-          className="availability-table-wrapper"
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          <div className="availability-grid">
-            <div className="time-header">
-              <div className="corner-cell"></div>
-              {DAYS.map((day) => (
-                <div key={day.key} className="day-column-header">
-                  {day.label}
-                </div>
-              ))}
-            </div>
-
-            {TIME_SLOTS.map((time) => (
-              <div key={time} className="time-row">
-                <div className="time-slot-header">{time}</div>
-                {DAYS.map((day) => (
+      <div className="placement-center">
+        <div className="availability-container">
+          <div 
+            className="availability-table-wrapper"
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            <div className="availability-grid">
+              <div className="time-header">
+                <div className="corner-cell"></div>
+                {DAYS.map((day, index) => (
                   <div
-                    key={`${day.key}-${time}`}
-                    className="time-cell-background"
-                    onMouseDown={() => handleMouseDown(day.key, time)}
-                    onMouseEnter={() => handleMouseEnter(day.key, time)}
+                    key={day.key}
+                    className={`day-column-header${index === 0 ? " first-day-column-header" : ""}${index === DAYS.length - 1 ? " last-day-column-header" : ""}`}
                   >
-                    <div
-                      className={`time-cell ${isSelected(day.key, time) ? "selected" : ""}`}
-                    >
-                      {isSelected(day.key, time) && (
-                        <img src={checkmarkIcon} alt="selected" className="checkmark-icon" />
-                      )}
-                    </div>
+                    {day.label}
                   </div>
                 ))}
               </div>
-            ))}
+
+              {TIME_SLOTS.map((time) => (
+                <div key={time} className="time-row">
+                  <div className="time-slot-header">{time}</div>
+                  {DAYS.map((day) => (
+                    <div
+                      key={`${day.key}-${time}`}
+                      className="time-cell-background"
+                      onMouseDown={() => handleMouseDown(day.key, time)}
+                      onMouseEnter={() => handleMouseEnter(day.key, time)}
+                    >
+                      <div
+                        className={"time-cell" + (isSelected(day.key, time) ? " selected" : "")}
+                      >
+                        {isSelected(day.key, time) && (
+                          <img src={checkmarkIcon} alt="selected" className="checkmark-icon" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      {error && <div className="error-message">{error}</div>}
+      <div className="error-container">
+        {error && <div className="error-message">{error}</div>}
+      </div>
     </div>
   );
 }

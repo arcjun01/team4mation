@@ -157,6 +157,15 @@ h2 {
     padding-right: clamp(16px, 5vw, 40px);
 }
 
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    text-align: left;
+    margin-top: 25px;
+}
+
 .button {
     background-color:#086759ba;
     color: white;

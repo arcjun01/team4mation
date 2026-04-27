@@ -159,13 +159,6 @@ span {
     margin-top: 4px;
 }
 
-.error-message {
-    font-size: 14px;
-    color: #dc2626;
-    margin-top: 8px;
-    font-weight: 500;
-}
-
 .gpa-input {
     background-color: #B2E1CB;
     border: none;
@@ -208,11 +201,18 @@ span {
     margin-top: -8px;
 }
 
+.placement-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .availability-container {
     display: flex;
-    width: 100%;
-    padding: 26px 18px 24px;
-    border-radius: 16px;
+    align-items: center;
+    width: 483px;
+    padding: 0px 18px 24px 18px;
+    border-radius: 12px;
     background: #ececec;
     box-sizing: border-box;
 }
@@ -239,17 +239,17 @@ span {
 }
 
 .corner-cell {
-    width: 78px;
-    min-width: 78px;
+    width: 40.5px;
+    min-width: 40.5px;
     margin-right: 8px;
 }
 
 .time-slot-header {
-    width: 78px;
-    min-width: 78px;
+    width: 42px;
+    min-width: 42px;
     padding: 0 8px;
     text-align: left;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
     color: #1f2937;
     display: flex;
@@ -258,14 +258,14 @@ span {
 }
 
 .day-column-header {
-    width: 56px;
+    width: 36px;
     min-width: 56px;
-    height: 68px;
+    height: 50px;
     margin: 0;
     text-align: center;
-    font-size: 19px;
+    font-size: 14px;
     font-weight: 500;
-    background: #1f6d5f;
+    background: #086759;
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -274,26 +274,26 @@ span {
     letter-spacing: 0.02em;
 }
 
-.day-column-header:first-child {
-    border-top-left-radius: 14px;
-    border-bottom-left-radius: 14px;
+.first-day-column-header {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
-.day-column-header:last-child {
+.last-day-column-header {
     border-right: none;
-    border-top-right-radius: 14px;
-    border-bottom-right-radius: 14px;
+    width: 57px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .time-row {
     display: flex;
     align-items: center;
-    padding: 6px 0;
 }
 
 .time-cell-background {
-    margin: 3px;
-    width: 40px;
+    margin: 4.5px;
+    width: 45px;
     height: 30px;
     background: white;
     border-radius: 5px;
@@ -301,6 +301,7 @@ span {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    border: 4px solid white;
 }
 
 .time-cell {
@@ -312,7 +313,7 @@ span {
     justify-content: center;
     transition: all 0.15s ease;
     background: white;
-    border-radius: 8px;
+    border-radius: 3px;
 }
 
 .time-cell:hover {
@@ -361,4 +362,3 @@ span {
     text-align: center;
     font-weight: 500;
 }
-
