@@ -101,6 +101,8 @@ function enforceGroupSizes(groups, minSize, maxSize) {
     return groups;
 }
 
+
+
 function seperateGenders(studentsList) {
     const males = [];
     const others = [];
@@ -135,20 +137,30 @@ function makeBasicGroups(males, others, groupNum, targetSize) {
     }
 
     // Phase 2: Distribute remaining males
-    while (maleIndex < males.length) {
-        for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
-            groups[g].push(males[maleIndex++]);
-        }
-    }
+    // while (maleIndex < males.length) {
+    //     for (let g = 0; g < groupNum && maleIndex < males.length; g++) {
+    //         groups[g].push(males[maleIndex++]);
+    //     }
+    // }
+    distributeRemainder(males, maleIndex, groups);
 
     // Phase 3: Distribute remaining others
-    while (otherIndex < others.length) {
-        for (let g = 0; g < groupNum && otherIndex < others.length; g++) {
-            groups[g].push(others[otherIndex++]);
-        }
-    }
+    // while (otherIndex < others.length) {
+    //     for (let g = 0; g < groupNum && otherIndex < others.length; g++) {
+    //         groups[g].push(others[otherIndex++]);
+    //     }
+    // }
+    distributeRemainder(others, otherIndex, groups);
 
     return groups;
+}
+
+function distributeRemainder(arr, index, groups) {
+    while (index < arr.length) {
+        for (let g = 0; g < groups.length && index < arr.length; g++) {
+            groups[g].push(arr[index++]);
+        }
+    }
 }
 // Split into new file
 // function improveGroups(groups, availabilityMap) {
