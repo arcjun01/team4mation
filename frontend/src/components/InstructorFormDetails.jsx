@@ -49,10 +49,10 @@ const InstructorFormDetails = () => {
     fetchFormDetails();
   }, [id]);
 
-  const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
   const prerequisiteCourse = formConfig?.prevCourse?.trim();
   const isPrerequisiteRequired =
     Boolean(prerequisiteCourse) && prerequisiteCourse.toLowerCase() !== 'not required';
+  const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
     navigate(-1);
@@ -103,27 +103,50 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-value">{formConfig?.useGpa ? 'Yes' : 'No'}</span>
                   </div>
                 )}
-                <div className="form-detail-card full-width">
-                  <span className="form-detail-label">Student Survey Link</span>
-                  <a
-                    href={surveyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="form-detail-link"
-                  >
-                    Open Survey
-                  </a>
-                </div>
+                {hasGeneratedGroups ? (
+                  <div className="form-detail-card full-width">
+                    <span className="form-detail-label">Formed Groups</span>
+                    <button
+                      type="button"
+                      className="form-detail-link form-detail-link-button"
+                      onClick={() => navigate(`/instructor/smart-teams/${id}`)}
+                    >
+                      View Results
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Link to the Student Survey</span>
+                      <button
+                        type="button"
+                        className="form-detail-link form-detail-link-button"
+                        onClick={() => navigate(`/generate-link/${id}`)}
+                      >
+                        View Link
+                      </button>
+                    </div>
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Survey Submission Status</span>
+                      <button
+                        type="button"
+                        className="form-detail-link form-detail-link-button"
+                        onClick={() => navigate(`/survey-submissions/${id}`)}
+                      >
+                        View Submissions
+                      </button>
+                    </div>
+                  </>
+                )}
               </section>
 
               <div className="button-group instructor-form-actions">
-                <button className="button" onClick={() => navigate(`/generate-link/${id}`)}>
-                  View Survey Link
-                </button>
-                <button className="button" onClick={() => navigate(`/survey-submissions/${id}`)}>
-                  Go to Student Status
-                </button>
-                <button className="button" onClick={handleGoBack}>
+                {hasGeneratedGroups ? (
+                  <button className="button" onClick={() => navigate(`/instructor/smart-teams/${id}`)}>
+                    View Results
+                  </button>
+                ) : null}
+                <button className="button go-back-button" onClick={handleGoBack}>
                   Go Back
                 </button>
               </div>

@@ -19,8 +19,6 @@ const SurveySubmissions = () => {
         studentList: [] 
     });
 
-    const [isClosed, setIsClosed] = useState(false);
-    
     // Manage decrypted names in state so they can update automatically
     const [decryptedNames, setDecryptedNames] = useState(location.state?.names || []);
     const [userKey, setUserKey] = useState(location.state?.userKey || ""); // Store the key for polling
@@ -33,11 +31,6 @@ const SurveySubmissions = () => {
                     const statsRes = await fetch(`http://localhost:3001/api/survey/stats/${surveyId}`);
                     const statsData = await statsRes.json();
                     setStats(statsData);
-
-                    // Update UI if survey is closed
-                    if (statsData.status === 'closed') {
-                        setIsClosed(true);
-                    }
 
                     // 2. If we have a key, fetch and decrypt names automatically
                     if (userKey) {
@@ -62,7 +55,15 @@ const SurveySubmissions = () => {
         }
     }, [surveyId, userKey]);
 
-    const confirmGenerateAndNavigate = () => {
+    const confirmGenerateAndNavigate = async () => {
+        try {
+            await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
+                method: 'PATCH'
+            });
+        } catch (error) {
+            console.error("Unable to mark survey as closed:", error);
+        }
+
         // Navigates to the dashboard passing the latest decrypted names
         navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedNames } });
     };
@@ -117,12 +118,6 @@ const SurveySubmissions = () => {
                             </div>
 
                             <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #eee' }} />
-
-                            {isClosed && (
-                                <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
-                                    Survey Closed
-                                </div>
-                            )}
 
                             {decryptedNames.length > 0 && (
                                 <button 
