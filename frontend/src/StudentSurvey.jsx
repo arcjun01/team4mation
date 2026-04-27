@@ -36,7 +36,7 @@ export default function StudentSurvey() {
           return;
         }
 
-        const response = await fetch(`http://localhost:3001/api/config/${surveyId}`);
+        const response = await fetch(`/api/config/${surveyId}`);
         if (!response.ok) {
           setMessage("Survey not found or expired.");
           setLoadingConfig(false);
@@ -107,7 +107,7 @@ export default function StudentSurvey() {
       setLoading(true);
       setMessage("");
 
-      const response = await fetch("http://localhost:3001/api/survey", {
+      const response = await fetch("/api/survey", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
