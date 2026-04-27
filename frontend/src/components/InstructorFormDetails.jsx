@@ -50,6 +50,9 @@ const InstructorFormDetails = () => {
   }, [id]);
 
   const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
+  const prerequisiteCourse = formConfig?.prevCourse?.trim();
+  const isPrerequisiteRequired =
+    Boolean(prerequisiteCourse) && prerequisiteCourse.toLowerCase() !== 'not required';
 
   const handleGoBack = () => {
     navigate(-1);
@@ -61,13 +64,8 @@ const InstructorFormDetails = () => {
 
       <div className="instructor-page-content">
         <div className="content-container">
-          <div className="form-hero-card">
-            <div>
-              <h1>My Form</h1>
-              <p className="form-hero-copy">
-                Review the saved instructor form details and share the survey link with your students.
-              </p>
-            </div>
+          <div className="question-container">
+            <h1>Form Details</h1>
           </div>
 
           {loading ? (
@@ -99,10 +97,12 @@ const InstructorFormDetails = () => {
                   <span className="form-detail-label">Prerequisite Course</span>
                   <span className="form-detail-value">{formConfig?.prevCourse || 'Not required'}</span>
                 </div>
-                <div className="form-detail-card">
-                  <span className="form-detail-label">Uses GPA</span>
-                  <span className="form-detail-value">{formConfig?.useGpa ? 'Yes' : 'No'}</span>
-                </div>
+                {isPrerequisiteRequired && (
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Uses GPA</span>
+                    <span className="form-detail-value">{formConfig?.useGpa ? 'Yes' : 'No'}</span>
+                  </div>
+                )}
                 <div className="form-detail-card full-width">
                   <span className="form-detail-label">Student Survey Link</span>
                   <a
