@@ -116,14 +116,6 @@ const InstructorFormDetails = () => {
                 </div>
               </section>
 
-              <div className="question-container">
-                <h2>Project Description</h2>
-                <p className="form-description-text">
-                  Students will complete a Team4mation survey for {formConfig?.courseName || 'this course'}.
-                  Their responses will be used to review submissions, track pending responses, and support group formation.
-                </p>
-              </div>
-
               <div className="button-group instructor-form-actions">
                 <button className="button" onClick={() => navigate(`/generate-link/${id}`)}>
                   View Survey Link
