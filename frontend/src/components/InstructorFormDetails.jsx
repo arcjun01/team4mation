@@ -141,11 +141,6 @@ const InstructorFormDetails = () => {
               </section>
 
               <div className="button-group instructor-form-actions">
-                {hasGeneratedGroups ? (
-                  <button className="button" onClick={() => navigate(`/instructor/smart-teams/${id}`)}>
-                    View Results
-                  </button>
-                ) : null}
                 <button className="button go-back-button" onClick={handleGoBack}>
                   Go Back
                 </button>

@@ -51,6 +51,13 @@
     border: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
+
+.student-list-container.survey-card:hover {
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    transform: none !important;
+}
+
 .survey-card {
     outline: none;
     border: none;
