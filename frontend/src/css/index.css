@@ -97,6 +97,7 @@ h1 {
     text-align: center;
     margin: 0%;
     color: #333;
+    font-size: 27px;
 }
 
 h2 {
@@ -138,7 +139,7 @@ h2 {
 
 .question-container {
     background: white;
-    padding: 40px;
+    padding: 30px;
     border-radius: 12px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
