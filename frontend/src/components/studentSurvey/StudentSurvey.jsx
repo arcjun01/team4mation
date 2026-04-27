@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import FullNameQuestion from "./components/studentSurvey/FullNameQuestion";
-import GenderQuestion from "./components/studentSurvey/GenderQuestion";
-import GpaQuestion from "./components/studentSurvey/GpaQuestion";
-import AvailabilityQuestion from "./components/studentSurvey/AvailabilityQuestion";
-import CommitmentQuestion from "./components/studentSurvey/CommitmentQuestion";
-import ConfirmationModal from "./components/ConfirmationModal";
-import Header from "./components/Header";
-import "./css/studentSurvey.css";
+import FullNameQuestion from "./FullNameQuestion";
+import GenderQuestion from "./GenderQuestion";
+import GpaQuestion from "./GpaQuestion";
+import AvailabilityQuestion from "./AvailabilityQuestion";
+import CommitmentQuestion from "./CommitmentQuestion";
+import ConfirmationModal from "../ConfirmationModal";
+import Header from "../Header";
+import "../../css/studentSurvey.css";
 
 export default function StudentSurvey() {
   const { id: surveyId } = useParams();

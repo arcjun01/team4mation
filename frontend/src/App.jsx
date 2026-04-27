@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import InstructorTeamSetup from "./components/InstructorTeamSetup";
-import StudentSurvey from "./StudentSurvey";
+import StudentSurvey from "./components/studentSurvey/StudentSurvey";
 import LinkGeneration from "./components/LinkGeneration";
-import ThankYouPage from "./components/ThankYouPage";
+import ThankYouPage from "./components/studentSurvey/ThankYouPage";
 import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
 import InstructorFormDetails from "./components/InstructorFormDetails";
