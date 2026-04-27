@@ -62,22 +62,6 @@ const SurveySubmissions = () => {
         }
     }, [surveyId, userKey]);
 
-    const handleCloseSurvey = async () => {
-        if (window.confirm("Stop all new submissions? Students will no longer be able to access the link.")) {
-            try {
-                const response = await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
-                    method: 'PATCH'
-                });
-
-                if (response.ok) {
-                    setIsClosed(true);
-                }
-            } catch (error) {
-                alert("Error closing survey. Check your connection.");
-            }
-        }
-    };
-
     const confirmGenerateAndNavigate = () => {
         // Navigates to the dashboard passing the latest decrypted names
         navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedNames } });
