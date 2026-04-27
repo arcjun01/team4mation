@@ -5,6 +5,7 @@ import LinkGeneration from "./components/LinkGeneration";
 import ThankYouPage from "./components/ThankYouPage";
 import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
+import InstructorFormDetails from "./components/InstructorFormDetails";
 import SurveySubmissions from "./components/SurveySubmissions";
 //import FormingGroups from "./components/FormingGroups";
 import ViewSurveys from "./components/ViewSurveys";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/view-surveys" element={<ViewSurveys />} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
           <Route path="/survey/:id" element={<StudentSurvey />} />
+          <Route path="/instructor/form/:id" element={<InstructorFormDetails />} />
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
           <Route path="/instructor/smart-teams/:id" element={<FormingGroups />} />

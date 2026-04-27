@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
 import '../css/FormingGroups.css'; 
+import Navbar from './Navbar';
 
 const FormingGroups = () => {
     const { id } = useParams();
@@ -293,8 +294,10 @@ const FormingGroups = () => {
     };
 
     return (
-        <>
-            <div className="survey-page-wrapper top-gap">
+        <div className="instructor-page-shell">
+            <Navbar surveyId={id} />
+            <div className="instructor-page-content">
+            <div className="survey-page-wrapper">
                 <div className="main-container">
                     <div className="content-container">
                         
@@ -425,7 +428,8 @@ const FormingGroups = () => {
                 onConfirm={handlePurge}
                 isLoading={isPurging}
             />
-        </>
+            </div>
+        </div>
     );
 };
 

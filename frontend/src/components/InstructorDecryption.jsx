@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/InstructorDecryption.css';
+import Navbar from './Navbar';
 
 function InstructorDecryption() {
     const [decryptionKey, setDecryptionKey] = useState("");
@@ -45,9 +46,11 @@ function InstructorDecryption() {
 };
 
     return (
-        <>
+        <div className="instructor-page-shell">
+            <Navbar surveyId={id} />
+            <div className="instructor-page-content">
             <div className="decryption-page">
-            <div className="decryption-wrapper top-gap-large">
+            <div className="decryption-wrapper">
                 <div className='question-container '><h1>View Survey Submissions</h1></div>
                 
                 <form className="decryption-card" onSubmit={handleDecrypt}>
@@ -87,7 +90,8 @@ function InstructorDecryption() {
                 </div>
             </div>
         </div>
-        </>
+            </div>
+        </div>
     );
 }
 

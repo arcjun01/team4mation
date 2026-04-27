@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
 import ConfirmationModal from './ConfirmationModal';
+import Navbar from './Navbar';
 
 const InstructorTeamSetup = () => {
   const navigate = useNavigate();
@@ -117,9 +118,11 @@ const InstructorTeamSetup = () => {
   const handleCancel = () => setShowConfirmation(false);
 
   return (
-    <>
-      <div className="setup-wrapper">
-        <div className="content-container top">
+    <div className="instructor-page-shell">
+      <Navbar />
+      <div className="instructor-page-content">
+        <div className="setup-wrapper">
+        <div className="content-container">
           <div className='question-container'><h1>Setting Up Student Surveys</h1></div>
           <div className="setup-card info-card">
             <p>Once you complete this setup, a link to a customized student survey will be generated.</p>
@@ -202,7 +205,8 @@ const InstructorTeamSetup = () => {
       </div>
 
       <ConfirmationModal isOpen={showConfirmation} onConfirm={handleConfirm} onCancel={handleCancel} />
-    </>
+      </div>
+    </div>
   );
 };
 

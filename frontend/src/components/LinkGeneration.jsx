@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
+import Navbar from './Navbar';
 
 const LinkGeneration = () => {
   const { id } = useParams();
@@ -30,8 +31,10 @@ const LinkGeneration = () => {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="page-container top-gap-large">
+    <div className="instructor-page-shell">
+      <Navbar surveyId={id} />
+      <div className="instructor-page-content">
+      <div className="page-container">
         <div className="card-container">
           <h2 className="card-title">Student Survey Link</h2>
           
@@ -67,6 +70,7 @@ const LinkGeneration = () => {
               View Submissions
             </button>
           </div>
+      </div>
       </div>
     </div>
   );

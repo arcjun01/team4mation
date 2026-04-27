@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/ViewSurveys.css';
+import Navbar from './Navbar';
 
 const ViewSurveys = () => {
   const [surveys, setSurveys] = useState([]);
@@ -57,8 +58,10 @@ const ViewSurveys = () => {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="view-surveys-container top-gap-large">
+    <div className="instructor-page-shell">
+      <Navbar />
+      <div className="instructor-page-content">
+      <div className="view-surveys-container">
         <div className="survey-container">
           <div className="question-container">
             <h1>Select Survey</h1>
@@ -115,6 +118,7 @@ const ViewSurveys = () => {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
