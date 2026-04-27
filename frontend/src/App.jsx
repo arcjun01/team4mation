@@ -3,7 +3,6 @@ import InstructorTeamSetup from "./components/InstructorTeamSetup";
 import StudentSurvey from "./StudentSurvey";
 import LinkGeneration from "./components/LinkGeneration";
 import ThankYouPage from "./components/ThankYouPage";
-import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import InstructorDecryption from "./components/InstructorDecryption";
 import SurveySubmissions from "./components/SurveySubmissions";

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
-import Header from './Header';
 import ConfirmationModal from './ConfirmationModal';
 
 const InstructorTeamSetup = () => {
@@ -119,7 +118,6 @@ const InstructorTeamSetup = () => {
 
   return (
     <>
-      <Header variant="page" />
       <div className="setup-wrapper">
         <div className="content-container top">
           <div className='question-container'><h1>Setting Up Student Surveys</h1></div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/SurveySubmissions.css';
-import Header from './Header';
 
 const SurveySubmissions = () => {
     const { id: urlId } = useParams();
@@ -85,7 +84,6 @@ const SurveySubmissions = () => {
 
     return (
         <>
-            <Header variant="page" />
             <div className="survey-page-wrapper top-gap">
                 <div className="content-container">
                     <div className='question-container'>

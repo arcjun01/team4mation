@@ -1,7 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/LinkGeneration.css';
-import Header from './Header';
 
 const LinkGeneration = () => {
   const { id } = useParams();
@@ -32,7 +31,6 @@ const LinkGeneration = () => {
 
   return (
     <div className="page-wrapper">
-      <Header variant="large" />
       <div className="page-container top-gap-large">
         <div className="card-container">
           <h2 className="card-title">Student Survey Link</h2>

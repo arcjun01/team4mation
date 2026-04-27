@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/ViewSurveys.css';
-import Header from './Header';
 
 const ViewSurveys = () => {
   const [surveys, setSurveys] = useState([]);
@@ -59,7 +58,6 @@ const ViewSurveys = () => {
 
   return (
     <div className="page-wrapper">
-      <Header variant="large" />
       <div className="view-surveys-container top-gap-large">
         <div className="survey-container">
           <div className="question-container">

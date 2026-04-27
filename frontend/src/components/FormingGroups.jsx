@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import Header from './Header';
 import PurgeModal from "./PurgeModal";
 import '../css/FormingGroups.css'; 
 
@@ -295,8 +294,6 @@ const FormingGroups = () => {
 
     return (
         <>
-            <Header variant="page" />
-            
             <div className="survey-page-wrapper top-gap">
                 <div className="main-container">
                     <div className="content-container">

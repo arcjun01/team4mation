@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/InstructorDecryption.css';
-import Header from './Header';
 
 function InstructorDecryption() {
     const [decryptionKey, setDecryptionKey] = useState("");
@@ -47,7 +46,6 @@ function InstructorDecryption() {
 
     return (
         <>
-            <Header variant="large" />
             <div className="decryption-page">
             <div className="decryption-wrapper top-gap-large">
                 <div className='question-container '><h1>View Survey Submissions</h1></div>
