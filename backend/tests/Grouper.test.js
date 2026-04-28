@@ -190,8 +190,18 @@ describe("isGenderBalanced", () => {
             { student_id: "S01", gender: "Male" },
             { student_id: "S02", gender: "Male" },
             { student_id: "S03", gender: "Female" },
+            { student_id: "S04", gender: "Male" },
         ];
         expect(isGenderBalanced(group)).toBe(false);
+    });
+
+    test("returns true when male to female ratio isn't too extreme", () => {
+        const group = [
+            { student_id: "S01", gender: "Male" },
+            { student_id: "S02", gender: "Male" },
+            { student_id: "S03", gender: "Female" },
+        ];
+        expect(isGenderBalanced(group)).toBe(true);
     });
 
     test("returns true when all students are non-male", () => {
