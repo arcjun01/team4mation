@@ -14,7 +14,7 @@ function improveGroups(groups, availabilityMap) {
             for (let j = i + 1; j < groups.length; j++) {
                 for (const studentA of groups[i]) {
                     for (const studentB of groups[j]) {
-                        if (evalulateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
+                        if (evaluateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
                             //const indexA = groups[i].findIndex(s => s.id === studentA.id || s.student_id === studentA.student_id);
                             const indexA = groups[i].findIndex(s => getID(s) === getID(studentA));
                             //const indexB = groups[j].findIndex(s => s.id === studentB.id || s.student_id === studentB.student_id);
@@ -36,7 +36,7 @@ function improveGroups(groups, availabilityMap) {
     return groups;
 }
 
-function evalulateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
+function evaluateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
     // Determine unique ID key (database uses id or student_id)
     //const getID = (s) => s.id || s.student_id;
 
