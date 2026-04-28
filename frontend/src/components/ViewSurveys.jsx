@@ -17,7 +17,7 @@ const ViewSurveys = () => {
   const fetchSurveys = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/surveys/open');
+      const response = await fetch('/api/surveys/open');
       
       if (!response.ok) {
         throw new Error('Failed to fetch surveys');

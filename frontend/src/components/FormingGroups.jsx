@@ -161,7 +161,7 @@ const FormingGroups = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/config/${id}`);
+                const response = await fetch(`/api/config/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setSurveyConfig(data);
@@ -174,7 +174,7 @@ const FormingGroups = () => {
 
             try {
                 // First try to fetch from the submissions endpoint which returns more complete data
-                const submissionsResponse = await fetch(`http://localhost:3001/api/teams/${id}/submissions`);
+                const submissionsResponse = await fetch(`/api/teams/${id}/submissions`);
                 console.log(`🔍 Fetching from /api/teams/${id}/submissions...`, submissionsResponse.status);
                 
                 if (submissionsResponse.ok) {
@@ -217,7 +217,7 @@ const FormingGroups = () => {
                 }
 
                 // Fallback: Fetch availability data from the team generation endpoint
-                const teamResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
+                const teamResponse = await fetch(`/api/teams/${id}`);
                 if (teamResponse.ok) {
                     const teamData = await teamResponse.json();
                     console.log("🔍 Team data received:", {
@@ -273,7 +273,7 @@ const FormingGroups = () => {
     const handlePurge = async () => {
         setIsPurging(true);
         try {
-            const response = await fetch(`http://localhost:3001/api/survey/purge/${id}`, {
+            const response = await fetch(`/api/survey/purge/${id}`, {
                 method: 'DELETE'
             });
 

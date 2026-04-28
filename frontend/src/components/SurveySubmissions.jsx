@@ -22,19 +22,24 @@ const SurveySubmissions = () => {
     // Manage decrypted names in state so they can update automatically
     const [decryptedNames, setDecryptedNames] = useState(location.state?.names || []);
     const [userKey, setUserKey] = useState(location.state?.userKey || ""); // Store the key for polling
+    const [isClosed, setIsClosed] = useState(false);
 
     useEffect(() => {
         if (surveyId) {
             const fetchAndDecrypt = async () => {
                 try {
                     // 1. Fetch basic stats (count, class size)
-                    const statsRes = await fetch(`http://localhost:3001/api/survey/stats/${surveyId}`);
+                    const statsRes = await fetch(`/api/survey/stats/${surveyId}`);
                     const statsData = await statsRes.json();
                     setStats(statsData);
 
+                    if (statsData.status === 'closed') {
+                        setIsClosed(true);
+                    }
+
                     // 2. If we have a key, fetch and decrypt names automatically
                     if (userKey) {
-                        const revealRes = await fetch('http://localhost:3001/api/survey/reveal', {
+                        const revealRes = await fetch('/api/survey/reveal', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ decryptionKey: userKey, surveyId })
@@ -57,9 +62,13 @@ const SurveySubmissions = () => {
 
     const confirmGenerateAndNavigate = async () => {
         try {
-            await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
+            const response = await fetch(`/api/survey/close/${surveyId}`, {
                 method: 'PATCH'
             });
+
+            if (response.ok) {
+                setIsClosed(true);
+            }
         } catch (error) {
             console.error("Unable to mark survey as closed:", error);
         }
@@ -118,6 +127,12 @@ const SurveySubmissions = () => {
                             </div>
 
                             <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #eee' }} />
+
+                            {isClosed && (
+                                <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                                    Survey Closed
+                                </div>
+                            )}
 
                             {decryptedNames.length > 0 && (
                                 <button 
