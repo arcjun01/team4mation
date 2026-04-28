@@ -108,10 +108,3 @@ h2 {
     text-align: center;
 }
 
-.page-container .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-    margin-top: 20px;
-}

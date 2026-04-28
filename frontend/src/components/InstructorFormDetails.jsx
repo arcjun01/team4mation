@@ -57,18 +57,14 @@ const InstructorFormDetails = () => {
     fetchFormDetails();
   }, [id]);
 
-  const prerequisiteCourse = formConfig?.prevCourse?.trim();
   const courseName = formConfig?.courseName || formConfig?.course_name || '';
   const teamLimit = formConfig?.maxSize || formConfig?.team_limit || '';
   const limitType = normalizeLimitType(formConfig?.limitType || formConfig?.limit_type);
+  const prevCourse = formConfig?.prevCourse || formConfig?.prev_course || '';
+  const classSize = stats?.classSize || formConfig?.classSize || formConfig?.class_size || '';
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
-  const prevCourse = formConfig?.prevCourse || formConfig?.prev_course || '';
-  const classSize = stats?.classSize || formConfig?.classSize || formConfig?.class_size || '';
-  const isPrerequisiteRequired =
-    Boolean((prerequisiteCourse || prevCourse)?.trim()) &&
-    (prerequisiteCourse || prevCourse).trim().toLowerCase() !== 'not required';
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
@@ -100,7 +96,7 @@ const InstructorFormDetails = () => {
       if (response.ok) {
         setIsPurgeModalOpen(false);
         window.alert('All survey responses have been successfully erased from the database.');
-        navigate(`/survey-submissions/${id}`, { state: { names: [] } });
+        navigate('/');
       } else {
         window.alert('Failed to purge data. Please check your server connection.');
       }
@@ -163,12 +159,6 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-label">Prerequisite Course</span>
                     <span className="form-detail-value">{prevCourse || 'Not required'}</span>
                   </div>
-                  {isPrerequisiteRequired && (
-                    <div className="form-detail-card">
-                      <span className="form-detail-label">Uses GPA</span>
-                      <span className="form-detail-value">{useGpa ? 'Yes' : 'No'}</span>
-                    </div>
-                  )}
                   {hasGeneratedGroups ? (
                     <div className="form-detail-card full-width">
                       <span className="form-detail-label">Formed Groups</span>

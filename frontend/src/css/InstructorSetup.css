@@ -106,13 +106,6 @@
 }
 
 
-.setup-wrapper .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    width: 100%;
-}
-
 .setup-wrapper {
     color: #dc2626;
     font-size: 14px;

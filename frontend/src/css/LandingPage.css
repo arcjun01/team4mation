@@ -71,14 +71,15 @@
 }
 
 .landing-primary-button {
-  width: 300px;
-  padding: 14px 80px;
+  width: 320px;
+  padding: 16px 42px;
   border-radius: 10px;
   border: none;
   background-color: #a4beb7;
   color: #000;
   font-size: 15px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .landing-primary-button:hover {
@@ -86,14 +87,15 @@
 }
 
 .landing-secondary-button {
-  width: 300px;
-  padding: 14px 80px;
+  width: 320px;
+  padding: 16px 42px;
   border-radius: 10px;
   border: none;
   background-color: #a4beb7;
   color: #000;
   font-size: 15px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .landing-secondary-button:hover {

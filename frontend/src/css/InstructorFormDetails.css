@@ -1,7 +1,8 @@
 .form-details-main-layout {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 20px;
+  margin-bottom: 50px;
 }
 
 .form-details-grid {
@@ -9,13 +10,12 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
-  margin-bottom: 28px;
 }
 
 .form-detail-card {
   background: #fff;
   border-radius: 12px;
-  padding: 24px;
+  padding: 34px 24px;
   box-shadow: 0 12px 30px rgba(12, 52, 44, 0.06);
   display: flex;
   flex-direction: column;
@@ -78,10 +78,12 @@
   border-radius: 12px;
   padding: 16px 14px;
   min-width: 86px;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
+  justify-content: center;
+  gap: 20px;
   position: sticky;
   top: 120px;
 }
@@ -136,6 +138,7 @@
 
 .go-back-button {
   margin-left: 0;
+  min-width: 180px;
 }
 
 @media (max-width: 900px) {

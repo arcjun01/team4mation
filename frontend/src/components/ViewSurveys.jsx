@@ -47,10 +47,8 @@ const ViewSurveys = () => {
       return;
     }
     
-    // Navigate to SmartTeamsDashboard with survey ID
-    navigate(`/instructor/smart-teams/${selectedSurveyId}`, {
-      state: { surveyId: selectedSurveyId }
-    });
+    // Navigate to saved instructor setup/form details for the selected survey
+    navigate(`/instructor/form/${selectedSurveyId}`);
   };
 
   const handleBack = () => {

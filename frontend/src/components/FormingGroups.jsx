@@ -281,7 +281,7 @@ const FormingGroups = () => {
                 setIsPurgeModalOpen(false);
                 alert("All survey responses have been successfully erased from the database.");
                 // After purging, we send the user back since the data is gone
-                navigate(`/survey-submissions/${id}`, { state: { names: [] } });
+                navigate('/');
             } else {
                 alert("Failed to purge data. Please check your server connection.");
             }
@@ -413,7 +413,7 @@ const FormingGroups = () => {
 
                         </div>
 
-                        <div className="button-tray forming-groups-button-tray">
+                        <div className="button-group forming-groups-button-tray">
                             <button className="button" onClick={() => navigate(-1)}>
                                 Back to Submissions
                             </button>

@@ -1,54 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/LandingPage.css';
+import Header from './Header';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [isResolvingSurvey, setIsResolvingSurvey] = useState(false);
 
-  const handleFormGroupsClick = async () => {
-    setIsResolvingSurvey(true);
-    try {
-      const response = await fetch('http://localhost:3001/api/surveys/open');
-      if (response.ok) {
-        const data = await response.json();
-        const latestSurveyId = data?.surveys?.[0]?.id;
-        if (latestSurveyId) {
-          navigate(`/instructor/form/${latestSurveyId}`);
-          return;
-        }
-      }
-    } catch (error) {
-      console.error('Error resolving existing survey setup:', error);
-    } finally {
-      setIsResolvingSurvey(false);
-    }
-
+  const handleNewGroupFormationClick = () => {
     navigate('/setup');
   };
 
-  const handleViewSurveysClick = () => {
+  const handleExistingGroupFormationClick = () => {
     navigate('/view-surveys');
   };
 
   return (
     <div className="landing-page">
+      <Header variant="large" />
       <main className="landing-main">
         <section className="landing-card top-gap-large">
           <div className="question-container "><h1>Smart Team Formation</h1></div>
           <div className="landing-content-card">
             <button
               className="landing-primary-button"
-              onClick={handleFormGroupsClick}
-              disabled={isResolvingSurvey}
+              onClick={handleNewGroupFormationClick}
             >
-              {isResolvingSurvey ? 'Loading...' : 'Form Groups'}
+              New Group Formation
             </button>
             <button
               className="landing-secondary-button"
-              onClick={handleViewSurveysClick}
+              onClick={handleExistingGroupFormationClick}
             >
-              View Survey Results
+              Existing Group Formation
             </button>
           </div>
         </section>

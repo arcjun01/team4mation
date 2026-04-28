@@ -130,7 +130,7 @@ const SurveySubmissions = () => {
                         </div>
                     </div>
 
-                    <div className="button-tray" style={{ marginTop: '30px' }}>
+                    <div className="button-group" style={{ marginTop: '30px' }}>
                         <button className="button" onClick={() => navigate(`/generate-link/${surveyId}`)}>
                             Back to Link
                         </button>

@@ -110,21 +110,9 @@
   margin: 0;
 }
 
-.button-group {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 30px;
-  flex-wrap: wrap;
-}
-
 @media (max-width: 768px) {
   .surveys-list {
     grid-template-columns: 1fr;
-  }
-
-  .button-group {
-    flex-direction: column;
   }
 
   .button {
