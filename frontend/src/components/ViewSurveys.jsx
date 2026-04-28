@@ -80,24 +80,32 @@ const ViewSurveys = () => {
             <>
               <div className="surveys-list">
                 {surveys.map((survey) => (
-                  <div
-                    key={survey.id}
-                    className={`survey-card ${selectedSurveyId === survey.id ? 'selected' : ''}`}
-                    onClick={() => handleSelectSurvey(survey.id)}
-                  >
-                    <div className="survey-card-header">
-                      <h3>{survey.course_name}</h3>
-                    </div>
-                    <div className="survey-card-details">
-                      <p><strong>Survey ID:</strong> {survey.id}</p>
-                      <p><strong>Class Size:</strong> {survey.class_size}</p>
-                      <p><strong>Team Limit:</strong> {survey.team_limit} ({survey.limit_type})</p>
-                      {survey.prev_course && (
-                        <p><strong>Previous Course:</strong> {survey.prev_course}</p>
-                      )}
-                    </div>
-                  
-                  </div>
+                  (() => {
+                    const hasGroupsFormed = ['closed', 'formed'].includes((survey.status || '').toLowerCase());
+
+                    return (
+                      <div
+                        key={survey.id}
+                        className={`survey-card ${selectedSurveyId === survey.id ? 'selected' : ''}`}
+                        onClick={() => handleSelectSurvey(survey.id)}
+                      >
+                        <div className="survey-card-header">
+                          <h3>{survey.course_name}</h3>
+                        </div>
+                        <div className="survey-card-details">
+                          <p><strong>Survey ID:</strong> {survey.id}</p>
+                          <p><strong>Class Size:</strong> {survey.class_size}</p>
+                          <p><strong>Team Limit:</strong> {survey.team_limit} ({survey.limit_type})</p>
+                          {survey.prev_course && (
+                            <p><strong>Previous Course:</strong> {survey.prev_course}</p>
+                          )}
+                          {hasGroupsFormed && (
+                            <p className="groups-formed-status">Groups already formed</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()
                 ))}
               </div>
 
