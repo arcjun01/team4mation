@@ -72,7 +72,7 @@ export default function StudentSurvey() {
     }
 
     // Validate GPA if it's required
-    if (surveyConfig?.useGpa) {
+    if (surveyConfig?.use_gpa) {
       if (!gpa || gpa < 1.0 || gpa > 4.0) {
         newErrors.gpa = "Please enter a valid GPA between 1.0 and 4.0.";
       }
@@ -115,7 +115,7 @@ export default function StudentSurvey() {
         body: JSON.stringify({ 
           fullName,
           gender, 
-          gpa: surveyConfig?.useGpa ? gpa : null,
+          gpa: surveyConfig?.use_gpa ? gpa : null,
           commitment,
           surveyId,
           availability_schedule: JSON.stringify(availability)
@@ -192,11 +192,11 @@ export default function StudentSurvey() {
                 onClear={() => clearError('gender')}
               />
 
-              {surveyConfig.useGpa && (
+              {surveyConfig.use_gpa && (
                 <GpaQuestion 
                   gpa={gpa} 
                   setGpa={setGpa}
-                  prevCourse={surveyConfig.prevCourse}
+                  prevCourse={surveyConfig.prev_course}
                   error={errors.gpa}
                   onClear={() => clearError('gpa')}
                 />
