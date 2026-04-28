@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import Header from './Header';
 import PurgeModal from "./PurgeModal";
 import '../css/FormingGroups.css'; 
+import Navbar from './Navbar';
 
 const FormingGroups = () => {
     const { id } = useParams();
@@ -281,7 +281,7 @@ const FormingGroups = () => {
                 setIsPurgeModalOpen(false);
                 alert("All survey responses have been successfully erased from the database.");
                 // After purging, we send the user back since the data is gone
-                navigate(`/survey-submissions/${id}`, { state: { names: [] } });
+                navigate('/');
             } else {
                 alert("Failed to purge data. Please check your server connection.");
             }
@@ -294,10 +294,10 @@ const FormingGroups = () => {
     };
 
     return (
-        <>
-            <Header variant="page" />
-            
-            <div className="survey-page-wrapper top-gap">
+        <div className="instructor-page-shell">
+            <Navbar surveyId={id} />
+            <div className="instructor-page-content">
+            <div className="survey-page-wrapper">
                 <div className="main-container">
                     <div className="content-container">
                         
@@ -413,7 +413,7 @@ const FormingGroups = () => {
 
                         </div>
 
-                        <div className="button-tray forming-groups-button-tray">
+                        <div className="button-group forming-groups-button-tray">
                             <button className="button" onClick={() => navigate(-1)}>
                                 Back to Submissions
                             </button>
@@ -428,7 +428,8 @@ const FormingGroups = () => {
                 onConfirm={handlePurge}
                 isLoading={isPurging}
             />
-        </>
+            </div>
+        </div>
     );
 };
 

@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import checkmarkIcon from "../../assets/checkmark.svg";
 
-const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+const DAYS = [
+  { key: "MON", label: "MON" },
+  { key: "TUE", label: "TUE" },
+  { key: "WED", label: "WED" },
+  { key: "THU", label: "THU" },
+  { key: "FRI", label: "FRI" },
+  { key: "SAT", label: "SAT" },
+  { key: "SUN", label: "SUN" },
+];
 
-// All 24 hours
-const ALL_TIME_SLOTS = [
-  "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", 
-  "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM",
-  "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM",
-  "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
+const TIME_SLOTS = [
+  "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM",
+  "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM",
+  "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
 ];
 
 export default function AvailabilityQuestion({ availability, setAvailability, error, onClear }) {
@@ -50,56 +56,54 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
         Select all that apply.
       </div>
 
-      <div className="availability-container">
-        {/* Days of the week labels */}
-        <div className="days-column">
-          <div className="days-spacer"></div>
-          {DAYS.map((day) => (
-            <div key={day} className="day-item">{day}</div>
-          ))}
-        </div>
+      <div className="placement-center">
+        <div className="availability-container">
+          <div 
+            className="availability-table-wrapper"
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            <div className="availability-grid">
+              <div className="time-header">
+                <div className="corner-cell"></div>
+                {DAYS.map((day, index) => (
+                  <div
+                    key={day.key}
+                    className={`day-column-header${index === 0 ? " first-day-column-header" : ""}${index === DAYS.length - 1 ? " last-day-column-header" : ""}`}
+                  >
+                    {day.label}
+                  </div>
+                ))}
+              </div>
 
-        {/* Time grid */}
-        <div 
-          className="availability-table-wrapper"
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          <div className="ckeckboxes-frame">
-            {/* Header row with time slots */}
-            <div className="time-header">
-              {ALL_TIME_SLOTS.map((time) => (
-                <div key={time} className="time-slot-header">
-                  {time}
+              {TIME_SLOTS.map((time) => (
+                <div key={time} className="time-row">
+                  <div className="time-slot-header">{time}</div>
+                  {DAYS.map((day) => (
+                    <div
+                      key={`${day.key}-${time}`}
+                      className="time-cell-background"
+                      onMouseDown={() => handleMouseDown(day.key, time)}
+                      onMouseEnter={() => handleMouseEnter(day.key, time)}
+                    >
+                      <div
+                        className={"time-cell" + (isSelected(day.key, time) ? " selected" : "")}
+                      >
+                        {isSelected(day.key, time) && (
+                          <img src={checkmarkIcon} alt="selected" className="checkmark-icon" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
-
-            {/* Day rows */}
-            {DAYS.map((day) => (
-            <div key={day} className="day-row">
-                {ALL_TIME_SLOTS.map((time) => (
-                <div
-                    key={`${day}-${time}`}
-                    className="time-cell-background"
-                    onMouseDown={() => handleMouseDown(day, time)}
-                    onMouseEnter={() => handleMouseEnter(day, time)}
-                >
-                    <div
-                    className={`time-cell ${isSelected(day, time) ? "selected" : ""}`}
-                    >
-                    {isSelected(day, time) && (
-                        <img src={checkmarkIcon} alt="selected" className="checkmark-icon" />
-                    )}
-                    </div>
-                </div>
-                ))}
-            </div>
-            ))}
           </div>
         </div>
       </div>
-      {error && <div className="error-message">{error}</div>}
+      <div className="error-container">
+        {error && <div className="error-message">{error}</div>}
+      </div>
     </div>
   );
 }

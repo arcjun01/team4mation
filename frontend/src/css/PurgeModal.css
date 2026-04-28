@@ -71,13 +71,6 @@
     border-color: #BEE0AC; 
 }
 
-.error-msg {
-    color: #d32f2f;
-    font-size: 13px;
-    margin-bottom: 15px;
-    font-weight: 500;
-}
-
 /* BUTTON GROUP */
 .modal-actions {
     display: flex;

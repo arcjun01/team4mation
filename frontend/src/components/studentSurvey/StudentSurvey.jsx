@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import FullNameQuestion from "./components/studentSurvey/FullNameQuestion";
-import GenderQuestion from "./components/studentSurvey/GenderQuestion";
-import GpaQuestion from "./components/studentSurvey/GpaQuestion";
-import AvailabilityQuestion from "./components/studentSurvey/AvailabilityQuestion";
-import CommitmentQuestion from "./components/studentSurvey/CommitmentQuestion";
-import ConfirmationModal from "./components/ConfirmationModal";
-import Header from "./components/Header";
-import "./css/studentSurvey.css";
+import FullNameQuestion from "./FullNameQuestion";
+import GenderQuestion from "./GenderQuestion";
+import GpaQuestion from "./GpaQuestion";
+import AvailabilityQuestion from "./AvailabilityQuestion";
+import CommitmentQuestion from "./CommitmentQuestion";
+import ConfirmationModal from "../ConfirmationModal";
+import Header from "../Header";
+import "../../css/studentSurvey.css";
 
 export default function StudentSurvey() {
   const { id: surveyId } = useParams();
@@ -172,70 +172,72 @@ export default function StudentSurvey() {
     : "Group Formation Survey";
 
   return (
-    <div className="page-wrapper">
-      <Header variant="page-header" />
-      <div className="page-container  top-gap">
-          <div className="question-container"><h1>{surveyTitle}</h1></div>
-          <form onSubmit={handleSubmit} className="survey-form">
-            <FullNameQuestion 
-              fullName={fullName}
-              setFullName={setFullName}
-              error={errors.fullName}
-              onClear={() => clearError('fullName')}
-            />
-
-            <GenderQuestion 
-              gender={gender} 
-              setGender={setGender}
-              error={errors.gender}
-              onClear={() => clearError('gender')}
-            />
-
-            {surveyConfig.useGpa && (
-              <GpaQuestion 
-                gpa={gpa} 
-                setGpa={setGpa}
-                prevCourse={surveyConfig.prevCourse}
-                error={errors.gpa}
-                onClear={() => clearError('gpa')}
+    <div id="student-survey">
+      <div className="page-wrapper">
+        <Header variant="page-header" />
+        <div className="page-container  top-gap">
+            <div className="question-container"><h1>{surveyTitle}</h1></div>
+            <form onSubmit={handleSubmit} className="survey-form">
+              <FullNameQuestion 
+                fullName={fullName}
+                setFullName={setFullName}
+                error={errors.fullName}
+                onClear={() => clearError('fullName')}
               />
-            )}
 
-            <CommitmentQuestion 
-              commitment={commitment}
-              setCommitment={setCommitment}
-              error={errors.commitment}
-              onClear={() => clearError('commitment')}
-            />
+              <GenderQuestion 
+                gender={gender} 
+                setGender={setGender}
+                error={errors.gender}
+                onClear={() => clearError('gender')}
+              />
 
-            <AvailabilityQuestion 
-              availability={availability}
-              setAvailability={setAvailability}
-              error={errors.availability}
-              onClear={() => clearError('availability')}
-            />
+              {surveyConfig.useGpa && (
+                <GpaQuestion 
+                  gpa={gpa} 
+                  setGpa={setGpa}
+                  prevCourse={surveyConfig.prevCourse}
+                  error={errors.gpa}
+                  onClear={() => clearError('gpa')}
+                />
+              )}
 
-            {message && (
-              <div className="survey-message">{message}</div>
-            )}
+              <CommitmentQuestion 
+                commitment={commitment}
+                setCommitment={setCommitment}
+                error={errors.commitment}
+                onClear={() => clearError('commitment')}
+              />
 
-            <div className="survey-actions">
-              <button
-                type="submit"
-                disabled={loading}
-                className="button"
-              >
-                {loading ? "Submitting..." : "Submit Survey"}
-              </button>
-            </div>
-          </form>
+              <AvailabilityQuestion 
+                availability={availability}
+                setAvailability={setAvailability}
+                error={errors.availability}
+                onClear={() => clearError('availability')}
+              />
+
+              {message && (
+                <div className="survey-message">{message}</div>
+              )}
+
+              <div className="survey-actions">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="button"
+                >
+                  {loading ? "Submitting..." : "Submit Survey"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <ConfirmationModal 
+            isOpen={showConfirmation}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
         </div>
-
-        <ConfirmationModal 
-          isOpen={showConfirmation}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      </div>
+    </div>
   );
 }
