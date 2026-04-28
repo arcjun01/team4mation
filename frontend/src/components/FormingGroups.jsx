@@ -26,7 +26,8 @@ const FormingGroups = () => {
 
     // Helper function to find shared availability between all group members
     const getSharedAvailability = (groupMembers) => {
-        if (!groupMembers || groupMembers.length === 0) return [];
+        // Fix: Ensure we only attempt calculation if we have actual data in the map
+        if (!groupMembers || groupMembers.length === 0 || Object.keys(availabilityMap).length === 0) return [];
         
         const availabilities = groupMembers.map((member) => {
             const avail = getStudentAvailability(member);
@@ -145,7 +146,8 @@ const FormingGroups = () => {
                                 id: student.student_id,
                                 name: decryptedMatch ? decryptedMatch.name : `Student ${idx + 1}`,
                                 gender: student.gender || 'N/A',
-                                gpa: student.gpa || 0
+                                gpa: student.gpa || 0,
+                                availability: submissionsData.availabilityMap ? submissionsData.availabilityMap[student.student_id] : []
                             };
                         });
                         setStudents(builtStudents);
@@ -170,7 +172,8 @@ const FormingGroups = () => {
                             id: id,
                             name: `Student ${idx + 1}`,
                             gender: 'N/A',
-                            gpa: 0
+                            gpa: 0,
+                            availability: teamData.availabilityMap[id] || []
                         }));
                         setStudents(builtStudents);
                     }
@@ -268,7 +271,10 @@ const FormingGroups = () => {
                                             <div className="shared-availability-section">
                                                 <div className="shared-availability-label">Shared Availability:</div>
                                                 <div className="shared-availability-content">
-                                                    {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                                    {/* Fix: Re-calculate shared availability based on the map state */}
+                                                    {Object.keys(availabilityMap).length > 0 
+                                                        ? formatAvailabilityRanges(getSharedAvailability(group.members)) 
+                                                        : 'N/A'}
                                                 </div>
                                             </div>
                                         </div>
@@ -280,7 +286,12 @@ const FormingGroups = () => {
                             <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
                                 <button 
                                     className="sidebar-btn" 
-                                    onClick={() => window.open(`/team4mation/student-view/teams/${id}`, '_blank')}
+                                    onClick={() => {
+                                        const previewUrl = `/team4mation/student-view/teams/${id}`;
+                                        // Save the decrypted student objects to localStorage so the new tab can access them
+                                        localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
+                                        window.open(previewUrl, '_blank');
+                                    }}
                                     style={{ padding: '12px', width: '100%' }}
                                 >
                                     <span className="icon">View 👁️</span>
