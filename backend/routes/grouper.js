@@ -307,10 +307,9 @@ function distributeRemainder(arr, index, groups) {
 export {
     grouper,
     buildAvailabilityMap,
-    // calculateScheduleOverlap,
-    // calculateGPASimilarity,
-    // calculateCommitmentSimilarity,
-    // calculateGroupScore,
-    // isGenderBalanced,
-    makeBasicGroups
+    makeBasicGroups,
+    distributeRemainder,
+    seperateGenders,
+    findGroup,
+    enforceGroupSizes
 };

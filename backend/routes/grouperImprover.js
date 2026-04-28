@@ -140,4 +140,4 @@ function isGenderBalanced(group) {
     return maleCount <= (otherCount * 2) && otherCount <= (maleCount * 2);
 }
 
-export { improveGroups };
+export { improveGroups, calculateScheduleOverlap, calculateGPASimilarity, calculateCommitmentSimilarity, calculateGroupScore, isGenderBalanced };

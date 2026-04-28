@@ -1,10 +1,18 @@
-const { buildAvailabilityMap,
+import {
+    grouper,
+    buildAvailabilityMap,
+    makeBasicGroups
+} from "../routes/grouper.js";
+
+import {
+    // improveGroups,
     calculateScheduleOverlap,
     calculateGPASimilarity,
     calculateCommitmentSimilarity,
-    calculateGroupScore,
-    isGenderBalanced,
-    makeBasicGroups } = require("../routes/grouper");
+    isGenderBalanced
+} from "../routes/grouperImprover.js";
+
+
 
 const mockAvailability = [
     { student_id: "S01", day_of_week: "MON", time_slot: "9 AM" },
