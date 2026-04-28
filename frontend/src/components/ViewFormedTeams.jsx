@@ -48,7 +48,37 @@ const ViewFormedTeams = () => {
                         <div className="question-container" style={{ textAlign: 'center' }}>
                             <h1>Formed Teams Preview</h1>
                         </div>
-                        {/* Cards will go here */}
+
+                        <div className="forming-groups-grid">
+                            {groups.map((group) => (
+                                <div key={group.number} className="group-card">
+                                    <div className="group-header">
+                                        <span>Group #{group.number}</span>
+                                    </div>
+                                    <div className="group-body">
+                                        <div className="group-table-header">
+                                            <div className="group-table-cell">Name</div>
+                                            <div className="group-table-cell">Availability</div>
+                                        </div>
+                                        {group.members.map((student, idx) => (
+                                            <div key={idx} className="group-table-row">
+                                                <div className="group-table-cell">{student.name}</div>
+                                                <div className="group-table-cell">
+                                                    Standard Class Times
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
+                                        <div className="shared-availability-label">Shared Meeting Times:</div>
+                                        <div className="shared-availability-content">
+                                            TUE: 9-11 AM, THU: 2-4 PM
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
                         <div className="button-tray" style={{ justifyContent: 'center', marginTop: '30px' }}>
                             <button className="button" onClick={() => window.close()}>
                                 Close Preview
