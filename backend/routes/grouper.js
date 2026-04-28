@@ -71,28 +71,42 @@ function enforceGroupSizes(groups, minSize, maxSize) {
         for (let i = 0; i < groups.length; i++) {
 
             // If group too big → move students out
-            while (groups[i].length > maxSize) {
-                let moved = false;
+            // while (groups[i].length > maxSize) {
+            //     let moved = false;
 
-                for (let j = 0; j < groups.length; j++) {
-                    if (i !== j && groups[j].length < maxSize) {
-                        groups[j].push(groups[i].pop());
-                        moved = true;
-                        changed = true;
-                        break;
-                    }
+            //     for (let j = 0; j < groups.length; j++) {
+            //         if (i !== j && groups[j].length < maxSize) {
+            //             groups[j].push(groups[i].pop());
+            //             moved = true;
+            //             changed = true;
+            //             break;
+            //         }
+            //     }
+            //     if (!moved) break;
+            // }
+
+            if (groups[i].length > maxSize) {
+                const receiver = findGroup(groups, i, g => g.length < maxSize);
+                if (receiver) {
+                    receiver.push(groups[i].pop());
+                    changed = true;
                 }
-                if (!moved) break;
             }
-
             //If group too small → pull from larger groups
+            // if (groups[i].length < minSize) {
+            //     for (let j = 0; j < groups.length; j++) {
+            //         if (i !== j && groups[j].length > minSize) {
+            //             groups[i].push(groups[j].pop());
+            //             changed = true;
+            //             break;
+            //         }
+            //     }
+            // }
             if (groups[i].length < minSize) {
-                for (let j = 0; j < groups.length; j++) {
-                    if (i !== j && groups[j].length > minSize) {
-                        groups[i].push(groups[j].pop());
-                        changed = true;
-                        break;
-                    }
+                const donor = findGroup(groups, i, g => g.length > minSize);
+                if (donor) {
+                    groups[i].push(donor.pop());
+                    changed = true;
                 }
             }
         }
@@ -101,6 +115,9 @@ function enforceGroupSizes(groups, minSize, maxSize) {
     return groups;
 }
 
+function findGroup(groups, exclude, condition) {
+    return groups.find((group, i) => i !== exclude && condition(group));
+}
 
 
 function seperateGenders(studentsList) {
