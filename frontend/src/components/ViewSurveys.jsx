@@ -11,10 +11,10 @@ const ViewSurveys = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOpenSurveys();
+    fetchSurveys();
   }, []);
 
-  const fetchOpenSurveys = async () => {
+  const fetchSurveys = async () => {
     try {
       setLoading(true);
       const response = await fetch('http://localhost:3001/api/surveys/open');
@@ -27,7 +27,7 @@ const ViewSurveys = () => {
       setSurveys(data.surveys || []);
       
       if (data.surveys && data.surveys.length === 0) {
-        setError('No open surveys available at this time.');
+        setError('No surveys available at this time.');
       }
     } catch (err) {
       console.error('Error fetching surveys:', err);

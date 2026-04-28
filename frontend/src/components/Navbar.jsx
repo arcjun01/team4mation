@@ -32,7 +32,7 @@ const Navbar = ({ surveyId }) => {
             My Form
           </NavLink>
           <NavLink to={studentStatusPath} className={linkClassName}>
-            Student Status
+            Surveys View
           </NavLink>
         </div>
 
