@@ -5,18 +5,19 @@
   right: 0;
   z-index: 40;
   width: 100%;
-  background: rgba(255, 255, 255, 0.96);
+  background: #cfdcda;
   border-bottom: 1px solid rgba(8, 103, 89, 0.12);
+  box-shadow: 0 6px 14px rgba(128, 128, 128, 0.2);
   backdrop-filter: blur(10px);
 }
 
 .instructor-navbar-inner {
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
+  width: min(1120px, calc(100% - 20px));
+  margin: 0 auto 0 44px;
   min-height: 86px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 24px;
 }
 
@@ -50,13 +51,24 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .instructor-nav-logo {
-  width: 92px;
+  width: 56px;
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+.instructor-nav-logo-link:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
 }
 
 .instructor-page-shell {
@@ -87,7 +99,7 @@
   }
 
   .instructor-nav-logo-link {
-    align-self: flex-end;
+    align-self: center;
   }
 
   .instructor-page-content {

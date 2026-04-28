@@ -25,6 +25,13 @@ const Navbar = ({ surveyId }) => {
     <nav className="instructor-navbar" aria-label="Instructor navigation">
       <div className="instructor-navbar-inner">
         <div className="instructor-nav-links">
+          <NavLink to="/" className="instructor-nav-logo-link" aria-label="Go to home page">
+            <img
+              src={logo}
+              alt="Team4mation"
+              className="instructor-nav-logo"
+            />
+          </NavLink>
           <NavLink to="/" className={linkClassName}>
             Dashboard
           </NavLink>
@@ -35,14 +42,6 @@ const Navbar = ({ surveyId }) => {
             Surveys View
           </NavLink>
         </div>
-
-        <NavLink to="/" className="instructor-nav-logo-link" aria-label="Go to home page">
-          <img
-            src={logo}
-            alt="Team4mation"
-            className="instructor-nav-logo"
-          />
-        </NavLink>
       </div>
     </nav>
   );
