@@ -156,12 +156,12 @@ const ViewFormedTeams = () => {
                                         <span>Group #{group.number}</span>
                                     </div>
                                     <div className="group-body">
-                                        <div className="group-table-header">
+                                        <div className="group-table-header two-col">
                                             <div className="group-table-cell">Name</div>
                                             <div className="group-table-cell">Availability</div>
                                         </div>
                                         {group.members.map((student, idx) => (
-                                            <div key={idx} className="group-table-row">
+                                            <div key={idx} className="group-table-row two-col">
                                                 <div className="group-table-cell">{student.name}</div>
                                                 <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
                                                     {formatAvailabilityRanges(student.availability)}
