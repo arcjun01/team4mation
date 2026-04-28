@@ -1,3 +1,6 @@
+// Determine unique ID key (database uses id or student_id)
+const getID = (s) => s.id || s.student_id;
+
 function improveGroups(groups, availabilityMap) {
     let improvementMade = true;
     let passCount = 0;
@@ -12,8 +15,10 @@ function improveGroups(groups, availabilityMap) {
                 for (const studentA of groups[i]) {
                     for (const studentB of groups[j]) {
                         if (evalulateSwap(studentA, studentB, groups[i], groups[j], availabilityMap)) {
-                            const indexA = groups[i].findIndex(s => s.id === studentA.id || s.student_id === studentA.student_id);
-                            const indexB = groups[j].findIndex(s => s.id === studentB.id || s.student_id === studentB.student_id);
+                            //const indexA = groups[i].findIndex(s => s.id === studentA.id || s.student_id === studentA.student_id);
+                            const indexA = groups[i].findIndex(s => getID(s) === getID(studentA));
+                            //const indexB = groups[j].findIndex(s => s.id === studentB.id || s.student_id === studentB.student_id);
+                            const indexB = groups[j].findIndex(s => getID(s) === getID(studentB));
 
                             groups[i][indexA] = studentB;
                             groups[j][indexB] = studentA;
@@ -33,7 +38,7 @@ function improveGroups(groups, availabilityMap) {
 
 function evalulateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
     // Determine unique ID key (database uses id or student_id)
-    const getID = (s) => s.id || s.student_id;
+    //const getID = (s) => s.id || s.student_id;
 
     const testA = groupA.map(student => getID(student) === getID(studentA) ? studentB : student);
     const testB = groupB.map(student => getID(student) === getID(studentB) ? studentA : student);
@@ -51,7 +56,8 @@ function evalulateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
 function calculateScheduleOverlap(group, availabilityMap) {
     const availibilitySlots = {}
     for (const student of group) {
-        const sid = student.id || student.student_id;
+        //const sid = student.id || student.student_id;
+        const sid = getID(student);
         const timeSlots = availabilityMap[sid] || []
         for (const slot of timeSlots) {
             availibilitySlots[slot] = (availibilitySlots[slot] || 0) + 1;
@@ -71,27 +77,39 @@ function calculateScheduleOverlap(group, availabilityMap) {
     return totalOverlap / (group.length || 1);
 }
 
-function calculateCommitmentSimilarity(group) {
+function calculateSpread(group, field) {
     if (group.length === 0) return 0;
-    let min = group[0].commitment, max = group[0].commitment;
+    let min = group[0][field], max = group[0][field];
     for (const student of group) {
-        if (student.commitment > max) max = student.commitment;
-        if (student.commitment < min) min = student.commitment;
+        if (student[field] > max) max = student[field];
+        if (student[field] < min) min = student[field];
     }
-    let commitmentRange = max - min;
-    return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
+    let spread = max - min;
+    return spread === 0 ? 0 : (-1 * spread);
 }
+// function calculateCommitmentSimilarity(group) {
+//     if (group.length === 0) return 0;
+//     let min = group[0].commitment, max = group[0].commitment;
+//     for (const student of group) {
+//         if (student.commitment > max) max = student.commitment;
+//         if (student.commitment < min) min = student.commitment;
+//     }
+//     let commitmentRange = max - min;
+//     return commitmentRange === 0 ? 0 : (-1 * commitmentRange);
+// }
+const calculateCommitmentSimilarity = (group) => calculateSpread(group, 'commitment');
 
-function calculateGPASimilarity(group) {
-    if (group.length === 0) return 0;
-    let min = group[0].gpa, max = group[0].gpa;
-    for (const student of group) {
-        if (student.gpa > max) max = student.gpa;
-        if (student.gpa < min) min = student.gpa;
-    }
-    let gpaSpread = max - min;
-    return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
-}
+// function calculateGPASimilarity(group) {
+//     if (group.length === 0) return 0;
+//     let min = group[0].gpa, max = group[0].gpa;
+//     for (const student of group) {
+//         if (student.gpa > max) max = student.gpa;
+//         if (student.gpa < min) min = student.gpa;
+//     }
+//     let gpaSpread = max - min;
+//     return gpaSpread === 0 ? 0 : (-1 * gpaSpread);
+// }
+const calculateGPASimilarity = (group) => calculateSpread(group, 'gpa');
 
 function calculateGroupScore(group, availabilityMap) {
     const GPA_WEIGHT = 2, SCHEDULE_WEIGHT = 3, COMMITMENT_WEIGHT = 1;

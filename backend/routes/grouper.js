@@ -294,7 +294,7 @@ function distributeRemainder(arr, index, groups) {
 //     for (const student of group) {
 //         const genderStr = student.gender ? student.gender.trim().toLowerCase() : "";
 //         if (genderStr === "male") maleCount++;
-//         else otherCount++;
+//         else otherCount++
 //     }
 
 //     if (otherCount === 0) return true; // All males is ok
