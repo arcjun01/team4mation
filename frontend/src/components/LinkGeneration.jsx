@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/LinkGeneration.css';
 import Navbar from './Navbar';
@@ -6,8 +6,24 @@ import Navbar from './Navbar';
 const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
+  const [courseName, setCourseName] = useState("course"); // State to hold the course name
+  
+  useEffect(() => {
+    // Fetch the course name from the config endpoint
+    fetch(`/api/config/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.course_name) {
+          // Clean the name: "SDEV 202" becomes "sdev202"
+          const formattedName = data.course_name.replace(/\s+/g, '').toLowerCase();
+          setCourseName(formattedName);
+        }
+      })
+      .catch((err) => console.error("Error fetching course details:", err));
+  }, [id]);
 
+  // Updated URL structure: domain/courseName/survey/id
+  const surveyUrl = `${window.location.origin}/${courseName}/survey/${id}`;
   const handleCopy = () => {
     navigator.clipboard.writeText(surveyUrl);
     alert("Unique link copied to clipboard!");

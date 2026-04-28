@@ -21,7 +21,7 @@ function App() {
           <Route path="/setup" element={<InstructorTeamSetup />} />
           <Route path="/view-surveys" element={<ViewSurveys />} />
           <Route path="/generate-link/:id" element={<LinkGeneration />} />
-          <Route path="/survey/:id" element={<StudentSurvey />} />
+          <Route path="/:courseName/survey/:id" element={<StudentSurvey />} />
           <Route path="/instructor/form/:id" element={<InstructorFormDetails />} />
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
