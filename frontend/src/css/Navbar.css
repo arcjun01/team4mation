@@ -65,7 +65,7 @@
 }
 
 .instructor-page-content {
-  padding: calc(var(--instructor-navbar-height) + 32px) 0 48px;
+  padding: calc(var(--instructor-navbar-height) + 32px) 0 0;
 }
 
 @media (max-width: 768px) {

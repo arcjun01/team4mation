@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
+import PurgeModal from './PurgeModal';
 import '../css/InstructorFormDetails.css';
+import copyIcon from '../assets/CopyIcon.svg';
+import editIcon from '../assets/EditIcon.svg';
+import deleteIcon from '../assets/DeleteIcon.svg';
+import linkIcon from '../assets/LinkIcon.svg';
+import activityIcon from '../assets/ActivityIcon.svg';
 
 const normalizeLimitType = (limitType) => {
   if (!limitType) return 'Maximum';
@@ -17,6 +23,8 @@ const InstructorFormDetails = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isPurging, setIsPurging] = useState(false);
+  const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchFormDetails = async () => {
@@ -50,12 +58,69 @@ const InstructorFormDetails = () => {
   }, [id]);
 
   const prerequisiteCourse = formConfig?.prevCourse?.trim();
+  const courseName = formConfig?.courseName || formConfig?.course_name || '';
+  const teamLimit = formConfig?.maxSize || formConfig?.team_limit || '';
+  const limitType = normalizeLimitType(formConfig?.limitType || formConfig?.limit_type);
+  const useGpa = Boolean(
+    formConfig?.useGpa ?? formConfig?.use_gpa
+  );
+  const prevCourse = formConfig?.prevCourse || formConfig?.prev_course || '';
+  const classSize = stats?.classSize || formConfig?.classSize || formConfig?.class_size || '';
   const isPrerequisiteRequired =
-    Boolean(prerequisiteCourse) && prerequisiteCourse.toLowerCase() !== 'not required';
+    Boolean((prerequisiteCourse || prevCourse)?.trim()) &&
+    (prerequisiteCourse || prevCourse).trim().toLowerCase() !== 'not required';
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const handleEditSurvey = () => {
+    navigate('/setup', {
+      state: {
+        formData: {
+          courseName,
+          classSize,
+          teamLimit: String(teamLimit || ''),
+          limitType,
+          prevCourse,
+          useGpa
+        }
+      }
+    });
+  };
+
+  const handlePurgeSurvey = async () => {
+    setIsPurging(true);
+    try {
+      const response = await fetch(`http://localhost:3001/api/survey/purge/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setIsPurgeModalOpen(false);
+        window.alert('All survey responses have been successfully erased from the database.');
+        navigate(`/survey-submissions/${id}`, { state: { names: [] } });
+      } else {
+        window.alert('Failed to purge data. Please check your server connection.');
+      }
+    } catch (purgeError) {
+      console.error('Error purging survey:', purgeError);
+      window.alert('An error occurred while attempting to erase the data.');
+    } finally {
+      setIsPurging(false);
+    }
+  };
+
+  const handleCopySurveyLink = async () => {
+    const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
+    try {
+      await navigator.clipboard.writeText(surveyUrl);
+      window.alert('Student survey link copied to clipboard.');
+    } catch (copyError) {
+      console.error('Failed to copy survey link:', copyError);
+      window.alert('Unable to copy link automatically. Please copy it from the link page.');
+    }
   };
 
   return (
@@ -78,73 +143,122 @@ const InstructorFormDetails = () => {
             </div>
           ) : (
             <>
-              <section className="form-details-grid" aria-label="Saved form settings">
-                <div className="form-detail-card">
-                  <span className="form-detail-label">Course Name</span>
-                  <span className="form-detail-value">{formConfig?.courseName || 'N/A'}</span>
-                </div>
-                <div className="form-detail-card">
-                  <span className="form-detail-label">Team Size Rule</span>
-                  <span className="form-detail-value">
-                    {normalizeLimitType(formConfig?.limitType)}: {formConfig?.maxSize || 'N/A'}
-                  </span>
-                </div>
-                <div className="form-detail-card">
-                  <span className="form-detail-label">Class Size</span>
-                  <span className="form-detail-value">{stats?.classSize ?? 'N/A'}</span>
-                </div>
-                <div className="form-detail-card">
-                  <span className="form-detail-label">Prerequisite Course</span>
-                  <span className="form-detail-value">{formConfig?.prevCourse || 'Not required'}</span>
-                </div>
-                {isPrerequisiteRequired && (
+              <div className="form-details-main-layout">
+                <section className="form-details-grid" aria-label="Saved form settings">
                   <div className="form-detail-card">
-                    <span className="form-detail-label">Uses GPA</span>
-                    <span className="form-detail-value">{formConfig?.useGpa ? 'Yes' : 'No'}</span>
+                    <span className="form-detail-label">Course Name</span>
+                    <span className="form-detail-value">{courseName || 'N/A'}</span>
                   </div>
-                )}
-                {hasGeneratedGroups ? (
-                  <div className="form-detail-card full-width">
-                    <span className="form-detail-label">Formed Groups</span>
-                    <button
-                      type="button"
-                      className="form-detail-link form-detail-link-button"
-                      onClick={() => navigate(`/instructor/smart-teams/${id}`)}
-                    >
-                      View Results
-                    </button>
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Team Size Rule</span>
+                    <span className="form-detail-value">
+                      {limitType}: {teamLimit || 'N/A'}
+                    </span>
                   </div>
-                ) : (
-                  <>
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Class Size</span>
+                    <span className="form-detail-value">{classSize || 'N/A'}</span>
+                  </div>
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Prerequisite Course</span>
+                    <span className="form-detail-value">{prevCourse || 'Not required'}</span>
+                  </div>
+                  {isPrerequisiteRequired && (
                     <div className="form-detail-card">
-                      <span className="form-detail-label">Link to the Student Survey</span>
+                      <span className="form-detail-label">Uses GPA</span>
+                      <span className="form-detail-value">{useGpa ? 'Yes' : 'No'}</span>
+                    </div>
+                  )}
+                  {hasGeneratedGroups ? (
+                    <div className="form-detail-card full-width">
+                      <span className="form-detail-label">Formed Groups</span>
                       <button
                         type="button"
                         className="form-detail-link form-detail-link-button"
-                        onClick={() => navigate(`/generate-link/${id}`)}
+                        onClick={() => navigate(`/instructor/smart-teams/${id}`)}
                       >
-                        View Link
+                        View Results
                       </button>
                     </div>
-                    <div className="form-detail-card">
-                      <span className="form-detail-label">Survey Submission Status</span>
-                      <button
-                        type="button"
-                        className="form-detail-link form-detail-link-button"
-                        onClick={() => navigate(`/survey-submissions/${id}`)}
-                      >
-                        View Submissions
-                      </button>
-                    </div>
-                  </>
-                )}
-              </section>
+                  ) : (
+                    <>
+                      <div className="form-detail-card">
+                        <span className="form-detail-label form-detail-label-with-icon">
+                          <img src={linkIcon} alt="" className="form-detail-label-icon" />
+                          Link to the Student Survey
+                        </span>
+                        <button
+                          type="button"
+                          className="form-detail-link form-detail-link-button"
+                          onClick={() => navigate(`/generate-link/${id}`)}
+                        >
+                          View Link
+                        </button>
+                      </div>
+                      <div className="form-detail-card">
+                        <span className="form-detail-label form-detail-label-with-icon">
+                          <img src={activityIcon} alt="" className="form-detail-label-icon" />
+                          Survey Submission Status
+                        </span>
+                        <button
+                          type="button"
+                          className="form-detail-link form-detail-link-button"
+                          onClick={() => navigate(`/survey-submissions/${id}`)}
+                        >
+                          View Submissions
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </section>
+
+                <aside className="form-actions-rail" aria-label="Form actions">
+                  <button
+                    type="button"
+                    className="form-actions-rail-button"
+                    onClick={handleCopySurveyLink}
+                    title="Copy Student Survey Link"
+                    aria-label="Copy Student Survey Link"
+                  >
+                    <img src={copyIcon} alt="" />
+                  </button>
+                  <button
+                    type="button"
+                    className="form-actions-rail-button"
+                    onClick={handleEditSurvey}
+                    title={hasGeneratedGroups ? 'Editing disabled after groups are formed' : 'Edit Survey'}
+                    aria-label="Edit Survey"
+                    disabled={hasGeneratedGroups}
+                  >
+                    <img src={editIcon} alt="" />
+                  </button>
+                  <button
+                    type="button"
+                    className="form-actions-rail-button"
+                    onClick={() => setIsPurgeModalOpen(true)}
+                    title="Delete Survey"
+                    aria-label="Delete Survey"
+                    disabled={isPurging}
+                  >
+                    <img src={deleteIcon} alt="" />
+                  </button>
+                </aside>
+              </div>
 
               <div className="button-group instructor-form-actions">
-                <button className="button go-back-button" onClick={handleGoBack}>
-                  Go Back
-                </button>
+                <div className="instructor-form-actions-right">
+                  <button className="button go-back-button" onClick={handleGoBack}>
+                    Go Back
+                  </button>
+                </div>
               </div>
+
+              <PurgeModal
+                isOpen={isPurgeModalOpen}
+                onClose={() => setIsPurgeModalOpen(false)}
+                onConfirm={handlePurgeSurvey}
+                isLoading={isPurging}
+              />
             </>
           )}
         </div>

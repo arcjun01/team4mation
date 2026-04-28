@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/LandingPage.css';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const handleFormGroupsClick = () => {
+  const [isResolvingSurvey, setIsResolvingSurvey] = useState(false);
+
+  const handleFormGroupsClick = async () => {
+    setIsResolvingSurvey(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/surveys/open');
+      if (response.ok) {
+        const data = await response.json();
+        const latestSurveyId = data?.surveys?.[0]?.id;
+        if (latestSurveyId) {
+          navigate(`/instructor/form/${latestSurveyId}`);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Error resolving existing survey setup:', error);
+    } finally {
+      setIsResolvingSurvey(false);
+    }
+
     navigate('/setup');
   };
 
@@ -21,8 +40,9 @@ const LandingPage = () => {
             <button
               className="landing-primary-button"
               onClick={handleFormGroupsClick}
+              disabled={isResolvingSurvey}
             >
-              Form Groups
+              {isResolvingSurvey ? 'Loading...' : 'Form Groups'}
             </button>
             <button
               className="landing-secondary-button"
