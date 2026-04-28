@@ -110,7 +110,7 @@ const ViewSurveys = () => {
                   onClick={handleViewResults}
                   disabled={!selectedSurveyId}
                 >
-                  View Results
+                  View Details
                 </button>
               </div>
             </>

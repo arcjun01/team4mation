@@ -1,19 +1,12 @@
 import React from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../css/LinkGeneration.css';
 import Navbar from './Navbar';
 
 const LinkGeneration = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  const formData = location.state?.formData;
   const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
-
-  const handleEdit = () => {
-    navigate('/setup', { state: { formData } });
-  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(surveyUrl);
@@ -26,7 +19,11 @@ const LinkGeneration = () => {
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
-  const handleViewStatus = () => {
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  const handleViewSubmissions = () => {
     navigate(`/survey-submissions/${id}`);
   };
 
@@ -34,43 +31,40 @@ const LinkGeneration = () => {
     <div className="instructor-page-shell">
       <Navbar surveyId={id} />
       <div className="instructor-page-content">
-      <div className="page-container">
-        <div className="card-container">
-          <h2 className="card-title">Student Survey Link</h2>
-          
-          <p className="instruction-text" style={{ color: '#666', marginBottom: '20px' }}>
-            Copy the link or click the mail icon to share it with your students via Outlook.
-          </p>
-          
-          <div className="action-row">
-            <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
-              {surveyUrl}
-            </a>
+        <div className="content-container link-generation-layout">
+          <div className="question-container link-generation-title-card">
+            <h1>Student Survey Link</h1>
+          </div>
 
-            <div className="icon-group">
-              <button className="icon-btn" onClick={handleCopy} title="Copy Link">
-                📋
-              </button>
-              <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
-                ✉️
-              </button>
+          <div className="question-container link-generation-link-card">
+            <p className="link-generation-info-text">
+              Copy the link or click the mail icon to share it with your students via Outlook.
+            </p>
+            <div className="action-row">
+              <a href={surveyUrl} target="_blank" rel="noopener noreferrer" className="url-box">
+                {surveyUrl}
+              </a>
+
+              <div className="icon-group">
+                <button className="icon-btn" onClick={handleCopy} title="Copy Link">
+                  📋
+                </button>
+                <button className="icon-btn" onClick={handleEmailClick} title="Send via Outlook">
+                  ✉️
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        
-          <div className="button-group">
-            <button className="button" onClick={handleEdit}>
-              Edit Survey
-            </button>
 
-            <button 
-              className="button" 
-              onClick={handleViewStatus}
-            >
+          <div className="button-group link-generation-actions">
+            <button className="button" onClick={handleGoBack}>
+              Go Back
+            </button>
+            <button className="button" onClick={handleViewSubmissions}>
               View Submissions
             </button>
           </div>
-      </div>
+        </div>
       </div>
     </div>
   );

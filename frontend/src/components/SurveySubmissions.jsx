@@ -130,9 +130,9 @@ const SurveySubmissions = () => {
                         </div>
                     </div>
 
-                    <div className="button-group" style={{ marginTop: '30px' }}>
-                        <button className="button" onClick={() => navigate(`/generate-link/${surveyId}`)}>
-                            Back to Link
+                    <div className="button-group" style={{ marginTop: '30px', justifyContent: 'flex-end' }}>
+                        <button className="button" onClick={() => navigate(-1)}>
+                            Go Back
                         </button>
                     </div>
                 </div>
