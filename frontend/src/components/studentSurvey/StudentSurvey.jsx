@@ -192,7 +192,7 @@ export default function StudentSurvey() {
                 onClear={() => clearError('gender')}
               />
 
-              {surveyConfig.use_gpa && (
+              {Boolean(surveyConfig.use_gpa) && (
                 <GpaQuestion 
                   gpa={gpa} 
                   setGpa={setGpa}
