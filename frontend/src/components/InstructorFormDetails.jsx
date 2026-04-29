@@ -33,8 +33,8 @@ const InstructorFormDetails = () => {
         setError('');
 
         const [configResponse, statsResponse] = await Promise.all([
-          fetch(`http://localhost:3001/api/config/${id}`),
-          fetch(`http://localhost:3001/api/survey/stats/${id}`)
+          fetch(`/api/config/${id}`),
+          fetch(`/api/survey/stats/${id}`)
         ]);
 
         if (!configResponse.ok) {

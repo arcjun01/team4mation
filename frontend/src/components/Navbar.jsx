@@ -1,22 +1,11 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from '../assets/Team4mation_Logo_Clear_Background.svg';
 import '../css/Navbar.css';
 
 const Navbar = ({ surveyId }) => {
-  const location = useLocation();
-  const lastMyFormPath = localStorage.getItem('lastMyFormPath');
-  const myFormPath = lastMyFormPath || (surveyId ? `/instructor/form/${surveyId}` : '/setup');
+  const myFormPath = surveyId ? `/instructor/form/${surveyId}` : '/setup';
   const studentStatusPath = '/view-surveys';
-
-  React.useEffect(() => {
-    const isFormDetailsPage = /^\/instructor\/form\/[^/]+$/.test(location.pathname);
-    const isSetupPage = location.pathname === '/setup';
-
-    if (isFormDetailsPage || isSetupPage) {
-      localStorage.setItem('lastMyFormPath', location.pathname);
-    }
-  }, [location.pathname]);
 
   const linkClassName = ({ isActive }) =>
     `instructor-nav-link${isActive ? ' active' : ''}`;
