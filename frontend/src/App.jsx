@@ -9,8 +9,8 @@ import InstructorFormDetails from "./components/InstructorFormDetails";
 import SurveySubmissions from "./components/SurveySubmissions";
 //import FormingGroups from "./components/FormingGroups";
 import ViewSurveys from "./components/ViewSurveys";
-
 import FormingGroups from "./components/FormingGroups";
+import ViewFormedTeams from "./components/ViewFormedTeams";
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
           <Route path="/survey-submissions/:id" element={<SurveySubmissions />} />
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
           <Route path="/instructor/smart-teams/:id" element={<FormingGroups />} />
+          <Route path="/student-view/teams/:id" element={<ViewFormedTeams />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

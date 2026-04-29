@@ -10,88 +10,87 @@ function InstructorDecryption() {
     const navigate = useNavigate();
 
     const handleDecrypt = async (e) => {
-    e.preventDefault();
-    setIsDecrypting(true);
+        e.preventDefault();
+        setIsDecrypting(true);
 
-    try {
-        const response = await fetch('/api/survey/reveal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                decryptionKey, 
-                surveyId: id 
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            // SUCCESS: Pass the decrypted names and survey ID to the dashboard
-            navigate(`/survey-submissions/${id}`, { 
-                state: { 
-                    names: data.names,
-                    userKey: decryptionKey, 
-                    id: id 
-                } 
+        try {
+            const response = await fetch('http://localhost:3001/api/survey/reveal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    decryptionKey, 
+                    surveyId: id 
+                })
             });
-        } else {
-            alert(data.error || "Invalid Decryption Key");
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // SUCCESS: Pass the decrypted names array to the dashboard
+                navigate(`/survey-submissions/${id}`, { 
+                    state: { 
+                        names: data.names,
+                        userKey: decryptionKey, 
+                        id: id 
+                    } 
+                });
+            } else {
+                alert(data.error || "Invalid Decryption Key");
+            }
+        } catch (error) {
+            console.error("Decryption failed:", error);
+            alert("Server error. Ensure backend is running on port 3001.");
+        } finally {
+            setIsDecrypting(false);
         }
-    } catch (error) {
-        console.error("Decryption failed:", error);
-        alert("Server error. Ensure backend is running on port 3001.");
-    } finally {
-        setIsDecrypting(false);
-    }
-};
+    };
 
     return (
+      <>
         <div className="instructor-page-shell">
             <Navbar surveyId={id} />
             <div className="instructor-page-content">
             <div className="decryption-page">
-            <div className="decryption-wrapper">
-                <div className='question-container '><h1>View Survey Submissions</h1></div>
-                
-                <form className="decryption-card" onSubmit={handleDecrypt}>
-                    <div className="decryption-info-section">
-                        <p className="decryption-info">
-                            To view survey submissions, please enter your decryption key:
-                        </p>
-                    </div>
+                <div className="decryption-wrapper top-gap-large">
+                    <div className='question-container '><h1>View Survey Submissions</h1></div>
+                    
+                    <form className="decryption-card" onSubmit={handleDecrypt}>
+                        <div className="decryption-info-section">
+                            <p className="decryption-info">
+                                To view survey submissions, please enter your decryption key:
+                            </p>
+                        </div>
 
-                    <input 
-                        type="password" 
-                        className="decryption-input" 
-                        placeholder="Enter 32-character key..."
-                        value={decryptionKey}
-                        onChange={(e) => setDecryptionKey(e.target.value)}
-                        required
-                    />
-                </form>
+                        <input 
+                            type="password" 
+                            className="decryption-input" 
+                            placeholder="Enter 32-character key..."
+                            value={decryptionKey}
+                            onChange={(e) => setDecryptionKey(e.target.value)}
+                            required
+                        />
 
-                <div className='decryption-button-group'>
-                    <button 
-                        type="button" 
-                        className="button"
-                        onClick={() => navigate(-1)}
-                        >
-                        Back to Submissions
-                    </button>
+                        <div className='decryption-button-group'>
+                            <button 
+                                type="button" 
+                                className="button"
+                                onClick={() => navigate(-1)}
+                            >
+                                Back to Submissions
+                            </button>
 
-                    <button 
-                        type="submit" 
-                        className="button"
-                        disabled={isDecrypting}
-                        onClick={handleDecrypt}
-                    >
-                        {isDecrypting ? "Checking..." : "Decrypt"}
-                    </button>
+                            <button 
+                                type="submit" 
+                                className="button"
+                                disabled={isDecrypting}
+                            >
+                                {isDecrypting ? "Checking..." : "Decrypt"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-            </div>
-        </div>
+        </>
     );
 }
 
