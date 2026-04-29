@@ -26,17 +26,21 @@ const FormingGroups = () => {
 
     // Helper function to find shared availability between all group members
     const getSharedAvailability = (groupMembers) => {
-        // Fix: Ensure we only attempt calculation if we have actual data in the map
-        if (!groupMembers || groupMembers.length === 0 || Object.keys(availabilityMap).length === 0) return [];
-        
-        const availabilities = groupMembers.map((member) => {
-            const avail = getStudentAvailability(member);
-            return new Set(avail);
-        });
+        if (!groupMembers || groupMembers.length === 0) return [];
 
-        let shared = new Set(availabilities[0]);
-        for (let i = 1; i < availabilities.length; i++) {
-            shared = new Set([...shared].filter(x => availabilities[i].has(x)));
+        // collect only members that have availability data
+        const availabilityLists = groupMembers
+            .map((m) => getStudentAvailability(m) || [])
+            .filter((arr) => Array.isArray(arr) && arr.length > 0);
+
+        if (availabilityLists.length === 0) return [];
+
+        // compute intersection across all availability lists
+        let shared = new Set(availabilityLists[0]);
+        for (let i = 1; i < availabilityLists.length; i++) {
+            const nextSet = new Set(availabilityLists[i]);
+            shared = new Set([...shared].filter(x => nextSet.has(x)));
+            if (shared.size === 0) return []; // early exit
         }
 
         return Array.from(shared).sort();

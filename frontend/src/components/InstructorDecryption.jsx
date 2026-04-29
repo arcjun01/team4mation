@@ -46,7 +46,6 @@ function InstructorDecryption() {
     };
 
     return (
-      <>
         <div className="instructor-page-shell">
             <Navbar surveyId={id} />
             <div className="instructor-page-content">
@@ -90,7 +89,8 @@ function InstructorDecryption() {
                     </form>
                 </div>
             </div>
-        </>
+            </div>
+        </div>
     );
 }
 

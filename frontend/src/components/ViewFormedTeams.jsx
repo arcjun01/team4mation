@@ -87,14 +87,19 @@ const ViewFormedTeams = () => {
     // Helper function to find shared availability between all group members
     const getSharedAvailability = (groupMembers) => {
         if (!groupMembers || groupMembers.length === 0) return [];
-        
-        const availabilities = groupMembers.map((member) => {
-            return new Set(member.availability || []);
-        });
 
-        let shared = new Set(availabilities[0]);
-        for (let i = 1; i < availabilities.length; i++) {
-            shared = new Set([...shared].filter(x => availabilities[i].has(x)));
+        // Only use members that have availability entries
+        const availabilityLists = groupMembers
+            .map((m) => m.availability || [])
+            .filter((arr) => Array.isArray(arr) && arr.length > 0);
+
+        if (availabilityLists.length === 0) return [];
+
+        let shared = new Set(availabilityLists[0]);
+        for (let i = 1; i < availabilityLists.length; i++) {
+            const nextSet = new Set(availabilityLists[i]);
+            shared = new Set([...shared].filter(x => nextSet.has(x)));
+            if (shared.size === 0) return [];
         }
 
         return Array.from(shared).sort();
@@ -179,9 +184,9 @@ const ViewFormedTeams = () => {
                             ))}
                         </div>
 
-                        <div className="button-tray" style={{ justifyContent: 'center', marginTop: '30px' }}>
+                        <div className="button-tray" style={{ justifyContent: 'flex-end', marginTop: '30px' }}>
                             <button className="button" onClick={() => window.close()}>
-                                Close Preview
+                                Go Back
                             </button>
                         </div>
                     </div>

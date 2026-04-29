@@ -27,6 +27,8 @@ function App() {
           <Route path="/instructor/decrypt/:id" element={<InstructorDecryption />} />
           <Route path="/instructor/smart-teams/:id" element={<FormingGroups />} />
           <Route path="/student-view/teams/:id" element={<ViewFormedTeams />} />
+          {/* Alias route used by FormingGroups preview button when app is served under /team4mation */}
+          <Route path="/team4mation/student-view/teams/:id" element={<ViewFormedTeams />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
