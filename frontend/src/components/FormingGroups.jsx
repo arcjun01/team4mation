@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import Header from './Header';
 import PurgeModal from "./PurgeModal";
 import '../css/FormingGroups.css'; 
+import Navbar from './Navbar';
 
 const FormingGroups = () => {
     const { id } = useParams();
@@ -121,7 +121,7 @@ const FormingGroups = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/config/${id}`);
+                const response = await fetch(`/api/config/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setSurveyConfig(data);
@@ -196,7 +196,7 @@ const FormingGroups = () => {
     const handlePurge = async () => {
         setIsPurging(true);
         try {
-            const response = await fetch(`http://localhost:3001/api/survey/purge/${id}`, {
+            const response = await fetch(`/api/survey/purge/${id}`, {
                 method: 'DELETE'
             });
             if (response.ok) {
@@ -211,9 +211,10 @@ const FormingGroups = () => {
     };
 
     return (
-        <>
-            <Header variant="page" />
-            <div className="survey-page-wrapper top-gap">
+        <div className="instructor-page-shell">
+            <Navbar surveyId={id} />
+            <div className="instructor-page-content">
+            <div className="survey-page-wrapper">
                 <div className="main-container">
                     <div className="content-container">
                         <div className="question-container">
@@ -308,7 +309,7 @@ const FormingGroups = () => {
                             </div>
                         </div>
 
-                        <div className="button-tray forming-groups-button-tray">
+                        <div className="button-group forming-groups-button-tray">
                             <button className="button" onClick={() => navigate(-1)}>
                                 Back to Submissions
                             </button>
@@ -323,7 +324,8 @@ const FormingGroups = () => {
                 onConfirm={handlePurge}
                 isLoading={isPurging}
             />
-        </>
+            </div>
+        </div>
     );
 };
 

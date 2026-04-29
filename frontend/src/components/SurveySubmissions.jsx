@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../css/SurveySubmissions.css';
-import Header from './Header';
+import Navbar from './Navbar';
 
 const SurveySubmissions = () => {
     const { id: urlId } = useParams();
@@ -19,29 +19,27 @@ const SurveySubmissions = () => {
         studentList: [] 
     });
 
-    const [isClosed, setIsClosed] = useState(false);
-    
     // Manage decrypted names in state so they can update automatically
     const [decryptedNames, setDecryptedNames] = useState(location.state?.names || []);
     const [userKey, setUserKey] = useState(location.state?.userKey || ""); // Store the key for polling
+    const [isClosed, setIsClosed] = useState(false);
 
     useEffect(() => {
         if (surveyId) {
             const fetchAndDecrypt = async () => {
                 try {
                     // 1. Fetch basic stats (count, class size)
-                    const statsRes = await fetch(`http://localhost:3001/api/survey/stats/${surveyId}`);
+                    const statsRes = await fetch(`/api/survey/stats/${surveyId}`);
                     const statsData = await statsRes.json();
                     setStats(statsData);
 
-                    // Update UI if survey is closed
                     if (statsData.status === 'closed') {
                         setIsClosed(true);
                     }
 
                     // 2. If we have a key, fetch and decrypt names automatically
                     if (userKey) {
-                        const revealRes = await fetch('http://localhost:3001/api/survey/reveal', {
+                        const revealRes = await fetch('/api/survey/reveal', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ decryptionKey: userKey, surveyId })
@@ -62,31 +60,28 @@ const SurveySubmissions = () => {
         }
     }, [surveyId, userKey]);
 
-    const handleCloseSurvey = async () => {
-        if (window.confirm("Stop all new submissions? Students will no longer be able to access the link.")) {
-            try {
-                const response = await fetch(`http://localhost:3001/api/survey/close/${surveyId}`, {
-                    method: 'PATCH'
-                });
+    const confirmGenerateAndNavigate = async () => {
+        try {
+            const response = await fetch(`/api/survey/close/${surveyId}`, {
+                method: 'PATCH'
+            });
 
-                if (response.ok) {
-                    setIsClosed(true);
-                }
-            } catch (error) {
-                alert("Error closing survey. Check your connection.");
+            if (response.ok) {
+                setIsClosed(true);
             }
+        } catch (error) {
+            console.error("Unable to mark survey as closed:", error);
         }
-    };
 
-    const confirmGenerateAndNavigate = () => {
         // Navigates to the dashboard passing the latest decrypted names
         navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedNames } });
     };
 
     return (
-        <>
-            <Header variant="page" />
-            <div className="survey-page-wrapper top-gap">
+        <div className="instructor-page-shell">
+            <Navbar surveyId={surveyId} />
+            <div className="instructor-page-content">
+            <div className="survey-page-wrapper">
                 <div className="content-container">
                     <div className='question-container'>
                         <h1>{decryptedNames.length > 0 ? "Current Student List" : "Submission Status"}</h1>
@@ -150,14 +145,15 @@ const SurveySubmissions = () => {
                         </div>
                     </div>
 
-                    <div className="button-tray" style={{ marginTop: '30px' }}>
-                        <button className="button" onClick={() => navigate(`/generate-link/${surveyId}`)}>
-                            Back to Link
+                    <div className="button-group" style={{ marginTop: '30px', justifyContent: 'flex-end' }}>
+                        <button className="button" onClick={() => navigate(-1)}>
+                            Go Back
                         </button>
                     </div>
                 </div>
             </div>
-        </>
+            </div>
+        </div>
     );
 };
 

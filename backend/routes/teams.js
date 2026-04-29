@@ -4,11 +4,11 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
-// Endpoint to fetch all open surveys
+// Endpoint to fetch all surveys (open and formed/closed)
 router.get("/open", async (req, res) => {
     try {
         const [surveys] = await pool.execute(
-            "SELECT id, course_name, class_size, team_limit, limit_type, status FROM survey_configurations WHERE status = 'open' ORDER BY created_at DESC"
+            "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course FROM survey_configurations ORDER BY created_at DESC"
         );
         
         res.json({
@@ -16,7 +16,7 @@ router.get("/open", async (req, res) => {
             count: surveys.length
         });
     } catch (err) {
-        console.error("Error fetching open surveys:", err);
+        console.error("Error fetching surveys:", err);
         res.status(500).json({ error: "Failed to fetch surveys" });
     }
 });

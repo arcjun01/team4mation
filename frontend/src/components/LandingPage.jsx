@@ -5,33 +5,33 @@ import Header from './Header';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const handleFormGroupsClick = () => {
+
+  const handleNewGroupFormationClick = () => {
     navigate('/setup');
   };
 
-  const handleViewSurveysClick = () => {
+  const handleExistingGroupFormationClick = () => {
     navigate('/view-surveys');
   };
 
   return (
     <div className="landing-page">
       <Header variant="large" />
-
       <main className="landing-main">
         <section className="landing-card top-gap-large">
           <div className="question-container "><h1>Smart Team Formation</h1></div>
           <div className="landing-content-card">
             <button
               className="landing-primary-button"
-              onClick={handleFormGroupsClick}
+              onClick={handleNewGroupFormationClick}
             >
-              Form Groups
+              New Group Formation
             </button>
             <button
               className="landing-secondary-button"
-              onClick={handleViewSurveysClick}
+              onClick={handleExistingGroupFormationClick}
             >
-              View Survey Results
+              Existing Group Formation
             </button>
           </div>
         </section>

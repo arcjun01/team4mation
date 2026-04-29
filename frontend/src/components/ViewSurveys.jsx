@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/ViewSurveys.css';
-import Header from './Header';
+import Navbar from './Navbar';
 
 const ViewSurveys = () => {
   const [surveys, setSurveys] = useState([]);
@@ -11,13 +11,13 @@ const ViewSurveys = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOpenSurveys();
+    fetchSurveys();
   }, []);
 
-  const fetchOpenSurveys = async () => {
+  const fetchSurveys = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/surveys/open');
+      const response = await fetch('/api/surveys/open');
       
       if (!response.ok) {
         throw new Error('Failed to fetch surveys');
@@ -27,7 +27,7 @@ const ViewSurveys = () => {
       setSurveys(data.surveys || []);
       
       if (data.surveys && data.surveys.length === 0) {
-        setError('No open surveys available at this time.');
+        setError('No surveys available at this time.');
       }
     } catch (err) {
       console.error('Error fetching surveys:', err);
@@ -47,10 +47,8 @@ const ViewSurveys = () => {
       return;
     }
     
-    // Navigate to SmartTeamsDashboard with survey ID
-    navigate(`/instructor/smart-teams/${selectedSurveyId}`, {
-      state: { surveyId: selectedSurveyId }
-    });
+    // Navigate to saved instructor setup/form details for the selected survey
+    navigate(`/instructor/form/${selectedSurveyId}`);
   };
 
   const handleBack = () => {
@@ -58,9 +56,10 @@ const ViewSurveys = () => {
   };
 
   return (
-    <div className="page-wrapper">
-      <Header variant="large" />
-      <div className="view-surveys-container top-gap-large">
+    <div className="instructor-page-shell">
+      <Navbar />
+      <div className="instructor-page-content">
+      <div className="view-surveys-container">
         <div className="survey-container">
           <div className="question-container">
             <h1>Select Survey</h1>
@@ -81,24 +80,32 @@ const ViewSurveys = () => {
             <>
               <div className="surveys-list">
                 {surveys.map((survey) => (
-                  <div
-                    key={survey.id}
-                    className={`survey-card ${selectedSurveyId === survey.id ? 'selected' : ''}`}
-                    onClick={() => handleSelectSurvey(survey.id)}
-                  >
-                    <div className="survey-card-header">
-                      <h3>{survey.course_name}</h3>
-                    </div>
-                    <div className="survey-card-details">
-                      <p><strong>Survey ID:</strong> {survey.id}</p>
-                      <p><strong>Class Size:</strong> {survey.class_size}</p>
-                      <p><strong>Team Limit:</strong> {survey.team_limit} ({survey.limit_type})</p>
-                      {survey.prev_course && (
-                        <p><strong>Previous Course:</strong> {survey.prev_course}</p>
-                      )}
-                    </div>
-                  
-                  </div>
+                  (() => {
+                    const hasGroupsFormed = ['closed', 'formed'].includes((survey.status || '').toLowerCase());
+
+                    return (
+                      <div
+                        key={survey.id}
+                        className={`survey-card ${selectedSurveyId === survey.id ? 'selected' : ''}`}
+                        onClick={() => handleSelectSurvey(survey.id)}
+                      >
+                        <div className="survey-card-header">
+                          <h3>{survey.course_name}</h3>
+                        </div>
+                        <div className="survey-card-details">
+                          <p><strong>Survey ID:</strong> {survey.id}</p>
+                          <p><strong>Class Size:</strong> {survey.class_size}</p>
+                          <p><strong>Team Limit:</strong> {survey.team_limit} ({survey.limit_type})</p>
+                          {survey.prev_course && (
+                            <p><strong>Previous Course:</strong> {survey.prev_course}</p>
+                          )}
+                          {hasGroupsFormed && (
+                            <p className="groups-formed-status">Groups already formed</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()
                 ))}
               </div>
 
@@ -111,12 +118,13 @@ const ViewSurveys = () => {
                   onClick={handleViewResults}
                   disabled={!selectedSurveyId}
                 >
-                  View Results
+                  View Details
                 </button>
               </div>
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

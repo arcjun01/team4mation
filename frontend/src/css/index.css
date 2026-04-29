@@ -97,6 +97,7 @@ h1 {
     text-align: center;
     margin: 0%;
     color: #333;
+    font-size: 27px;
 }
 
 h2 {
@@ -138,7 +139,7 @@ h2 {
 
 .question-container {
     background: white;
-    padding: 40px;
+    padding: 35px;
     border-radius: 12px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -149,12 +150,21 @@ h2 {
 }
 
 .content-container {
-    padding-bottom: 40px;
+    padding-bottom: 18px;
     width: clamp(320px, 90vw, 880px);
     box-sizing: border-box;
     margin: 0 auto;
     padding-left: clamp(16px, 5vw, 40px);
     padding-right: clamp(16px, 5vw, 40px);
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    text-align: left;
+    margin-top: 25px;
 }
 
 .button {
@@ -183,6 +193,5 @@ h2 {
 .button-group {
     display: flex;
     justify-content: space-between;
-    margin-top: 30px;
     width: 100%;
 }
