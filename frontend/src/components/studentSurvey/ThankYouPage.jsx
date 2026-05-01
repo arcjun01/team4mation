@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/ThankYouPage.css';
-import Header from './Header';
+import '../../css/ThankYouPage.css';
+import Header from '../Header';
 
 const ThankYouPage = () => {
   return (

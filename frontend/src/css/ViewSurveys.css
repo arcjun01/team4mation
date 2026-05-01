@@ -82,6 +82,11 @@
   line-height: 1.4;
 }
 
+.survey-card-details .groups-formed-status {
+  color: #1f8a41;
+  font-weight: 700;
+}
+
 .survey-card-details strong {
   color: #333;
 }
@@ -102,14 +107,7 @@
   font-weight: bold;
 }
 
-.loading-message,
-.error-message {
-  text-align: center;
-  padding: 40px 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin: 30px 0;
-}
+
 
 .loading-message p {
   color: #666;
@@ -117,32 +115,9 @@
   margin: 0;
 }
 
-.error-message {
-  background: #fff5f5;
-  border: 1px solid #f5c6cb;
-}
-
-.error-message p {
-  color: #721c24;
-  font-size: 1em;
-  margin: 0 0 20px 0;
-}
-
-.button-group {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 30px;
-  flex-wrap: wrap;
-}
-
 @media (max-width: 768px) {
   .surveys-list {
     grid-template-columns: 1fr;
-  }
-
-  .button-group {
-    flex-direction: column;
   }
 
   .button {

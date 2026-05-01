@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { pool } from "./db.js";
 import teamRoutes from "./routes/teams.js";
 import surveyRoutes from "./routes/survey.js";
@@ -11,6 +13,14 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// --- Static File Logic ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve the Vite build folder from the frontend directory
+app.use(express.static("/frontend/dist"));
+// --------------------------
 
 // Routes
 app.use("/api/teams", teamRoutes);
@@ -122,6 +132,11 @@ app.delete("/api/survey/purge/:id", async (req, res) => {
         console.error("Purge Error:", err.message);
         res.status(500).json({ error: "Database error during purge", details: err.message });
     }
+});
+
+
+app.get("/{*path}", (req, res) => {
+   res.sendFile("/frontend/dist/index.html");
 });
 
 const PORT = process.env.PORT || 3001;

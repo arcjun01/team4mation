@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
-import Header from './Header';
 import ConfirmationModal from './ConfirmationModal';
+import Navbar from './Navbar';
 
 const InstructorTeamSetup = () => {
   const navigate = useNavigate();
@@ -84,7 +84,9 @@ const InstructorTeamSetup = () => {
   //save logic 
   const handleConfirm = async () => {
     setShowConfirmation(false);
-    const uniqueId = crypto.randomUUID(); 
+    const uniqueId = typeof crypto.randomUUID === 'function'
+  ? crypto.randomUUID()
+  : Math.random().toString(36).slice(2) + Date.now().toString(36); 
     
     const payload = {
       uniqueId: uniqueId,
@@ -98,7 +100,7 @@ const InstructorTeamSetup = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3001/api/config/save-setup', {
+      const response = await fetch('/api/config/save-setup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -118,10 +120,11 @@ const InstructorTeamSetup = () => {
   const handleCancel = () => setShowConfirmation(false);
 
   return (
-    <>
-      <Header variant="page" />
-      <div className="setup-wrapper">
-        <div className="content-container top">
+    <div className="instructor-page-shell">
+      <Navbar />
+      <div className="instructor-page-content">
+        <div className="setup-wrapper">
+        <div className="content-container">
           <div className='question-container'><h1>Setting Up Student Surveys</h1></div>
           <div className="setup-card info-card">
             <p>Once you complete this setup, a link to a customized student survey will be generated.</p>
@@ -183,7 +186,19 @@ const InstructorTeamSetup = () => {
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                     <input className="input-field full-input" type={showKey ? "text" : "password"} value={generatedKey} readOnly />
                     <button type="button" className="incript-button" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
-                    <button type="button" className="incript-button" onClick={() => { navigator.clipboard.writeText(generatedKey); alert("Key copied!"); }}>Copy</button>
+                    <button type="button" className="incript-button" onClick={() => {
+                      if (navigator.clipboard) {
+    		      navigator.clipboard.writeText(generatedKey);
+  		      } else {
+    		        const el = document.createElement('textarea');
+    		        el.value = generatedKey;
+    		        document.body.appendChild(el);
+    		        el.select();
+    		        document.execCommand('copy');
+                        document.body.removeChild(el);
+                     }
+                     alert("Key copied!");
+                    }}>Copy</button>
                   </div>
                   <div className="checkbox-row">
                     <input type="checkbox" id="saveConfirm" checked={hasSavedKey} onChange={(e) => { setHasSavedKey(e.target.checked); if (e.target.checked) clearError('saveConfirm'); }} />
@@ -204,7 +219,8 @@ const InstructorTeamSetup = () => {
       </div>
 
       <ConfirmationModal isOpen={showConfirmation} onConfirm={handleConfirm} onCancel={handleCancel} />
-    </>
+      </div>
+    </div>
   );
 };
 

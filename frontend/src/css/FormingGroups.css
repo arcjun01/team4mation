@@ -87,6 +87,18 @@
     white-space: nowrap;
 }
 
+.group-table-header.two-col,
+.group-table-row.two-col {
+    grid-template-columns: 1fr 2fr;
+}
+
+.group-table-header.two-col .group-table-cell,
+.group-table-row.two-col .group-table-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+
 .group-table-cell:nth-child(2),
 .group-table-cell:nth-child(3) {
     /* Grid handles column sizing */
@@ -144,5 +156,6 @@
 /* Button Tray */
 .forming-groups-button-tray {
     margin-top: 40px;
-    text-align: center;
+    display: flex;
+    justify-content: flex-end;
 }

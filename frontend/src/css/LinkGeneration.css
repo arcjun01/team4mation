@@ -20,6 +20,31 @@
     width: 100%;
 }
 
+.link-generation-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.link-generation-title-card,
+.link-generation-link-card {
+    margin-bottom: 0;
+}
+
+.link-generation-link-card {
+    padding: 80px;
+}
+
+.link-generation-info-text {
+    color: #666;
+    margin: 20px 0 45px 0;
+    text-align: center;
+}
+
+.link-generation-link-card .action-row {
+    margin-top: 0;
+}
+
 .card-container {
     background: white;
     width: 100%;
@@ -104,14 +129,13 @@
     width: 100%;
 }
 
+.link-generation-actions {
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+}
+
 h2 {
     text-align: center;
 }
 
-.page-container .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-    margin-top: 20px;
-}
