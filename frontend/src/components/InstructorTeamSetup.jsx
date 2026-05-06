@@ -61,7 +61,7 @@ const InstructorTeamSetup = () => {
 
     if (!formData.courseName.trim()) newErrors.courseName = "Please enter a course name.";
     if (!formData.classSize || totalStudents < 1) newErrors.classSize = "Please enter a valid class size.";
-    
+    else if (totalStudents > 100 ) newErrors.classSize = "Class size cannot exceed 100";
     // Integrated your logic here
     if (!formData.teamLimit || limit < 2) {
       newErrors.teamLimit = "Team size must be at least 2.";
