@@ -12,6 +12,7 @@ const InstructorTeamSetup = () => {
   // 1. Initial state (Uses your Min/Max variable names)
   const [formData, setFormData] = useState(savedData || {
     courseName: '',
+    description: '',
     classSize: '',
     teamLimit: '4',
     limitType: 'Maximum', 
@@ -91,6 +92,7 @@ const InstructorTeamSetup = () => {
     const payload = {
       uniqueId: uniqueId,
       courseName: formData.courseName?.trim() || null,
+      description: formData.description?.trim() || null,
       classSize: parseInt(formData.classSize, 10) || null,
       teamLimit: parseInt(formData.teamLimit, 10) || null,
       limitType: formData.limitType || 'Maximum',
@@ -136,6 +138,19 @@ const InstructorTeamSetup = () => {
               <label htmlFor="courseName">For which course is this team set-up for?</label>
               <input id="courseName" className="input-field full-input" type="text" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="e.g., SDEV 100" />
               {errors.courseName && <span className="error-message">{errors.courseName}</span>}
+            </div>
+
+            {/* Description */}
+            <div className="question-container">
+              <label htmlFor="description">Description (Optional)</label>
+              <textarea
+                id="description"
+                className="input-field full-input"
+                name="description"
+                value={formData.description || ''}
+                onChange={handleChange}
+                rows="4"
+              />
             </div>
 
             {/* Class Size */}

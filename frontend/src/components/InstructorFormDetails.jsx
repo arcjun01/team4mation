@@ -58,6 +58,7 @@ const InstructorFormDetails = () => {
   }, [id]);
 
   const courseName = formConfig?.courseName || formConfig?.course_name || '';
+  const description = formConfig?.description || '';
   const teamLimit = formConfig?.maxSize || formConfig?.team_limit || '';
   const limitType = normalizeLimitType(formConfig?.limitType || formConfig?.limit_type);
   const prevCourse = formConfig?.prevCourse || formConfig?.prev_course || '';
@@ -76,6 +77,7 @@ const InstructorFormDetails = () => {
       state: {
         formData: {
           courseName,
+          description,
           classSize,
           teamLimit: String(teamLimit || ''),
           limitType,
@@ -145,6 +147,12 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-label">Course Name</span>
                     <span className="form-detail-value">{courseName || 'N/A'}</span>
                   </div>
+                  {description && (
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Description</span>
+                      <span className="form-detail-value">{description}</span>
+                    </div>
+                  )}
                   <div className="form-detail-card">
                     <span className="form-detail-label">Team Size Rule</span>
                     <span className="form-detail-value">
@@ -155,10 +163,12 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-label">Class Size</span>
                     <span className="form-detail-value">{classSize || 'N/A'}</span>
                   </div>
-                  <div className="form-detail-card">
-                    <span className="form-detail-label">Prerequisite Course</span>
-                    <span className="form-detail-value">{prevCourse || 'Not required'}</span>
-                  </div>
+                  {useGpa && (
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Prerequisite Course</span>
+                      <span className="form-detail-value">{prevCourse || 'N/A'}</span>
+                    </div>
+                  )}
                   {hasGeneratedGroups ? (
                     <div className="form-detail-card full-width">
                       <span className="form-detail-label">Formed Groups</span>
