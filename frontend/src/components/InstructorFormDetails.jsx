@@ -146,8 +146,6 @@ const InstructorFormDetails = () => {
                   <div className="form-detail-card">
                     <span className="form-detail-label">Responses</span>
                     <span className="form-detail-value">{submissionCount}</span>
-                    <span className="form-detail-label form-detail-label--spaced">Survey Status</span>
-                    <span className="form-detail-value">{displayStatus ? displayStatus.charAt(0).toUpperCase() + displayStatus.slice(1) : 'Open'}</span>
                   </div>
                   <div className="form-detail-card">
                     <span className="form-detail-label">Team Size Rule</span>
