@@ -66,7 +66,6 @@ const InstructorFormDetails = () => {
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
   const submissionCount = stats?.submissions ?? 0;
-  const percentComplete = classSize ? Math.round((submissionCount / classSize) * 100) : null;
   const displayStatus = (stats?.status || '').toString();
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
@@ -146,11 +145,8 @@ const InstructorFormDetails = () => {
                 <section className="form-details-grid" aria-label="Saved form settings">
                   <div className="form-detail-card">
                     <span className="form-detail-label">Responses</span>
-                    <span className="form-detail-value">
-                      {submissionCount}{classSize ? ` / ${classSize}` : ''}
-                      {percentComplete !== null ? ` (${percentComplete}%)` : ''}
-                    </span>
-                    <span className="form-detail-label" style={{ marginTop: '0.75rem' }}>Survey Status</span>
+                    <span className="form-detail-value">{submissionCount}</span>
+                    <span className="form-detail-label form-detail-label--spaced">Survey Status</span>
                     <span className="form-detail-value">{displayStatus ? displayStatus.charAt(0).toUpperCase() + displayStatus.slice(1) : 'Open'}</span>
                   </div>
                   <div className="form-detail-card">

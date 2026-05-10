@@ -35,6 +35,11 @@
   letter-spacing: 0.08em;
 }
 
+/* utility class to add a small top gap for secondary labels inside cards */
+.form-detail-label--spaced {
+  margin-top: 0.75rem;
+}
+
 .form-detail-label-with-icon {
   display: inline-flex;
   align-items: center;
