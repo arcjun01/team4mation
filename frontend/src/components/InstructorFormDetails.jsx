@@ -126,7 +126,7 @@ const InstructorFormDetails = () => {
       <div className="instructor-page-content">
         <div className="content-container">
           <div className="question-container">
-            <h1>Form Details</h1>
+            <h1>{courseName || 'Form Details'}</h1>
           </div>
 
           {loading ? (
