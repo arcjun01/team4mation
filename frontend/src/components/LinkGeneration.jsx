@@ -25,9 +25,19 @@ const LinkGeneration = () => {
   // Updated URL structure: domain/courseName/survey/id
   const surveyUrl = `${window.location.origin}/${courseName}/survey/${id}`;
   const handleCopy = () => {
-    navigator.clipboard.writeText(surveyUrl);
-    alert("Unique link copied to clipboard!");
-  };
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(surveyUrl);
+        alert("Unique link copied to clipboard!");
+    } else {
+        const el = document.createElement('textarea');
+        el.value = surveyUrl;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Unique link copied to clipboard!");
+    }
+};
 
   const handleEmailClick = () => {
     const subject = encodeURIComponent("Action Required: Student Survey");

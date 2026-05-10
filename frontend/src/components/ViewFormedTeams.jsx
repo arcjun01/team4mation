@@ -114,7 +114,7 @@ const ViewFormedTeams = () => {
                 if (savedData) {
                     studentArray = JSON.parse(savedData);
                 } else {
-                    const response = await fetch(`http://localhost:3001/api/teams/${id}`);
+                    const response = await fetch(`/api/teams/${id}`);
                     if (response.ok) {
                         const data = await response.json();
                         studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
