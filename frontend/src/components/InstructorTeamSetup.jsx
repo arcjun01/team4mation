@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/InstructorSetup.css';
-import ConfirmationModal from './ConfirmationModal';
+
 import Navbar from './Navbar';
 
 const InstructorTeamSetup = () => {
@@ -24,7 +24,7 @@ const InstructorTeamSetup = () => {
   const [showKey, setShowKey] = useState(false);
   const [hasSavedKey, setHasSavedKey] = useState(false);
   const [errors, setErrors] = useState({});
-  const [showConfirmation, setShowConfirmation] = useState(false);
+
 
   const handleGenerateKey = () => {
     const randomKey = Array.from(crypto.getRandomValues(new Uint8Array(16)))
@@ -61,7 +61,7 @@ const InstructorTeamSetup = () => {
 
     if (!formData.courseName.trim()) newErrors.courseName = "Please enter a course name.";
     if (!formData.classSize || totalStudents < 1) newErrors.classSize = "Please enter a valid class size.";
-    
+    else if (totalStudents > 100 ) newErrors.classSize = "Class size cannot exceed 100";
     // Integrated your logic here
     if (!formData.teamLimit || limit < 2) {
       newErrors.teamLimit = "Team size must be at least 2.";
@@ -78,12 +78,12 @@ const InstructorTeamSetup = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    setShowConfirmation(true); // From Team: Show modal before saving
+    handleConfirm() 
   };
 
   //save logic 
   const handleConfirm = async () => {
-    setShowConfirmation(false);
+   
     const uniqueId = typeof crypto.randomUUID === 'function'
   ? crypto.randomUUID()
   : Math.random().toString(36).slice(2) + Date.now().toString(36); 
@@ -117,7 +117,7 @@ const InstructorTeamSetup = () => {
     }
   };
 
-  const handleCancel = () => setShowConfirmation(false);
+  
 
   return (
     <div className="instructor-page-shell">
@@ -218,7 +218,7 @@ const InstructorTeamSetup = () => {
         </div>
       </div>
 
-      <ConfirmationModal isOpen={showConfirmation} onConfirm={handleConfirm} onCancel={handleCancel} />
+      
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ const InstructorFormDetails = () => {
   const handlePurgeSurvey = async () => {
     setIsPurging(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/survey/purge/${id}`, {
+      const response = await fetch(`/api/survey/purge/${id}`, {
         method: 'DELETE'
       });
 
