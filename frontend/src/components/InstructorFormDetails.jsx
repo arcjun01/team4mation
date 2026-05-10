@@ -65,6 +65,8 @@ const InstructorFormDetails = () => {
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
+  const submissionCount = stats?.submissions ?? 0;
+  const displayStatus = (stats?.status || '').toString();
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
@@ -126,7 +128,7 @@ const InstructorFormDetails = () => {
       <div className="instructor-page-content">
         <div className="content-container">
           <div className="question-container">
-            <h1>Form Details</h1>
+            <h1>{courseName || 'Form Details'}</h1>
           </div>
 
           {loading ? (
@@ -142,8 +144,8 @@ const InstructorFormDetails = () => {
               <div className="form-details-main-layout">
                 <section className="form-details-grid" aria-label="Saved form settings">
                   <div className="form-detail-card">
-                    <span className="form-detail-label">Course Name</span>
-                    <span className="form-detail-value">{courseName || 'N/A'}</span>
+                    <span className="form-detail-label">Responses</span>
+                    <span className="form-detail-value">{submissionCount}</span>
                   </div>
                   <div className="form-detail-card">
                     <span className="form-detail-label">Team Size Rule</span>
