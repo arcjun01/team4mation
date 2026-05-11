@@ -56,13 +56,11 @@
 }
 
 @media (max-width: 480px) {
-  .page-header,
   .large-page-header {
     position: relative;
     margin-bottom: 15px;
   }
 
-  .page-header img,
   .large-page-header img {
     width: 100vw;
     position: relative;
@@ -70,6 +68,16 @@
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
+  }
+
+  .page-header img {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: static;
+    margin: 0;
+    object-fit: cover;
+    object-position: left center;
   }
 }
 
