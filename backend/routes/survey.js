@@ -161,6 +161,10 @@ router.post("/reveal", async (req, res) => {
 
     const decryptedResults = rows.map(row => {
       try {
+        if (typeof row.iv !== 'string' || !/^[0-9a-fA-F]{32}$/.test(row.iv)) {
+          return { id: row.student_id, name: "Invalid IV Format", gender: row.gender, gpa: row.gpa };
+        }
+
         const decipher = crypto.createDecipheriv(
           algorithm,
           instructorKey,
