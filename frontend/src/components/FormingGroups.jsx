@@ -135,7 +135,7 @@ const FormingGroups = () => {
             }
 
             try {
-                const submissionsResponse = await fetch(`http://localhost:3001/api/teams/${id}/submissions`);
+                const submissionsResponse = await fetch(`/api/teams/${id}/submissions`);
                 if (submissionsResponse.ok) {
                     const submissionsData = await submissionsResponse.json();
                     
@@ -164,7 +164,7 @@ const FormingGroups = () => {
                 }
 
                 // Fallback for teams endpoint
-                const teamResponse = await fetch(`http://localhost:3001/api/teams/${id}`);
+                const teamResponse = await fetch(`/api/teams/${id}`);
                 if (teamResponse.ok) {
                     const teamData = await teamResponse.json();
                     if (teamData.availabilityMap) setAvailabilityMap(teamData.availabilityMap);
@@ -239,7 +239,7 @@ const FormingGroups = () => {
                                     <div className="forming-groups-config-box">
                                         <p className="forming-groups-config-label">Group Size</p>
                                         <p className="forming-groups-config-value">
-                                            {(surveyConfig.limitType || surveyConfig.limit_type) === 'max' ? 'Maximum' : 'Minimum'}: {surveyConfig.maxSize || surveyConfig.team_limit || 'N/A'}
+                                            {surveyConfig.limitType || surveyConfig.limit_type || 'N/A'}: {surveyConfig.team_limit || surveyConfig.maxSize || 'N/A'}
                                         </p>
                                     </div>
                                 </div>
