@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
 
-.page-header {
+.app-header {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -12,26 +12,7 @@
   overflow: hidden;
 }
 
-.page-header img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-  max-width: 100%;
-}
-
-.large-page-header {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  position: absolute;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.large-page-header img {
+.app-header img {
   width: 100%;
   height: auto;
   display: block;
@@ -42,34 +23,26 @@
 
 /* Responsive header adjustments for smaller screens */
 @media (max-width: 768px) {
-  .page-header,
-  .large-page-header {
+  .app-header {
     position: relative;
     margin-bottom: clamp(10px, 5vw, 20px);
   }
 
-  .page-header img,
-  .large-page-header img {
+  .app-header img {
     width: 100%;
     height: auto;
   }
 }
 
 @media (max-width: 480px) {
-  .page-header,
-  .large-page-header {
-    position: relative;
-    margin-bottom: 15px;
-  }
-
-  .page-header img,
-  .large-page-header img {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+  .app-header img {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: static;
+    margin: 0;
+    object-fit: cover;
+    object-position: left center;
   }
 }
 
@@ -106,12 +79,7 @@ h2 {
 }
 
 .top-gap {
-    top: clamp(70px, 12vh, 150px);
-    position: absolute;
-}
-
-.top-gap-large {
-    top: clamp(150px, 25vh, 300px);
+    top: 19%;
     position: absolute;
 }
 
@@ -122,17 +90,10 @@ h2 {
     position: relative;
     margin-top: clamp(15px, 5vw, 30px);
   }
-
-  .top-gap-large {
-    top: auto;
-    position: relative;
-    margin-top: clamp(15px, 5vw, 30px);
-  }
 }
 
 @media (max-width: 480px) {
-  .top-gap,
-  .top-gap-large {
+  .top-gap {
     margin-top: 15px;
   }
 }
@@ -146,7 +107,7 @@ h2 {
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    min-width: 0;
+    min-width: 400px;
 }
 
 .content-container {

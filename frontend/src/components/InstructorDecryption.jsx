@@ -50,7 +50,7 @@ function InstructorDecryption() {
             <Navbar surveyId={id} />
             <div className="instructor-page-content">
             <div className="decryption-page">
-                <div className="decryption-wrapper top-gap-large">
+                <div className="decryption-wrapper top-gap">
                     <div className='question-container '><h1>View Survey Submissions</h1></div>
                     
                     <form className="decryption-card" onSubmit={handleDecrypt}>

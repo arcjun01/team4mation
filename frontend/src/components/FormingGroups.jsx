@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { DndContext, closestCenter, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
 import '../css/FormingGroups.css'; 
@@ -189,13 +191,21 @@ const FormingGroups = () => {
         fetchData();
     }, [id, location.state]);
 
-    const groups = [];
-    for (let i = 0; i < students.length; i += 4) {
-        groups.push({
-            number: (i / 4) + 1,
-            members: students.slice(i, i + 4)
-        });
-    }
+    const [groupsState, setGroupsState] = useState([]);
+
+    useEffect(() => {
+        const buildGroups = () => {
+            const out = [];
+            for (let i = 0; i < students.length; i += 4) {
+                out.push({
+                    number: (i / 4) + 1,
+                    members: students.slice(i, i + 4)
+                });
+            }
+            setGroupsState(out);
+        };
+        buildGroups();
+    }, [students]);
 
     const handlePurge = async () => {
         setIsPurging(true);
@@ -212,6 +222,55 @@ const FormingGroups = () => {
         } finally {
             setIsPurging(false);
         }
+    };
+
+    // DnD sensors
+    const sensors = useSensors(useSensor(PointerSensor));
+
+    const DraggableStudent = ({ student }) => {
+        const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `student-${student.id}` });
+        const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
+        return (
+            <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="group-table-row draggable">
+                <div className="group-table-cell">{student.name}</div>
+                <div className="group-table-cell">{student.gender}</div>
+                <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
+                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>{formatAvailabilityRanges(getStudentAvailability(student))}</div>
+            </div>
+        );
+    };
+
+    const DroppableGroup = ({ group, children }) => {
+        const { isOver, setNodeRef } = useDroppable({ id: `group-${group.number}` });
+        const overClass = isOver ? 'droppable--over' : '';
+        return (
+            <div ref={setNodeRef} className={`group-card droppable ${overClass}`} data-group-number={group.number}>
+                {children}
+            </div>
+        );
+    };
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        if (!over) return;
+        const activeId = active.id; // e.g. student-123
+        const overId = over.id; // e.g. group-2
+        if (!activeId || !overId) return;
+        if (!activeId.startsWith('student-') || !overId.startsWith('group-')) return;
+
+        const studentId = activeId.replace('student-', '');
+        const targetGroupNumber = parseInt(overId.replace('group-', ''), 10);
+
+        setGroupsState((prev) => {
+            const sourceIdx = prev.findIndex(g => g.members.some(m => String(m.id) === String(studentId)));
+            const targetIdx = prev.findIndex(g => g.number === targetGroupNumber);
+            if (sourceIdx === -1 || targetIdx === -1) return prev;
+            const newGroups = prev.map(g => ({ ...g, members: [...g.members] }));
+            const studentIdx = newGroups[sourceIdx].members.findIndex(m => String(m.id) === String(studentId));
+            const [moved] = newGroups[sourceIdx].members.splice(studentIdx, 1);
+            newGroups[targetIdx].members.push(moved);
+            return newGroups;
+        });
     };
 
     return (
@@ -249,41 +308,32 @@ const FormingGroups = () => {
                         <div className="results-layout">
                             <div className="student-groups-container">
                                 <div className="forming-groups-grid">
-                                    {groups.map((group) => (
-                                        <div key={group.number} className="group-card">
-                                            <div className="group-header"><span>Group #{group.number}</span></div>
-                                            <div className="group-body">
-                                                <div className="group-table-header">
-                                                    <div className="group-table-cell">Name</div>
-                                                    <div className="group-table-cell">Gender</div>
-                                                    <div className="group-table-cell">GPA</div>
-                                                    <div className="group-table-cell">Availability</div>
+                                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                        {groupsState.map((group) => (
+                                            <DroppableGroup key={group.number} group={group}>
+                                                <div className="group-header"><span>Group #{group.number}</span></div>
+                                                <div className="group-body">
+                                                    <div className="group-table-header">
+                                                        <div className="group-table-cell">Name</div>
+                                                        <div className="group-table-cell">Gender</div>
+                                                        <div className="group-table-cell">GPA</div>
+                                                        <div className="group-table-cell">Availability</div>
+                                                    </div>
+                                                    {group.members.map((student) => (
+                                                        <DraggableStudent key={student.id} student={student} />
+                                                    ))}
                                                 </div>
-                                                {group.members.map((student, idx) => {
-                                                    const availability = getStudentAvailability(student);
-                                                    return (
-                                                        <div key={idx} className="group-table-row">
-                                                            <div className="group-table-cell">{student.name}</div>
-                                                            <div className="group-table-cell">{student.gender}</div>
-                                                            <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                                                            <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
-                                                                {formatAvailabilityRanges(availability)}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                            <div className="shared-availability-section">
-                                                <div className="shared-availability-label">Shared Availability:</div>
-                                                <div className="shared-availability-content">
-                                                    {/* Fix: Re-calculate shared availability based on the map state */}
-                                                    {Object.keys(availabilityMap).length > 0 
-                                                        ? formatAvailabilityRanges(getSharedAvailability(group.members)) 
-                                                        : 'N/A'}
+                                                <div className="shared-availability-section">
+                                                    <div className="shared-availability-label">Shared Availability:</div>
+                                                    <div className="shared-availability-content">
+                                                        {Object.keys(availabilityMap).length > 0
+                                                            ? formatAvailabilityRanges(getSharedAvailability(group.members))
+                                                            : 'N/A'}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                            </DroppableGroup>
+                                        ))}
+                                    </DndContext>
                                 </div>
                             </div>
 
