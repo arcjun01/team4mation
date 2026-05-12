@@ -146,7 +146,7 @@ const ViewFormedTeams = () => {
 
     return (
         <>
-            <Header variant="page" />
+            <Header />
             <div className="survey-page-wrapper top-gap">
                 <div className="main-container">
                     <div className="content-container">

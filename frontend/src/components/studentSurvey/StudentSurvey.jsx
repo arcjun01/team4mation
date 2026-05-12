@@ -174,7 +174,7 @@ export default function StudentSurvey() {
   return (
     <div id="student-survey">
       <div className="page-wrapper">
-        <Header variant="large" />
+        <Header />
         <div className="page-container  top-gap">
             <div className="question-container"><h1>{surveyTitle}</h1></div>
             <form onSubmit={handleSubmit} className="survey-form">

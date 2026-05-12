@@ -5,7 +5,7 @@ import Header from '../Header';
 const ThankYouPage = () => {
   return (
     <>
-      <Header variant="large" />
+      <Header />
       <div className="thank-you-page">
       <div className="thank-you-wrapper top-gap-large">
         <div className='question-container '><h1>Team Availability Match</h1></div>
