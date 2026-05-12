@@ -213,9 +213,9 @@ span {
 .availability-container {
     display: flex;
     align-items: center;
-    max-width: 490px;
-    min-width: 393px;
-    padding: 0px 15px 24px 15px;
+    max-width: 590px;
+    min-width: 370px;
+    padding: 0px 1% 24px 8px;
     border-radius: 12px;
     background: #ececec;
     box-sizing: border-box;
@@ -247,6 +247,10 @@ span {
     margin-right: 8px;
 }
 
+.day-column-header {
+    padding: 0;
+}
+
 .time-slot-header {
     width: 42px;
     min-width: 42px;
@@ -261,8 +265,8 @@ span {
 }
 
 .day-column-header {
-    width: 36px;
-    min-width: 56px;
+    width: 56px;
+    min-width: 30px;
     height: 50px;
     margin: 0;
     text-align: center;
@@ -376,6 +380,12 @@ span {
         margin-bottom: 24px;
     }
 
+    .corner-cell {
+    width: 40.5px;
+    min-width: 40.5px;
+    margin-right: 3px;
+    }
+
     .time-slot-header {
         width: 38px;
         min-width: 38px;
@@ -403,11 +413,12 @@ span {
 
 @media (max-width: 480px) {
     .page-container {
-        padding: 0 12px 36px 12px;
+        padding: 0;
     }
 
     .question-container {
         padding: 20px;
+        border-radius: 0;
     }
 
     .survey-option {
