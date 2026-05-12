@@ -79,7 +79,7 @@ h2 {
 }
 
 .top-gap {
-    top: 200px;
+    top: 19%;
     position: absolute;
 }
 
@@ -107,7 +107,7 @@ h2 {
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    min-width: 0;
+    min-width: 400px;
 }
 
 .content-container {
