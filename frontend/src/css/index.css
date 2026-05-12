@@ -83,11 +83,6 @@ h2 {
     position: absolute;
 }
 
-.top-gap-large {
-    top: 260px;
-    position: absolute;
-}
-
 /* Responsive gap adjustments for smaller screens */
 @media (max-width: 768px) {
   .top-gap {
@@ -95,17 +90,10 @@ h2 {
     position: relative;
     margin-top: clamp(15px, 5vw, 30px);
   }
-
-  .top-gap-large {
-    top: auto;
-    position: relative;
-    margin-top: clamp(15px, 5vw, 30px);
-  }
 }
 
 @media (max-width: 480px) {
-  .top-gap,
-  .top-gap-large {
+  .top-gap {
     margin-top: 15px;
   }
 }

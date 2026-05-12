@@ -7,7 +7,7 @@ const ThankYouPage = () => {
     <>
       <Header />
       <div className="thank-you-page">
-      <div className="thank-you-wrapper top-gap-large">
+      <div className="thank-you-wrapper top-gap">
         <div className='question-container '><h1>Team Availability Match</h1></div>
         
         <div className="thank-you-card">
