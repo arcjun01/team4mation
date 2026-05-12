@@ -22,12 +22,6 @@ const __dirname = path.dirname(__filename);
 app.use(express.static("/frontend/dist"));
 // --------------------------
 
-// Routes
-app.use("/api/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes);
-app.use("/api/config", configRoutes);
-app.use("/api/surveys", teamRoutes);
-
 // Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
@@ -119,13 +113,13 @@ app.delete("/api/survey/purge/:id", async (req, res) => {
             "DELETE FROM student_survey_entries WHERE survey_id = ?",
             [id]
         );
-        
+
         // Deletes the survey configuration so it leaves the DB entirely
         const [configResult] = await pool.execute(
             "DELETE FROM survey_configurations WHERE id = ?",
             [id]
         );
-        
+
         console.log(`Purge success: ${studentResult.affectedRows} entries and config for survey ${id} removed.`);
         res.json({ success: true, message: "Survey data and configuration successfully purged from the database." });
     } catch (err) {
@@ -134,9 +128,14 @@ app.delete("/api/survey/purge/:id", async (req, res) => {
     }
 });
 
+// Routes
+app.use("/api/teams", teamRoutes);
+app.use("/api/survey", surveyRoutes);
+app.use("/api/config", configRoutes);
+app.use("/api/surveys", teamRoutes);
 
 app.get("/{*path}", (req, res) => {
-   res.sendFile("/frontend/dist/index.html");
+    res.sendFile("/frontend/dist/index.html");
 });
 
 const PORT = process.env.PORT || 3001;
