@@ -29,17 +29,19 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
     if (error) onClear();
   };
 
-  const handleMouseEnter = (day, time) => {
-    if (!isDragging) return;
+  const handlePointerEnter = (event, day, time) => {
+    if (!isDragging || event.pointerType !== "mouse") return;
     toggleAvailability(day, time);
   };
 
-  const handleMouseDown = (day, time) => {
-    setIsDragging(true);
+  const handlePointerDown = (event, day, time) => {
+    if (event.pointerType === "mouse") {
+      setIsDragging(true);
+    }
     toggleAvailability(day, time);
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setIsDragging(false);
   };
 
@@ -60,8 +62,8 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
         <div className="availability-container">
           <div 
             className="availability-table-wrapper"
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
           >
             <div className="availability-grid">
               <div className="time-header">
@@ -83,8 +85,8 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
                     <div
                       key={`${day.key}-${time}`}
                       className="time-cell-background"
-                      onMouseDown={() => handleMouseDown(day.key, time)}
-                      onMouseEnter={() => handleMouseEnter(day.key, time)}
+                      onPointerDown={(event) => handlePointerDown(event, day.key, time)}
+                      onPointerEnter={(event) => handlePointerEnter(event, day.key, time)}
                     >
                       <div
                         className={"time-cell" + (isSelected(day.key, time) ? " selected" : "")}
