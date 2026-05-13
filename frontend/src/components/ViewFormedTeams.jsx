@@ -112,11 +112,59 @@ const ViewFormedTeams = () => {
                 let studentArray = [];
 
                 if (savedData) {
-                    studentArray = JSON.parse(savedData);
+                    try {
+                        const parsed = JSON.parse(savedData);
+                        if (parsed && parsed.groups && Array.isArray(parsed.groups)) {
+                            setGroups(parsed.groups);
+                            setLoading(false);
+                            return;
+                        }
+                        if (parsed && parsed.students && Array.isArray(parsed.students)) {
+                            studentArray = parsed.students;
+                        } else if (Array.isArray(parsed)) {
+                            studentArray = parsed;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing preview data:', e);
+                    }
                 } else {
-                    const response = await fetch(`/api/teams/${id}`);
-                    if (response.ok) {
-                        const data = await response.json();
+                    const prefixes = [
+                        '',
+                        window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
+                    ].filter((v, i, a) => a.indexOf(v) === i); // unique
+
+                    let data = null;
+                    for (const p of prefixes) {
+                        try {
+                            const url = `${p}/api/teams/${id}`;
+                            const response = await fetch(url);
+                            if (response.ok) {
+                                data = await response.json();
+                                break;
+                            }
+                        } catch (e) {
+                            // try next prefix
+                        }
+                    }
+
+                    if (data) {
+                        // If the API returned `teams` (algorithm result), use those groups directly
+                        if (Array.isArray(data.teams) && data.teams.length > 0) {
+                            const built = data.teams.map((team, idx) => ({
+                                number: idx + 1,
+                                members: team.map((s, mIdx) => ({
+                                    id: s.student_id,
+                                    name: `Student ${mIdx + 1}`,
+                                    gender: s.gender || 'N/A',
+                                    gpa: s.gpa || 0,
+                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || []
+                                }))
+                            }));
+                            setGroups(built);
+                            setLoading(false);
+                            return;
+                        }
+
                         studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
                             id: studentId,
                             name: `Student ${idx + 1}`,

@@ -387,8 +387,16 @@ const FormingGroups = () => {
                                         className="sidebar-btn"
                                         onClick={() => {
                                             const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                            // Save the decrypted student objects to localStorage so the new tab can access them
-                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
+                                            if (groupsState && groupsState.length > 0) {
+                                                const groupsForPreview = groupsState.map(g => ({
+                                                    number: g.number,
+                                                    members: g.members.map(m => ({ ...m, availability: getStudentAvailability(m) }))
+                                                }));
+                                                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ groups: groupsForPreview }));
+                                            } else {
+                                                const previewStudents = students.map(s => ({ ...s, availability: getStudentAvailability(s) }));
+                                                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ students: previewStudents || [] }));
+                                            }
                                             window.open(previewUrl, '_blank');
                                         }}
                                         style={{ padding: '12px', width: '100%' }}
