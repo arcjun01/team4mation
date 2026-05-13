@@ -6,7 +6,8 @@
 
 input[type="text"] {
   border-radius: 5px;
-  width: 386px;
+  width: 100%;
+  max-width: 386px;
   height: 30px;
 }
 
@@ -47,11 +48,12 @@ span {
     gap: 10px;
     cursor: pointer;
     font-size: 16px;
+    min-height: 44px;
 }
 
 .survey-option input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     accent-color: #086759;
     cursor: pointer;
     flex-shrink: 0;
@@ -150,7 +152,8 @@ span {
     font-size: 1.1rem;
     margin-bottom: 25px;
     line-height: 1.5;
-    width: 880px;
+    width: 100%;
+    max-width: 880px;
 }
 
 .gpa-error {
@@ -210,15 +213,16 @@ span {
 .availability-container {
     display: flex;
     align-items: center;
-    width: 485px;
-    padding: 0px 18px 24px 18px;
+    max-width: 590px;
+    min-width: 370px;
+    padding: 0px 1% 24px 8px;
     border-radius: 12px;
     background: #ececec;
     box-sizing: border-box;
 }
 
 .availability-table-wrapper {
-    width: 100%;
+    
     overflow-x: auto;
     background: transparent;
     border-radius: 12px;
@@ -230,7 +234,6 @@ span {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    min-width: 100%;
 }
 
 .time-header {
@@ -242,6 +245,10 @@ span {
     width: 40.5px;
     min-width: 40.5px;
     margin-right: 8px;
+}
+
+.day-column-header {
+    padding: 0;
 }
 
 .time-slot-header {
@@ -258,8 +265,8 @@ span {
 }
 
 .day-column-header {
-    width: 36px;
-    min-width: 56px;
+    width: 56px;
+    min-width: 30px;
     height: 50px;
     margin: 0;
     text-align: center;
@@ -294,7 +301,7 @@ span {
 .time-cell-background {
     margin: 4.5px;
     width: 45px;
-    height: 30px;
+    height: 34px;
     background: white;
     border-radius: 5px;
     display: flex;
@@ -361,4 +368,86 @@ span {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     text-align: center;
     font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .question-title {
+        font-size: 18px;
+        margin-bottom: 18px;
+    }
+
+    .details {
+        margin-bottom: 24px;
+    }
+
+    .corner-cell {
+    width: 40.5px;
+    min-width: 40.5px;
+    margin-right: 3px;
+    }
+
+    .time-slot-header {
+        width: 38px;
+        min-width: 38px;
+        padding: 0 4px;
+        font-size: 12px;
+    }
+
+    .day-column-header {
+        min-width: 44px;
+        width: 44px;
+        height: 42px;
+        font-size: 12px;
+    }
+
+    .last-day-column-header {
+        width: 44px;
+    }
+
+    .time-cell-background {
+        width: 38px;
+        height: 32px;
+        margin: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 0;
+    }
+
+    .question-container {
+        padding: 20px;
+        border-radius: 0;
+    }
+
+    .survey-option {
+        font-size: 17px;
+    }
+
+    .survey-option input[type="radio"] {
+        width: 24px;
+        height: 24px;
+    }
+
+    .full-name-input {
+        font-size: 17px;
+        min-height: 44px;
+    }
+
+    .gpa-input {
+        min-height: 44px;
+        font-size: 17px;
+        width: 110px;
+    }
+
+    .survey-actions {
+        justify-content: stretch;
+    }
+
+    .survey-actions .button {
+        width: 100%;
+        min-height: 46px;
+        font-size: 16px;
+    }
 }

@@ -16,10 +16,7 @@ export const up = async () => {
 
     // Create survey configurations table
     await connection.query(`
-      DROP TABLE IF EXISTS survey_configurations
-    `);
-    await connection.query(`
-      CREATE TABLE survey_configurations (
+      CREATE TABLE IF NOT EXISTS survey_configurations (
           id VARCHAR(255) PRIMARY KEY, 
           course_name VARCHAR(255),
           class_size INT,
@@ -31,6 +28,10 @@ export const up = async () => {
           status VARCHAR(20) DEFAULT 'open',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+    await connection.query(`
+      ALTER TABLE survey_configurations
+      ADD COLUMN IF NOT EXISTS description TEXT
     `);
     console.log('✓ Survey configurations table created successfully');
 
