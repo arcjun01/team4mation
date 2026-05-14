@@ -449,5 +449,6 @@ span {
         width: 100%;
         min-height: 46px;
         font-size: 16px;
+        margin: -10px 20px 20px 20px;
     }
 }
