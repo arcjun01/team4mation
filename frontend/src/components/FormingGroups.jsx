@@ -15,6 +15,22 @@ const FormingGroups = () => {
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
+    const [ isSurveyClosed, setIsSurveyClosed] =useState(false);
+    const [isClosedModalOpen, setIsCloseModalOpen] = useState(false);
+
+    const handleCloseSurvey = async () => {
+        try{
+            const response = await fetch(`/api/config/close/${id}`, {
+                method: 'PATCH'
+            });
+            if(response.ok){
+                setIsSurveyClosed(true);
+                setIsCloseModalOpen(false);
+            }
+        } catch (error) {
+            console.error("Error closing survey")
+        }
+    };
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
@@ -289,6 +305,16 @@ const FormingGroups = () => {
 
                             {/* SIDEBAR - All original inline styles preserved exactly */}
                             <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
+                                <button
+                                    className="sidebar-btn"
+                                    onClick={() => setIsCloseModalOpen(true)}
+                                    disabled={isSurveyClosed}
+                                    title='Close Survey'
+                                    style={{padding: '12px', width: '100%', backgroundColor: isSurveyClosed ? '#ccc' : '#e74c3c', color: 'white'}}
+                                    >
+                                        <span className='icon'>{isSurveyClosed ? 'Closed ✅' : 'Close 🔒'} </span>
+
+                                </button>
                                 <button 
                                     className="sidebar-btn" 
                                     onClick={() => {
@@ -328,7 +354,16 @@ const FormingGroups = () => {
                 onConfirm={handlePurge}
                 isLoading={isPurging}
             />
+
+            <PurgeModal 
+                isOpen={isCloseModalOpen}
+                onClose={() => setIsCloseModalOpen(false)}
+                onConfirm={handleCloseSurvey}
+                isLoading={false}
+/>
+            
             </div>
+            
         </div>
     );
 };

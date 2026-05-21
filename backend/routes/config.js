@@ -11,8 +11,8 @@ router.post("/save-setup", async (req, res) => {
   try {
     await pool.execute(
       `INSERT INTO survey_configurations 
-      (id, course_name, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, course_name, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt, status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uniqueId ?? null,
         courseName ?? null,
@@ -21,7 +21,8 @@ router.post("/save-setup", async (req, res) => {
         limitType ?? "Maximum",
         useGpa ?? 0,
         prevCourse ?? null,
-        encryptionSalt ?? null
+        encryptionSalt ?? null,
+        'active'
       ]
     );
 
@@ -46,6 +47,20 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error("Database Error:", err.message);
     res.status(500).json({ error: "DB Error", details: err.message });
+  }
+});
+
+router.patch("/close/:id", async (req, res) => {
+  const { id } = req.params;
+  try{
+    await pool.execute(
+      `UPDATE survey_configurations SET status = 'closed' WHERE id = ? `,
+      [id]
+    );
+    res.json({ success: true, message: "Survey closed Successfully"})
+  } catch (err){
+    console.error("Database Error: ", err.message);
+    res.status(500).json({ error: "DB Error", details: err.message })
   }
 });
 
