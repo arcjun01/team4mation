@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
+import CloseSurveyModal from './CloseSurveyModal';
 import '../css/FormingGroups.css'; 
 import Navbar from './Navbar';
 
@@ -16,7 +17,7 @@ const FormingGroups = () => {
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
     const [ isSurveyClosed, setIsSurveyClosed] =useState(false);
-    const [isClosedModalOpen, setIsCloseModalOpen] = useState(false);
+    const [isCloseModalOpen,  setIsCloseModalOpen] = useState(false);
 
     const handleCloseSurvey = async () => {
         try{
@@ -145,6 +146,9 @@ const FormingGroups = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setSurveyConfig(data);
+                    if(data.status === 'closed') {
+                        setIsSurveyClosed(true);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching config:", error);
@@ -354,14 +358,11 @@ const FormingGroups = () => {
                 onConfirm={handlePurge}
                 isLoading={isPurging}
             />
-
-            <PurgeModal 
+            <CloseSurveyModal
                 isOpen={isCloseModalOpen}
                 onClose={() => setIsCloseModalOpen(false)}
                 onConfirm={handleCloseSurvey}
-                isLoading={false}
-/>
-            
+            />
             </div>
             
         </div>
