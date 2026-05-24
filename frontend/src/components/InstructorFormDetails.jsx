@@ -66,8 +66,11 @@ const InstructorFormDetails = () => {
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
+  const availabilityOptional = Boolean(
+    formConfig?.availabilityOptional ?? formConfig?.availability_optional
+  );
   const submissionCount = stats?.submissions ?? 0;
-  const displayStatus = (stats?.status || '').toString();
+  
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
@@ -84,7 +87,8 @@ const InstructorFormDetails = () => {
           teamLimit: String(teamLimit || ''),
           limitType,
           prevCourse,
-          useGpa
+          useGpa,
+          availabilityOptional
         }
       }
     });

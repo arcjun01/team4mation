@@ -6,7 +6,9 @@ import '../css/FormingGroups.css';
 const ViewFormedTeams = () => {
     const { id } = useParams();
     const [groups, setGroups] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [surveyConfig, setSurveyConfig] = useState(null);
+    const [setLoading] = useState(true);
+    const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
 
     // Helper function to format consecutive times into ranges (copied from FormingGroups for consistency)
     const formatAvailabilityRanges = (availabilityArray) => {
@@ -108,6 +110,11 @@ const ViewFormedTeams = () => {
     useEffect(() => {
         const fetchTeams = async () => {
             try {
+                const configResponse = await fetch(`/api/config/${id}`);
+                if (configResponse.ok) {
+                    setSurveyConfig(await configResponse.json());
+                }
+
                 const savedData = localStorage.getItem(`preview_data_${id}`);
                 let studentArray = [];
 
@@ -154,32 +161,36 @@ const ViewFormedTeams = () => {
                             <h1>Formed Teams Preview</h1>
                         </div>
 
-                        <div className="forming-groups-grid">
+                        <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                             {groups.map((group) => (
-                                <div key={group.number} className="group-card">
+                                <div key={group.number} className={`group-card ${!shouldShowAvailability ? 'compact-group-card' : ''}`}>
                                     <div className="group-header">
                                         <span>Group #{group.number}</span>
                                     </div>
                                     <div className="group-body">
-                                        <div className="group-table-header two-col">
+                                        <div className={`group-table-header ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
                                             <div className="group-table-cell">Name</div>
-                                            <div className="group-table-cell">Availability</div>
+                                            {shouldShowAvailability && <div className="group-table-cell">Availability</div>}
                                         </div>
                                         {group.members.map((student, idx) => (
-                                            <div key={idx} className="group-table-row two-col">
+                                            <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
                                                 <div className="group-table-cell">{student.name}</div>
-                                                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
-                                                    {formatAvailabilityRanges(student.availability)}
-                                                </div>
+                                                {shouldShowAvailability && (
+                                                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
+                                                        {formatAvailabilityRanges(student.availability)}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
-                                        <div className="shared-availability-label">Shared Meeting Times:</div>
-                                        <div className="shared-availability-content">
-                                            {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                    {shouldShowAvailability && (
+                                        <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
+                                            <div className="shared-availability-label">Shared Meeting Times:</div>
+                                            <div className="shared-availability-content">
+                                                {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

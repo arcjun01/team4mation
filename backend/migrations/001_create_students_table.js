@@ -33,6 +33,10 @@ export const up = async () => {
       ALTER TABLE survey_configurations
       ADD COLUMN IF NOT EXISTS description TEXT
     `);
+    await connection.query(`
+      ALTER TABLE survey_configurations
+      ADD COLUMN IF NOT EXISTS availability_optional BOOLEAN DEFAULT FALSE
+    `);
     console.log('✓ Survey configurations table created successfully');
 
     // Create student survey entries table

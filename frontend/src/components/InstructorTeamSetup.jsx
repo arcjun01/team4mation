@@ -17,7 +17,8 @@ const InstructorTeamSetup = () => {
     teamLimit: '4',
     limitType: 'Maximum', 
     prevCourse: '',
-    useGpa: false
+    useGpa: false,
+    availabilityOptional: false
   });
 
   // States for Secure Key, Validation (from Team), and Modal (from Team)
@@ -98,7 +99,8 @@ const InstructorTeamSetup = () => {
       limitType: formData.limitType || 'Maximum',
       useGpa: formData.useGpa ? 1 : 0,
       prevCourse: (formData.useGpa && formData.prevCourse?.trim() !== "") ? formData.prevCourse.trim() : null,
-      encryptionSalt: generatedKey || null
+      encryptionSalt: generatedKey || null,
+      availabilityOptional: formData.availabilityOptional ? 1 : 0
     };
 
     try {
@@ -190,6 +192,22 @@ const InstructorTeamSetup = () => {
                 {errors.prevCourse && <span className="error-message">{errors.prevCourse}</span>}
               </div>
             )}
+
+            <div className="setup-card checkbox-section">
+              <div className="checkbox-row">
+                <input
+                  type="checkbox"
+                  id="factorAvailability"
+                  name="factorAvailability"
+                  checked={!formData.availabilityOptional}
+                  onChange={(e) => {
+                    setFormData({ ...formData, availabilityOptional: !e.target.checked });
+                    clearError('availabilityOptional');
+                  }}
+                />
+                <label htmlFor="factorAvailability">Factor students' availability into team formation</label>
+              </div>
+            </div>
 
             {/* Decryption Key */}
             <div className="question-container">

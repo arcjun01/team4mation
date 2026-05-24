@@ -83,9 +83,12 @@ export default function StudentSurvey() {
       newErrors.commitment = "Please select a commitment level.";
     }
 
-    // Validate availability
+    // Validate availability unless instructor made it optional
+    const isAvailabilityOptional = Boolean(
+      surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional
+    );
     const selectedSlots = Object.keys(availability).filter(key => availability[key]);
-    if (selectedSlots.length === 0) {
+    if (!isAvailabilityOptional && selectedSlots.length === 0) {
       newErrors.availability = "Please select at least one time slot.";
     }
 
@@ -170,6 +173,9 @@ export default function StudentSurvey() {
   const surveyTitle = surveyConfig.courseName 
     ? `${surveyConfig.courseName} Group Formation Survey` 
     : "Group Formation Survey";
+  const isAvailabilityOptional = Boolean(
+    surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional
+  );
 
   return (
     <div id="student-survey">
@@ -209,12 +215,14 @@ export default function StudentSurvey() {
                 onClear={() => clearError('commitment')}
               />
 
-              <AvailabilityQuestion 
-                availability={availability}
-                setAvailability={setAvailability}
-                error={errors.availability}
-                onClear={() => clearError('availability')}
-              />
+              {!isAvailabilityOptional && (
+                <AvailabilityQuestion 
+                  availability={availability}
+                  setAvailability={setAvailability}
+                  error={errors.availability}
+                  onClear={() => clearError('availability')}
+                />
+              )}
 
               {message && (
                 <div className="survey-message">{message}</div>
