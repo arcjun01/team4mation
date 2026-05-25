@@ -367,6 +367,11 @@ const FormingGroups = () => {
                             )}
 
                             <div className="results-layout">
+                                                        {/* Minimum team size and estimated groups */}
+                                                        <div style={{ color: 'rgb(96, 163, 40)', fontWeight: 600, marginBottom: 12 }}>
+                                                            Minimum team size: 7<br />
+                                                            Estimated groups: 5
+                                                        </div>
                                 <div className="student-groups-container">
                                     <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
