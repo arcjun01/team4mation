@@ -15,6 +15,12 @@ const normalizeLimitType = (limitType) => {
     ? 'Minimum'
     : 'Maximum';
 };
+const formatDateTime = (value) => {
+  if (!value) return 'N/A';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'N/A';
+  return parsed.toLocaleString();
+};
 
 const InstructorFormDetails = () => {
   const { id } = useParams();
@@ -66,6 +72,7 @@ const InstructorFormDetails = () => {
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
+  const createdOn = formConfig?.createdAt || formConfig?.created_at || null;
   const availabilityOptional = Boolean(
     formConfig?.availabilityOptional ?? formConfig?.availability_optional
   );
@@ -168,6 +175,10 @@ const InstructorFormDetails = () => {
                   <div className="form-detail-card">
                     <span className="form-detail-label">Class Size</span>
                     <span className="form-detail-value">{classSize || 'N/A'}</span>
+                  </div>
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Created on</span>
+                    <span className="form-detail-value">{formatDateTime(createdOn)}</span>
                   </div>
                   {useGpa && (
                     <div className="form-detail-card">
