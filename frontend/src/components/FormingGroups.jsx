@@ -17,6 +17,13 @@ const FormingGroups = () => {
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
+    const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
@@ -222,6 +229,7 @@ const FormingGroups = () => {
                             name: decrypted?.name || `Student ${idx + 1}`,
                             gender: student.gender || 'N/A',
                             gpa: student.gpa || 0,
+                            created_at: student.created_at || null,
                         };
                     })
                 }));
@@ -275,11 +283,20 @@ const FormingGroups = () => {
         const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `student-${student.id}` });
         const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
         return (
-            <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="group-table-row draggable">
+            <div
+                ref={setNodeRef}
+                style={style}
+                {...listeners}
+                {...attributes}
+                className={`group-table-row draggable ${!shouldShowAvailability ? 'compact-table' : ''}`}
+                title={formatSubmissionTimestamp(student.created_at)}
+            >
                 <div className="group-table-cell">{student.name}</div>
                 <div className="group-table-cell">{student.gender}</div>
                 <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>{formatAvailabilityRanges(getStudentAvailability(student))}</div>
+                {shouldShowAvailability && (
+                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>{formatAvailabilityRanges(getStudentAvailability(student))}</div>
+                )}
             </div>
         );
     };
@@ -288,7 +305,7 @@ const FormingGroups = () => {
         const { isOver, setNodeRef } = useDroppable({ id: `group-${group.number}` });
         const overClass = isOver ? 'droppable--over' : '';
         return (
-            <div ref={setNodeRef} className={`group-card droppable ${overClass}`} data-group-number={group.number}>
+            <div ref={setNodeRef} className={`group-card droppable ${overClass} ${!shouldShowAvailability ? 'compact-group-card' : ''}`} data-group-number={group.number}>
                 {children}
             </div>
         );
@@ -350,31 +367,40 @@ const FormingGroups = () => {
                             )}
 
                             <div className="results-layout">
+                                                        {/* Minimum team size and estimated groups */}
+                                                        <div style={{ color: 'rgb(96, 163, 40)', fontWeight: 600, marginBottom: 12 }}>
+                                                            Minimum team size: 7<br />
+                                                            Estimated groups: 5
+                                                        </div>
                                 <div className="student-groups-container">
-                                    <div className="forming-groups-grid">
+                                    <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                             {groupsState.map((group) => (
                                                 <DroppableGroup key={group.number} group={group}>
                                                     <div className="group-header"><span>Group #{group.number}</span></div>
                                                     <div className="group-body">
-                                                        <div className="group-table-header">
+                                                        <div className={`group-table-header ${!shouldShowAvailability ? 'compact-table' : ''}`}>
                                                             <div className="group-table-cell">Name</div>
                                                             <div className="group-table-cell">Gender</div>
                                                             <div className="group-table-cell">GPA</div>
-                                                            <div className="group-table-cell">Availability</div>
+                                                            {shouldShowAvailability && (
+                                                                <div className="group-table-cell">Availability</div>
+                                                            )}
                                                         </div>
                                                         {group.members.map((student) => (
                                                             <DraggableStudent key={student.id} student={student} />
                                                         ))}
                                                     </div>
-                                                    <div className="shared-availability-section">
-                                                        <div className="shared-availability-label">Shared Availability:</div>
-                                                        <div className="shared-availability-content">
-                                                            {Object.keys(availabilityMap).length > 0
-                                                                ? formatAvailabilityRanges(getSharedAvailability(group.members))
-                                                                : 'N/A'}
+                                                    {shouldShowAvailability && (
+                                                        <div className="shared-availability-section">
+                                                            <div className="shared-availability-label">Shared Availability:</div>
+                                                            <div className="shared-availability-content">
+                                                                {Object.keys(availabilityMap).length > 0
+                                                                    ? formatAvailabilityRanges(getSharedAvailability(group.members))
+                                                                    : 'N/A'}
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </DroppableGroup>
                                             ))}
                                         </DndContext>
@@ -387,8 +413,16 @@ const FormingGroups = () => {
                                         className="sidebar-btn"
                                         onClick={() => {
                                             const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                            // Save the decrypted student objects to localStorage so the new tab can access them
-                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
+                                            const previewPayload = {
+                                                groups: groupsState.map((group) => ({
+                                                    number: group.number,
+                                                    members: group.members.map((member) => ({
+                                                        ...member,
+                                                        availability: getStudentAvailability(member)
+                                                    }))
+                                                }))
+                                            };
+                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(previewPayload));
                                             window.open(previewUrl, '_blank');
                                         }}
                                         style={{ padding: '12px', width: '100%' }}

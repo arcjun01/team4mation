@@ -17,7 +17,8 @@ const InstructorTeamSetup = () => {
     teamLimit: '4',
     limitType: 'Maximum', 
     prevCourse: '',
-    useGpa: false
+    useGpa: false,
+    availabilityOptional: false
   });
 
   // States for Secure Key, Validation (from Team), and Modal (from Team)
@@ -25,6 +26,83 @@ const InstructorTeamSetup = () => {
   const [showKey, setShowKey] = useState(false);
   const [hasSavedKey, setHasSavedKey] = useState(false);
   const [errors, setErrors] = useState({});
+
+  const buildGroupSizes = (totalStudents, teamLimit, limitType) => {
+    if (!Number.isInteger(totalStudents) || !Number.isInteger(teamLimit) || totalStudents < 1 || teamLimit < 2) {
+      return [];
+    }
+
+    const normalized = (limitType || '').toLowerCase();
+    const isMin = normalized.startsWith('min');
+    let groupCount = isMin
+      ? Math.floor(totalStudents / teamLimit)
+      : Math.ceil(totalStudents / teamLimit);
+
+    groupCount = Math.max(1, groupCount);
+
+    const baseSize = Math.floor(totalStudents / groupCount);
+    const remainder = totalStudents % groupCount;
+    const groups = Array.from({ length: groupCount }, (_, index) => (
+      index < remainder ? baseSize + 1 : baseSize
+    ));
+
+    return groups;
+  };
+
+  const getPreview = () => {
+    const totalStudents = parseInt(formData.classSize, 10);
+    const teamLimit = parseInt(formData.teamLimit, 10);
+    const groups = buildGroupSizes(totalStudents, teamLimit, formData.limitType);
+
+    if (!Number.isInteger(totalStudents) || totalStudents < 1) {
+      return {
+        ready: false,
+        message: 'Enter a valid class size to preview team formations.'
+      };
+    }
+
+    if (totalStudents > 100) {
+      return {
+        ready: false,
+        message: 'Class size must be between 1 and 100.'
+      };
+    }
+
+    if (!Number.isInteger(teamLimit) || teamLimit < 2) {
+      return {
+        ready: false,
+        message: 'Team size must be at least 2 to generate a preview.'
+      };
+    }
+
+    if (teamLimit > totalStudents) {
+      return {
+        ready: false,
+        message: 'Team size cannot be greater than class size.'
+      };
+    }
+
+    const ruleLabel = formData.limitType === 'Minimum' ? 'Minimum team size' : 'Maximum team size';
+    const summary = groups.length > 0
+      ? (() => {
+          const countsBySize = groups.reduce((acc, size) => {
+            acc[size] = (acc[size] || 0) + 1;
+            return acc;
+          }, {});
+          const parts = Object.entries(countsBySize)
+            .sort((a, b) => Number(b[0]) - Number(a[0]))
+            .map(([size, count]) => `${count} ${count === 1 ? 'group' : 'groups'} of ${size}`);
+          return parts.join(' and ');
+        })()
+      : 'No valid grouping possible with current settings.';
+
+    return {
+      ready: true,
+      ruleLabel,
+      groupCount: groups.length,
+      summary
+    };
+  };
 
 
   const handleGenerateKey = () => {
@@ -98,7 +176,8 @@ const InstructorTeamSetup = () => {
       limitType: formData.limitType || 'Maximum',
       useGpa: formData.useGpa ? 1 : 0,
       prevCourse: (formData.useGpa && formData.prevCourse?.trim() !== "") ? formData.prevCourse.trim() : null,
-      encryptionSalt: generatedKey || null
+      encryptionSalt: generatedKey || null,
+      availabilityOptional: formData.availabilityOptional ? 1 : 0
     };
 
     try {
@@ -120,6 +199,7 @@ const InstructorTeamSetup = () => {
   };
 
   
+  const preview = getPreview();
 
   return (
     <div className="instructor-page-shell">
@@ -163,8 +243,8 @@ const InstructorTeamSetup = () => {
             {/*Min/Max Select and Team Limit Input */}
             <div className="question-container">
               <label>Select team size constraint</label>
-              <div className="size-inputs" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <select name="limitType" value={formData.limitType} onChange={handleChange} className="input-field" style={{ padding: '8px' }}>
+              <div className="size-inputs">
+                <select name="limitType" value={formData.limitType} onChange={handleChange} className="input-field limit-type-select">
                   <option value="Minimum">Minimum</option>
                   <option value="Maximum">Maximum</option>
                 </select>
@@ -172,6 +252,24 @@ const InstructorTeamSetup = () => {
                 <input name="teamLimit" type="number" className="input-field numeric-input" value={formData.teamLimit} onChange={handleChange} placeholder="4" />
               </div>
               {errors.teamLimit && <span className="error-message">{errors.teamLimit}</span>}
+            </div>
+
+            <div className="setup-card">
+              <label className="preview-title">Team Formation Preview</label>
+              
+              {preview.ready ? (
+                <>
+                  <p className="preview-line">
+                    <strong>{preview.ruleLabel}:</strong> {formData.teamLimit}
+                  </p>
+                  <p className="preview-line">
+                    <strong>Estimated groups:</strong> {preview.groupCount}
+                  </p>
+                  <p className="preview-summary">{preview.summary}</p>
+                </>
+              ) : (
+                <p className="preview-warning">{preview.message}</p>
+              )}
             </div>
 
             {/* GPA Checkbox */}
@@ -191,6 +289,22 @@ const InstructorTeamSetup = () => {
               </div>
             )}
 
+            <div className="setup-card checkbox-section">
+              <div className="checkbox-row">
+                <input
+                  type="checkbox"
+                  id="factorAvailability"
+                  name="factorAvailability"
+                  checked={!formData.availabilityOptional}
+                  onChange={(e) => {
+                    setFormData({ ...formData, availabilityOptional: !e.target.checked });
+                    clearError('availabilityOptional');
+                  }}
+                />
+                <label htmlFor="factorAvailability">Factor students' availability into team formation</label>
+              </div>
+            </div>
+
             {/* Decryption Key */}
             <div className="question-container">
               <label>Secure Data Access Key</label>
@@ -198,7 +312,7 @@ const InstructorTeamSetup = () => {
                 <button type="button" className="incript-button" onClick={handleGenerateKey}>Generate Decryption Key</button>
               ) : (
                 <div className="key-display-section">
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                  <div className="key-actions-row">
                     <input className="input-field full-input" type={showKey ? "text" : "password"} value={generatedKey} readOnly />
                     <button type="button" className="incript-button" onClick={() => setShowKey(!showKey)}>{showKey ? "Hide" : "Reveal"}</button>
                     <button type="button" className="incript-button" onClick={() => {
@@ -217,7 +331,7 @@ const InstructorTeamSetup = () => {
                   </div>
                   <div className="checkbox-row">
                     <input type="checkbox" id="saveConfirm" checked={hasSavedKey} onChange={(e) => { setHasSavedKey(e.target.checked); if (e.target.checked) clearError('saveConfirm'); }} />
-                    <label htmlFor="saveConfirm" style={{ color: '#60a328', fontWeight: 'bold' }}>I have saved this key. I understand it cannot be recovered.</label>
+                    <label htmlFor="saveConfirm" className="save-confirm-label">I have saved this key. I understand it cannot be recovered.</label>
                   </div>
                   {errors.saveConfirm && <span className="error-message">{errors.saveConfirm}</span>}
                 </div>
