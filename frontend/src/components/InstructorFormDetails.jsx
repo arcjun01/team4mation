@@ -180,10 +180,10 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-label">Created on</span>
                     <span className="form-detail-value">{formatDateTime(createdOn)}</span>
                   </div>
-                  {useGpa && (
+                  {useGpa && prevCourse && (
                     <div className="form-detail-card">
                       <span className="form-detail-label">Prerequisite Course</span>
-                      <span className="form-detail-value">{prevCourse || 'N/A'}</span>
+                      <span className="form-detail-value">{prevCourse}</span>
                     </div>
                   )}
                   {hasGeneratedGroups ? (
