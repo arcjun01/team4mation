@@ -18,6 +18,12 @@ const FormingGroups = () => {
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
@@ -223,6 +229,7 @@ const FormingGroups = () => {
                             name: decrypted?.name || `Student ${idx + 1}`,
                             gender: student.gender || 'N/A',
                             gpa: student.gpa || 0,
+                            created_at: student.created_at || null,
                         };
                     })
                 }));
@@ -276,7 +283,14 @@ const FormingGroups = () => {
         const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `student-${student.id}` });
         const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
         return (
-            <div ref={setNodeRef} style={style} {...listeners} {...attributes} className={`group-table-row draggable ${!shouldShowAvailability ? 'compact-table' : ''}`}>
+            <div
+                ref={setNodeRef}
+                style={style}
+                {...listeners}
+                {...attributes}
+                className={`group-table-row draggable ${!shouldShowAvailability ? 'compact-table' : ''}`}
+                title={formatSubmissionTimestamp(student.created_at)}
+            >
                 <div className="group-table-cell">{student.name}</div>
                 <div className="group-table-cell">{student.gender}</div>
                 <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
@@ -394,8 +408,16 @@ const FormingGroups = () => {
                                         className="sidebar-btn"
                                         onClick={() => {
                                             const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                            // Save the decrypted student objects to localStorage so the new tab can access them
-                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
+                                            const previewPayload = {
+                                                groups: groupsState.map((group) => ({
+                                                    number: group.number,
+                                                    members: group.members.map((member) => ({
+                                                        ...member,
+                                                        availability: getStudentAvailability(member)
+                                                    }))
+                                                }))
+                                            };
+                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(previewPayload));
                                             window.open(previewUrl, '_blank');
                                         }}
                                         style={{ padding: '12px', width: '100%' }}
