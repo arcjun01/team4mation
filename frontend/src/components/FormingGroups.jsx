@@ -14,12 +14,13 @@ const FormingGroups = () => {
 
     // Receiving names from the previous page state, or we'll fetch from backend
     const [students, setStudents] = useState(location.state?.names || []);
+    const [groupsState, setGroupsState] = useState([]);
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
-    const [ isSurveyClosed, setIsSurveyClosed] =useState(false);
-    const [isCloseModalOpen,  setIsCloseModalOpen] = useState(false);
+    const [isSurveyClosed, setIsSurveyClosed] = useState(false);
+    const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
 
     const handleCloseSurvey = async () => {
         try{
@@ -33,6 +34,7 @@ const FormingGroups = () => {
         } catch (error) {
             console.error("Error closing survey")
         }
+    }; 
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
     const formatSubmissionTimestamp = (timestampValue) => {
         if (!timestampValue) return 'Submission time unavailable';
@@ -195,7 +197,6 @@ const FormingGroups = () => {
         fetchData();
     }, [id, location.state]);
 
-    const [groupsState, setGroupsState] = useState([]);
 
     // useEffect(() => {
     //     const buildGroups = () => {
@@ -320,9 +321,19 @@ const FormingGroups = () => {
 
                             <div className="results-layout">
                                                         {/* Minimum team size and estimated groups */}
-                                                        <div style={{ color: 'rgb(96, 163, 40)', fontWeight: 600, marginBottom: 12 }}>
-                                                            Minimum team size: 7<br />
-                                                            Estimated groups: 5
+                                                        <div
+                                                            style={{
+                                                                color: 'rgb(96, 163, 40)',
+                                                                fontWeight: 600,
+                                                                marginBottom: 12
+                                                            }}
+                                                        >
+                                                            Minimum team size: {surveyConfig?.team_limit || 'N/A'}
+                                                            <br />
+                                                            Estimated groups:{' '}
+                                                            {surveyConfig?.team_limit
+                                                                ? Math.ceil(students.length / surveyConfig.team_limit)
+                                                                : 'N/A'}
                                                         </div>
                                 <div className="student-groups-container">
                                     <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
@@ -359,81 +370,101 @@ const FormingGroups = () => {
                                     </div>
                                 </div>
 
-                                {/* SIDEBAR - All original inline styles preserved exactly */}
-                                <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-                                    <button
-                                        className="sidebar-btn"
-                                        onClick={() => {
-                                            const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                            const previewPayload = {
-                                                groups: groupsState.map((group) => ({
-                                                    number: group.number,
-                                                    members: group.members.map((member) => ({
-                                                        ...member,
-                                                        availability: getStudentAvailability(member)
-                                                    }))
-                                                }))
-                                            };
-                                            localStorage.setItem(`preview_data_${id}`, JSON.stringify(previewPayload));
-                                            window.open(previewUrl, '_blank');
-                                        }}
-                                        style={{ padding: '12px', width: '100%' }}
-                                    >
-                                        <span className="icon">View 👁️</span>
-                                    </button>
+                                {/* RIGHT SIDEBAR */}
+<div
+    className="stats-card-sidebar"
+    style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+        minWidth: '100px',
+        alignItems: 'center'
+    }}
+>
 
-                                    <button
-                                        className="sidebar-btn trash-btn"
-                                        onClick={() => setIsPurgeModalOpen(true)}
-                                        title="Purge Data"
-                                        style={{ padding: '12px', width: '100%' }}
-                                    >
-                                        <span className="icon">Purge 🗑️</span>
-                                    </button>
-                                </div>
-                            </div>
+    {/* CLOSE SURVEY */}
+    <button
+        className="sidebar-btn"
+        onClick={() => setIsCloseModalOpen(true)}
+        disabled={isSurveyClosed}
+        title="Close Survey"
+        style={{
+            padding: '12px',
+            width: '100%',
+            backgroundColor: isSurveyClosed
+                ? '#ccc'
+                : '#e74c3c',
+            color: 'white'
+        }}
+    >
+        <span className="icon">
+            {isSurveyClosed ? 'Closed ✅' : 'Close 🔒'}
+        </span>
+    </button>
 
-                            {/* SIDEBAR - All original inline styles preserved exactly */}
-                            <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-                                <button
-                                    className="sidebar-btn"
-                                    onClick={() => setIsCloseModalOpen(true)}
-                                    disabled={isSurveyClosed}
-                                    title='Close Survey'
-                                    style={{padding: '12px', width: '100%', backgroundColor: isSurveyClosed ? '#ccc' : '#e74c3c', color: 'white'}}
-                                    >
-                                        <span className='icon'>{isSurveyClosed ? 'Closed ✅' : 'Close 🔒'} </span>
+    {/* VIEW */}
+    <button
+        className="sidebar-btn"
+        onClick={() => {
+            const previewUrl = `/team4mation/student-view/teams/${id}`;
 
-                                </button>
-                                <button 
-                                    className="sidebar-btn" 
-                                    onClick={() => {
-                                        const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                        // Save the decrypted student objects to localStorage so the new tab can access them
-                                        localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
-                                        window.open(previewUrl, '_blank');
-                                    }}
-                                    style={{ padding: '12px', width: '100%' }}
-                                >
-                                    <span className="icon">View 👁️</span>
-                                </button>
-                                
-                                <button 
-                                    className="sidebar-btn trash-btn" 
-                                    onClick={() => setIsPurgeModalOpen(true)}
-                                    title="Purge Data"
-                                    style={{ padding: '12px', width: '100%' }}
-                                >
-                                    <span className="icon">Purge 🗑️</span>
-                            <div className="button-group forming-groups-button-tray">
-                                <button className="button" onClick={() => navigate(-1)}>
-                                    Back to Submissions
-                                </button>
-                            </div>
-                        </div>
+            const previewPayload = {
+                groups: groupsState.map((group) => ({
+                    number: group.number,
+                    members: group.members.map((member) => ({
+                        ...member,
+                        availability: getStudentAvailability(member)
+                    }))
+                }))
+            };
+
+            localStorage.setItem(
+                `preview_data_${id}`,
+                JSON.stringify(previewPayload)
+            );
+
+            window.open(previewUrl, '_blank');
+        }}
+        style={{
+            padding: '12px',
+            width: '100%'
+        }}
+    >
+        <span className="icon">
+            View 👁️
+        </span>
+    </button>
+
+    {/* PURGE */}
+    <button
+        className="sidebar-btn trash-btn"
+        onClick={() => setIsPurgeModalOpen(true)}
+        title="Purge Data"
+        style={{
+            padding: '12px',
+            width: '100%'
+        }}
+    >
+        <span className="icon">
+            Purge 🗑️
+        </span>
+    </button>
+
+    {/* BACK BUTTON */}
+    <div className="button-group forming-groups-button-tray">
+        <button
+            className="button"
+            onClick={() => navigate(-1)}
+        >
+            Back to Submissions
+        </button>
+    </div>
+
+</div>
                     </div>
                 </div>
-
+                </div>
+            </div>
             <PurgeModal 
                 isOpen={isPurgeModalOpen}
                 onClose={() => setIsPurgeModalOpen(false)}
