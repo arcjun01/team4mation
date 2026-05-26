@@ -16,10 +16,7 @@ export const up = async () => {
 
     // Create survey configurations table
     await connection.query(`
-      DROP TABLE IF EXISTS survey_configurations
-    `);
-    await connection.query(`
-      CREATE TABLE survey_configurations (
+      CREATE TABLE IF NOT EXISTS survey_configurations (
           id VARCHAR(255) PRIMARY KEY, 
           course_name VARCHAR(255),
           class_size INT,
@@ -31,6 +28,14 @@ export const up = async () => {
           status VARCHAR(20) DEFAULT 'open',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+    await connection.query(`
+      ALTER TABLE survey_configurations
+      ADD COLUMN IF NOT EXISTS description TEXT
+    `);
+    await connection.query(`
+      ALTER TABLE survey_configurations
+      ADD COLUMN IF NOT EXISTS availability_optional BOOLEAN DEFAULT FALSE
     `);
     console.log('✓ Survey configurations table created successfully');
 
@@ -44,8 +49,13 @@ export const up = async () => {
         gpa DOUBLE,
         commitment VARCHAR(50),
         survey_id VARCHAR(255),
+        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+    await connection.query(`
+      ALTER TABLE student_survey_entries
+      ADD COLUMN IF NOT EXISTS submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     `);
     console.log('✓ Student survey entries table created successfully');
 

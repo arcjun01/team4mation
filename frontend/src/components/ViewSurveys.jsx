@@ -7,7 +7,6 @@ const ViewSurveys = () => {
   const [surveys, setSurveys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedSurveyId, setSelectedSurveyId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,18 +36,8 @@ const ViewSurveys = () => {
     }
   };
 
-  const handleSelectSurvey = (surveyId) => {
-    setSelectedSurveyId(surveyId);
-  };
-
-  const handleViewResults = () => {
-    if (!selectedSurveyId) {
-      setError('Please select a dummy data first.');
-      return;
-    }
-    
-    // Navigate to saved instructor setup/form details for the selected survey
-    navigate(`/instructor/form/${selectedSurveyId}`);
+  const handleOpenSurvey = (surveyId) => {
+    navigate(`/instructor/form/${surveyId}`);
   };
 
   const handleBack = () => {
@@ -86,8 +75,16 @@ const ViewSurveys = () => {
                     return (
                       <div
                         key={survey.id}
-                        className={`survey-card ${selectedSurveyId === survey.id ? 'selected' : ''}`}
-                        onClick={() => handleSelectSurvey(survey.id)}
+                        className="survey-card"
+                        onClick={() => handleOpenSurvey(survey.id)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleOpenSurvey(survey.id);
+                          }
+                        }}
                       >
                         <div className="survey-card-header">
                           <h3>{survey.course_name}</h3>
@@ -112,13 +109,6 @@ const ViewSurveys = () => {
               <div className="button-group">
                 <button className="button" onClick={handleBack}>
                   Back to Home
-                </button>
-                <button
-                  className="button primary"
-                  onClick={handleViewResults}
-                  disabled={!selectedSurveyId}
-                >
-                  View Details
                 </button>
               </div>
             </>

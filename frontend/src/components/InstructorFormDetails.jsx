@@ -15,6 +15,12 @@ const normalizeLimitType = (limitType) => {
     ? 'Minimum'
     : 'Maximum';
 };
+const formatDateTime = (value) => {
+  if (!value) return 'N/A';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'N/A';
+  return parsed.toLocaleString();
+};
 
 const InstructorFormDetails = () => {
   const { id } = useParams();
@@ -58,6 +64,7 @@ const InstructorFormDetails = () => {
   }, [id]);
 
   const courseName = formConfig?.courseName || formConfig?.course_name || '';
+  const description = formConfig?.description || '';
   const teamLimit = formConfig?.maxSize || formConfig?.team_limit || '';
   const limitType = normalizeLimitType(formConfig?.limitType || formConfig?.limit_type);
   const prevCourse = formConfig?.prevCourse || formConfig?.prev_course || '';
@@ -65,6 +72,12 @@ const InstructorFormDetails = () => {
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
+  const createdOn = formConfig?.createdAt || formConfig?.created_at || null;
+  const availabilityOptional = Boolean(
+    formConfig?.availabilityOptional ?? formConfig?.availability_optional
+  );
+  const submissionCount = stats?.submissions ?? 0;
+  
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
@@ -76,11 +89,13 @@ const InstructorFormDetails = () => {
       state: {
         formData: {
           courseName,
+          description,
           classSize,
           teamLimit: String(teamLimit || ''),
           limitType,
           prevCourse,
-          useGpa
+          useGpa,
+          availabilityOptional
         }
       }
     });
@@ -89,7 +104,7 @@ const InstructorFormDetails = () => {
   const handlePurgeSurvey = async () => {
     setIsPurging(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/survey/purge/${id}`, {
+      const response = await fetch(`/api/survey/purge/${id}`, {
         method: 'DELETE'
       });
 
@@ -126,7 +141,7 @@ const InstructorFormDetails = () => {
       <div className="instructor-page-content">
         <div className="content-container">
           <div className="question-container">
-            <h1>Form Details</h1>
+            <h1>{courseName || 'Form Details'}</h1>
           </div>
 
           {loading ? (
@@ -142,9 +157,15 @@ const InstructorFormDetails = () => {
               <div className="form-details-main-layout">
                 <section className="form-details-grid" aria-label="Saved form settings">
                   <div className="form-detail-card">
-                    <span className="form-detail-label">Course Name</span>
-                    <span className="form-detail-value">{courseName || 'N/A'}</span>
+                    <span className="form-detail-label">Responses</span>
+                    <span className="form-detail-value">{submissionCount}</span>
                   </div>
+                  {description && (
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Description</span>
+                      <span className="form-detail-value">{description}</span>
+                    </div>
+                  )}
                   <div className="form-detail-card">
                     <span className="form-detail-label">Team Size Rule</span>
                     <span className="form-detail-value">
@@ -156,9 +177,15 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-value">{classSize || 'N/A'}</span>
                   </div>
                   <div className="form-detail-card">
-                    <span className="form-detail-label">Prerequisite Course</span>
-                    <span className="form-detail-value">{prevCourse || 'Not required'}</span>
+                    <span className="form-detail-label">Created on</span>
+                    <span className="form-detail-value">{formatDateTime(createdOn)}</span>
                   </div>
+                  {useGpa && prevCourse && (
+                    <div className="form-detail-card">
+                      <span className="form-detail-label">Prerequisite Course</span>
+                      <span className="form-detail-value">{prevCourse}</span>
+                    </div>
+                  )}
                   {hasGeneratedGroups ? (
                     <div className="form-detail-card full-width">
                       <span className="form-detail-label">Formed Groups</span>

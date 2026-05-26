@@ -99,6 +99,18 @@
     min-width: 0;
 }
 
+.group-table-header.one-col,
+.group-table-row.one-col {
+    grid-template-columns: 1fr;
+}
+
+.group-table-header.one-col .group-table-cell,
+.group-table-row.one-col .group-table-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+
 .group-table-cell:nth-child(2),
 .group-table-cell:nth-child(3) {
     /* Grid handles column sizing */
@@ -151,6 +163,24 @@
     grid-template-columns: repeat(2, 430px);
     gap: 20px;
     width: fit-content;
+}
+
+.forming-groups-grid.compact-grid {
+    grid-template-columns: repeat(2, 340px);
+}
+
+.compact-group-card {
+    width: 340px;
+}
+
+.group-table-header.compact-table,
+.group-table-row.compact-table {
+    grid-template-columns: 2fr 1fr 1fr;
+}
+
+/* Droppable over state */
+.droppable--over {
+    background: #abcfbe;
 }
 
 /* Button Tray */

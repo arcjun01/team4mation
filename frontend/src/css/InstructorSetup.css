@@ -39,6 +39,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    font-family: 'Inter', sans-serif;
     background-color: #fff;
 }
 
@@ -59,6 +60,10 @@
     display: flex;
     gap: 10px;
     align-items: center;
+}
+
+.setup-wrapper .limit-type-select {
+    padding: 8px;
 }
 
 /* Checkbox Section */
@@ -107,7 +112,7 @@
 
 
 .setup-wrapper {
-    color: #dc2626;
+    color: rgb(96, 163, 40);
     font-size: 14px;
     font-weight: 500;
     margin-top: 8px;
@@ -179,4 +184,32 @@
 
 .setup-wrapper .table-cell {
     font-size: 14px;
+}
+
+.setup-wrapper .preview-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.setup-wrapper .preview-line {
+    margin: 0 0 6px 0;
+}
+
+.setup-wrapper .preview-summary {
+    margin: 0;
+    color: #374151;
+}
+
+
+
+.setup-wrapper .key-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.setup-wrapper .save-confirm-label {
+    color: #60a328;
+    font-weight: bold;
 }

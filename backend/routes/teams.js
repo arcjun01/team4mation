@@ -28,7 +28,7 @@ router.get("/:surveyId/submissions", async (req, res) => {
     try {
         // Fetch all students for this survey
         const [students] = await pool.execute(
-            "SELECT student_id, gender, gpa, commitment FROM student_survey_entries WHERE survey_id = ? ORDER BY student_id ASC",
+            "SELECT student_id, gender, gpa, commitment, created_at FROM student_survey_entries WHERE survey_id = ? ORDER BY student_id ASC",
             [surveyId]
         );
 

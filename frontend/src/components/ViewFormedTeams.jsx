@@ -6,7 +6,15 @@ import '../css/FormingGroups.css';
 const ViewFormedTeams = () => {
     const { id } = useParams();
     const [groups, setGroups] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [surveyConfig, setSurveyConfig] = useState(null);
+    const [, setLoading] = useState(true);
+    const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
 
     // Helper function to format consecutive times into ranges (copied from FormingGroups for consistency)
     const formatAvailabilityRanges = (availabilityArray) => {
@@ -108,31 +116,45 @@ const ViewFormedTeams = () => {
     useEffect(() => {
         const fetchTeams = async () => {
             try {
+                const configResponse = await fetch(`/api/config/${id}`);
+                if (configResponse.ok) {
+                    setSurveyConfig(await configResponse.json());
+                }
+
                 const savedData = localStorage.getItem(`preview_data_${id}`);
                 let studentArray = [];
+                let grouped = [];
 
                 if (savedData) {
-                    studentArray = JSON.parse(savedData);
+                    const parsedData = JSON.parse(savedData);
+                    if (parsedData?.groups && Array.isArray(parsedData.groups)) {
+                        grouped = parsedData.groups;
+                    } else if (Array.isArray(parsedData)) {
+                        studentArray = parsedData;
+                    }
                 } else {
-                    const response = await fetch(`http://localhost:3001/api/teams/${id}`);
+                    const response = await fetch(`/api/teams/${id}`);
                     if (response.ok) {
                         const data = await response.json();
-                        studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
-                            id: studentId,
-                            name: `Student ${idx + 1}`,
-                            gender: 'N/A',
-                            gpa: 0,
-                            availability: data.availabilityMap[studentId] || []
+                        grouped = (data.teams || []).map((group, groupIdx) => ({
+                            number: groupIdx + 1,
+                            members: group.map((student, idx) => ({
+                                id: student.student_id,
+                                name: `Student ${idx + 1}`,
+                                availability: (data.availabilityMap && data.availabilityMap[student.student_id]) || [],
+                                created_at: student.created_at || null
+                            }))
                         }));
                     }
                 }
 
-                const grouped = [];
-                for (let i = 0; i < studentArray.length; i += 4) {
-                    grouped.push({
-                        number: (i / 4) + 1,
-                        members: studentArray.slice(i, i + 4)
-                    });
+                if (grouped.length === 0 && studentArray.length > 0) {
+                    for (let i = 0; i < studentArray.length; i += 4) {
+                        grouped.push({
+                            number: (i / 4) + 1,
+                            members: studentArray.slice(i, i + 4)
+                        });
+                    }
                 }
                 setGroups(grouped);
             } catch (error) {
@@ -146,7 +168,7 @@ const ViewFormedTeams = () => {
 
     return (
         <>
-            <Header variant="page" />
+            <Header />
             <div className="survey-page-wrapper top-gap">
                 <div className="main-container">
                     <div className="content-container">
@@ -154,32 +176,36 @@ const ViewFormedTeams = () => {
                             <h1>Formed Teams Preview</h1>
                         </div>
 
-                        <div className="forming-groups-grid">
+                        <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                             {groups.map((group) => (
-                                <div key={group.number} className="group-card">
+                                <div key={group.number} className={`group-card ${!shouldShowAvailability ? 'compact-group-card' : ''}`}>
                                     <div className="group-header">
                                         <span>Group #{group.number}</span>
                                     </div>
                                     <div className="group-body">
-                                        <div className="group-table-header two-col">
+                                        <div className={`group-table-header ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
                                             <div className="group-table-cell">Name</div>
-                                            <div className="group-table-cell">Availability</div>
+                                            {shouldShowAvailability && <div className="group-table-cell">Availability</div>}
                                         </div>
                                         {group.members.map((student, idx) => (
-                                            <div key={idx} className="group-table-row two-col">
-                                                <div className="group-table-cell">{student.name}</div>
-                                                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
-                                                    {formatAvailabilityRanges(student.availability)}
-                                                </div>
+                                            <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
+                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>{student.name}</div>
+                                                {shouldShowAvailability && (
+                                                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
+                                                        {formatAvailabilityRanges(student.availability)}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
-                                        <div className="shared-availability-label">Shared Meeting Times:</div>
-                                        <div className="shared-availability-content">
-                                            {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                    {shouldShowAvailability && (
+                                        <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
+                                            <div className="shared-availability-label">Shared Meeting Times:</div>
+                                            <div className="shared-availability-content">
+                                                {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

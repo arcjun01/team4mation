@@ -4,25 +4,26 @@ import { pool } from '../db.js';
 
 router.post("/save-setup", async (req, res) => {
   const { 
-    uniqueId, courseName, classSize, teamLimit, 
-    limitType, useGpa, prevCourse, encryptionSalt 
+    uniqueId, courseName, description, classSize, teamLimit, 
+    limitType, useGpa, prevCourse, encryptionSalt, availabilityOptional
   } = req.body;
 
   try {
     await pool.execute(
       `INSERT INTO survey_configurations 
-      (id, course_name, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, course_name, description, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt, availability_optional) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         uniqueId ?? null,
         courseName ?? null,
+        description ?? null,
         classSize ?? null,
         teamLimit ?? null,
         limitType ?? "Maximum",
         useGpa ?? 0,
         prevCourse ?? null,
         encryptionSalt ?? null,
-        'active'
+        availabilityOptional ?? 0
       ]
     );
 
