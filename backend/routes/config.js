@@ -51,4 +51,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.patch("/close/:id", async (req, res) => {
+  const { id } = req.params;
+  try{
+    await pool.execute(
+      `UPDATE survey_configurations SET status = 'closed' WHERE id = ? `,
+      [id]
+    );
+    res.json({ success: true, message: "Survey closed Successfully"})
+  } catch (err){
+    console.error("Database Error: ", err.message);
+    res.status(500).json({ error: "DB Error", details: err.message })
+  }
+});
+
 export default router; 

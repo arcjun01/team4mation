@@ -61,18 +61,6 @@ const SurveySubmissions = () => {
     }, [surveyId, userKey]);
 
     const confirmGenerateAndNavigate = async () => {
-        try {
-            const response = await fetch(`/api/survey/close/${surveyId}`, {
-                method: 'PATCH'
-            });
-
-            if (response.ok) {
-                setIsClosed(true);
-            }
-        } catch (error) {
-            console.error("Unable to mark survey as closed:", error);
-        }
-
         // Navigates to the dashboard passing the latest decrypted names
         navigate(`/instructor/smart-teams/${surveyId}`, { state: { names: decryptedNames } });
     };

@@ -170,6 +170,16 @@ export default function StudentSurvey() {
     );
   }
 
+  if (surveyConfig.status === 'closed'){
+    return(
+      <div className="survey-page">
+        <div className="survey-card">
+          <h2>Survey closed</h2>
+          <p>This survey is no longer accepting response. Please contact your instructor.</p>
+        </div>
+      </div>
+    )
+  }
   const surveyTitle = surveyConfig.courseName 
     ? `${surveyConfig.courseName} Group Formation Survey` 
     : "Group Formation Survey";

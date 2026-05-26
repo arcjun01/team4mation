@@ -3,7 +3,8 @@ import { DndContext, closestCenter, useSensor, useSensors, PointerSensor } from 
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
-import '../css/FormingGroups.css';
+import CloseSurveyModal from './CloseSurveyModal';
+import '../css/FormingGroups.css'; 
 import Navbar from './Navbar';
 
 const FormingGroups = () => {
@@ -17,6 +18,21 @@ const FormingGroups = () => {
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
+    const [ isSurveyClosed, setIsSurveyClosed] =useState(false);
+    const [isCloseModalOpen,  setIsCloseModalOpen] = useState(false);
+
+    const handleCloseSurvey = async () => {
+        try{
+            const response = await fetch(`/api/config/close/${id}`, {
+                method: 'PATCH'
+            });
+            if(response.ok){
+                setIsSurveyClosed(true);
+                setIsCloseModalOpen(false);
+            }
+        } catch (error) {
+            console.error("Error closing survey")
+        }
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
     const formatSubmissionTimestamp = (timestampValue) => {
         if (!timestampValue) return 'Submission time unavailable';
@@ -131,80 +147,16 @@ const FormingGroups = () => {
         return results.join('\n');
     };
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetch(`/api/config/${id}`);
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 setSurveyConfig(data);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching config:", error);
-    //         }
-
-    //         try {
-    //             const submissionsResponse = await fetch(`/api/teams/${id}/submissions`);
-    //             if (submissionsResponse.ok) {
-    //                 const submissionsData = await submissionsResponse.json();
-
-    //                 // START OF DECRYPTION FIX: Prioritize names from location.state
-    //                 const passedStudents = location.state?.names || [];
-
-    //                 if (submissionsData.students && submissionsData.students.length > 0) {
-    //                     const builtStudents = submissionsData.students.map((student, idx) => {
-    //                         // Find the decrypted name that matches this ID
-    //                         const decryptedMatch = passedStudents.find(ps => ps.id === student.student_id);
-    //                         return {
-    //                             id: student.student_id,
-    //                             name: decryptedMatch ? decryptedMatch.name : `Student ${idx + 1}`,
-    //                             gender: student.gender || 'N/A',
-    //                             gpa: student.gpa || 0,
-    //                             availability: submissionsData.availabilityMap ? submissionsData.availabilityMap[student.student_id] : []
-    //                         };
-    //                     });
-    //                     setStudents(builtStudents);
-    //                 }
-
-    //                 if (submissionsData.availabilityMap) {
-    //                     setAvailabilityMap(submissionsData.availabilityMap);
-    //                 }
-    //                 return; 
-    //             }
-
-    //             // Fallback for teams endpoint
-    //             const teamResponse = await fetch(`/api/teams/${id}`);
-    //             if (teamResponse.ok) {
-    //                 const teamData = await teamResponse.json();
-    //                 if (teamData.availabilityMap) setAvailabilityMap(teamData.availabilityMap);
-
-    //                 const passedStudents = location.state?.names || [];
-    //                 if (passedStudents.length === 0 && teamData.studentCount > 0) {
-    //                     const studentIds = Object.keys(teamData.availabilityMap || {});
-    //                     const builtStudents = studentIds.map((id, idx) => ({
-    //                         id: id,
-    //                         name: `Student ${idx + 1}`,
-    //                         gender: 'N/A',
-    //                         gpa: 0,
-    //                         availability: teamData.availabilityMap[id] || []
-    //                     }));
-    //                     setStudents(builtStudents);
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching data:", error);
-    //         }
-    //     };
-    //     fetchData();
-    // }, [id, location.state]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch config
-                const configResponse = await fetch(`/api/config/${id}`);
-                if (configResponse.ok) {
-                    setSurveyConfig(await configResponse.json());
+                const response = await fetch(`/api/config/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setSurveyConfig(data);
+                    if(data.status === 'closed') {
+                        setIsSurveyClosed(true);
+                    }
                 }
 
                 // ✅ Call the grouper endpoint FIRST — this is what runs the algorithm
@@ -441,6 +393,38 @@ const FormingGroups = () => {
                                 </div>
                             </div>
 
+                            {/* SIDEBAR - All original inline styles preserved exactly */}
+                            <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
+                                <button
+                                    className="sidebar-btn"
+                                    onClick={() => setIsCloseModalOpen(true)}
+                                    disabled={isSurveyClosed}
+                                    title='Close Survey'
+                                    style={{padding: '12px', width: '100%', backgroundColor: isSurveyClosed ? '#ccc' : '#e74c3c', color: 'white'}}
+                                    >
+                                        <span className='icon'>{isSurveyClosed ? 'Closed ✅' : 'Close 🔒'} </span>
+
+                                </button>
+                                <button 
+                                    className="sidebar-btn" 
+                                    onClick={() => {
+                                        const previewUrl = `/team4mation/student-view/teams/${id}`;
+                                        // Save the decrypted student objects to localStorage so the new tab can access them
+                                        localStorage.setItem(`preview_data_${id}`, JSON.stringify(students));
+                                        window.open(previewUrl, '_blank');
+                                    }}
+                                    style={{ padding: '12px', width: '100%' }}
+                                >
+                                    <span className="icon">View 👁️</span>
+                                </button>
+                                
+                                <button 
+                                    className="sidebar-btn trash-btn" 
+                                    onClick={() => setIsPurgeModalOpen(true)}
+                                    title="Purge Data"
+                                    style={{ padding: '12px', width: '100%' }}
+                                >
+                                    <span className="icon">Purge 🗑️</span>
                             <div className="button-group forming-groups-button-tray">
                                 <button className="button" onClick={() => navigate(-1)}>
                                     Back to Submissions
@@ -450,13 +434,19 @@ const FormingGroups = () => {
                     </div>
                 </div>
 
-                <PurgeModal
-                    isOpen={isPurgeModalOpen}
-                    onClose={() => setIsPurgeModalOpen(false)}
-                    onConfirm={handlePurge}
-                    isLoading={isPurging}
-                />
+            <PurgeModal 
+                isOpen={isPurgeModalOpen}
+                onClose={() => setIsPurgeModalOpen(false)}
+                onConfirm={handlePurge}
+                isLoading={isPurging}
+            />
+            <CloseSurveyModal
+                isOpen={isCloseModalOpen}
+                onClose={() => setIsCloseModalOpen(false)}
+                onConfirm={handleCloseSurvey}
+            />
             </div>
+            
         </div>
     );
 };
