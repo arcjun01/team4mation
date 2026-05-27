@@ -21,7 +21,11 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             rm -rf frontend/dist
-            cd frontend && npm install && npm run build
+            cd frontend
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm install
+            npm run build
             cd ..
             docker compose down
             docker compose up -d
