@@ -8,7 +8,9 @@ const ViewFormedTeams = () => {
     const [groups, setGroups] = useState([]);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [, setLoading] = useState(true);
+
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+
     const formatSubmissionTimestamp = (timestampValue) => {
         if (!timestampValue) return 'Submission time unavailable';
         const date = new Date(timestampValue);
@@ -16,7 +18,6 @@ const ViewFormedTeams = () => {
         return `Submitted: ${date.toLocaleString()}`;
     };
 
-    // Helper function to format consecutive times into ranges (copied from FormingGroups for consistency)
     const formatAvailabilityRanges = (availabilityArray) => {
         if (!availabilityArray || availabilityArray.length === 0) return 'N/A';
 
@@ -25,7 +26,7 @@ const ViewFormedTeams = () => {
             if (!match) return null;
             let hour = parseInt(match[1]);
             const period = match[2];
-            if (period === 'AM') { if (hour === 12) hour = 0; } 
+            if (period === 'AM') { if (hour === 12) hour = 0; }
             else { if (hour !== 12) hour += 12; }
             return hour;
         };
@@ -53,7 +54,7 @@ const ViewFormedTeams = () => {
 
         const results = [];
         const dayOrder = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-        
+
         for (const day of dayOrder) {
             if (!byDay[day]) continue;
             const slots = byDay[day].sort((a, b) => a.hour - b.hour);
@@ -70,7 +71,7 @@ const ViewFormedTeams = () => {
                     } else {
                         const startHP = extractHourAndPeriod(rangeStart.time);
                         const endHP = extractHourAndPeriod(rangeEnd.time);
-                        dayTimes.push(startHP.period === endHP.period 
+                        dayTimes.push(startHP.period === endHP.period
                             ? `${startHP.hour}-${endHP.hour} ${endHP.period}`
                             : `${startHP.hour} ${startHP.period}-${endHP.hour} ${endHP.period}`);
                     }
@@ -83,7 +84,7 @@ const ViewFormedTeams = () => {
             } else {
                 const startHP = extractHourAndPeriod(rangeStart.time);
                 const endHP = extractHourAndPeriod(rangeEnd.time);
-                dayTimes.push(startHP.period === endHP.period 
+                dayTimes.push(startHP.period === endHP.period
                     ? `${startHP.hour}-${endHP.hour} ${endHP.period}`
                     : `${startHP.hour} ${startHP.period}-${endHP.hour} ${endHP.period}`);
             }
@@ -92,11 +93,9 @@ const ViewFormedTeams = () => {
         return results.join('\n');
     };
 
-    // Helper function to find shared availability between all group members
     const getSharedAvailability = (groupMembers) => {
         if (!groupMembers || groupMembers.length === 0) return [];
 
-        // Only use members that have availability entries
         const availabilityLists = groupMembers
             .map((m) => m.availability || [])
             .filter((arr) => Array.isArray(arr) && arr.length > 0);
@@ -126,19 +125,14 @@ const ViewFormedTeams = () => {
                 let grouped = [];
 
                 if (savedData) {
-
-// Resolve Logic: Use main's robust parsing and prefix handling
-                if (savedData) {
                     try {
                         const parsed = JSON.parse(savedData);
-                        // Check if the data is wrapped in a 'groups' object (from the View button logic)
-                        if (parsed?.groups && Array.isArray(parsed.groups)) {
+                        if (parsed && parsed.groups && Array.isArray(parsed.groups)) {
                             setGroups(parsed.groups);
                             setLoading(false);
                             return;
                         }
-                        // Check if it's wrapped in a 'students' object or is a raw array
-                        if (parsed?.students && Array.isArray(parsed.students)) {
+                        if (parsed && parsed.students && Array.isArray(parsed.students)) {
                             studentArray = parsed.students;
                         } else if (Array.isArray(parsed)) {
                             studentArray = parsed;
@@ -147,7 +141,6 @@ const ViewFormedTeams = () => {
                         console.error('Error parsing preview data:', e);
                     }
                 } else {
-                    // Robust API fetching with path prefix support
                     const prefixes = [
                         '',
                         window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
@@ -162,21 +155,21 @@ const ViewFormedTeams = () => {
                                 data = await response.json();
                                 break;
                             }
-                        } catch (e) { /* try next prefix */ }
+                        } catch (e) {
+                            // try next prefix
+                        }
                     }
 
                     if (data) {
-                        // If API returned existing teams, map them using the feature's specific fields
                         if (Array.isArray(data.teams) && data.teams.length > 0) {
                             const built = data.teams.map((team, idx) => ({
                                 number: idx + 1,
                                 members: team.map((s, mIdx) => ({
                                     id: s.student_id,
-                                    name: s.name || `Student ${mIdx + 1}`, // Preserve name if available
+                                    name: `Student ${mIdx + 1}`,
                                     gender: s.gender || 'N/A',
                                     gpa: s.gpa || 0,
-                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || [],
-                                    created_at: s.created_at || null
+                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || []
                                 }))
                             }));
                             setGroups(built);
@@ -184,7 +177,6 @@ const ViewFormedTeams = () => {
                             return;
                         }
 
-                        // Fallback: Map raw availability map to student array
                         studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
                             id: studentId,
                             name: `Student ${idx + 1}`,
@@ -236,7 +228,9 @@ const ViewFormedTeams = () => {
                                         </div>
                                         {group.members.map((student, idx) => (
                                             <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
-                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>{student.name}</div>
+                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>
+                                                    {student.name}
+                                                </div>
                                                 {shouldShowAvailability && (
                                                     <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
                                                         {formatAvailabilityRanges(student.availability)}
