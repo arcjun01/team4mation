@@ -58,6 +58,23 @@ function calculateScheduleOverlap(group, availabilityMap) {
         }
     }
 
+    // 1. Check if there is AT LEAST ONE slot that EVERYONE in the group shares
+    const totalStudents = group.length;
+    let perfectOverlapCount = 0;
+
+    for (const slot of Object.keys(availabilitySlots)) {
+        if (availabilitySlots[slot] === totalStudents) {
+            perfectOverlapCount++;
+        }
+    }
+
+    // 2. If a common time slot exists, reward the group heavily.
+    if (perfectOverlapCount > 0) {
+        // Bonus + the number of perfectly overlapping slots to encourage finding even more matches
+        return 100 + perfectOverlapCount;
+    }
+
+    // 3. FALLBACK
     let totalOverlap = 0;
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
