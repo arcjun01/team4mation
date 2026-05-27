@@ -10,6 +10,11 @@ const Navbar = ({ surveyId }) => {
   const linkClassName = ({ isActive }) =>
     `instructor-nav-link${isActive ? ' active' : ''}`;
 
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    window.location.href = 'http://localhost:8000/login.php';
+  };
+
   return (
     <nav className="instructor-navbar" aria-label="Instructor navigation">
       <div className="instructor-navbar-inner">
@@ -31,6 +36,9 @@ const Navbar = ({ surveyId }) => {
             Surveys View
           </NavLink>
         </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </nav>
   );
