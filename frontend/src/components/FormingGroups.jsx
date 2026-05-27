@@ -12,7 +12,6 @@ const FormingGroups = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Receiving names from the previous page state, or we'll fetch from backend
     const [students, setStudents] = useState(location.state?.names || []);
     const [groupsState, setGroupsState] = useState([]);
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
@@ -21,20 +20,39 @@ const FormingGroups = () => {
     const [availabilityMap, setAvailabilityMap] = useState({});
     const [isSurveyClosed, setIsSurveyClosed] = useState(false);
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     const handleCloseSurvey = async () => {
-        try{
-            const response = await fetch(`/api/config/close/${id}`, {
-                method: 'PATCH'
-            });
-            if(response.ok){
+        setIsClosing(true);
+        try {
+            let response = await fetch(`/api/config/close/${id}`, { method: 'PATCH' });
+
+            if (response.status === 404) {
+                console.warn('/api/config/close returned 404, trying /api/survey/close');
+                response = await fetch(`/api/survey/close/${id}`, { method: 'PATCH' });
+            }
+
+            if (response.ok) {
                 setIsSurveyClosed(true);
                 setIsCloseModalOpen(false);
+            } else {
+                let details = '';
+                try {
+                    const j = await response.json();
+                    details = j.error || j.message || JSON.stringify(j);
+                } catch (e) {
+                    details = `HTTP ${response.status}`;
+                }
+                console.error('Failed to close survey:', details);
+                alert(`Could not close survey: ${details}`);
             }
         } catch (error) {
-            console.error("Error closing survey")
+            console.error('Error closing survey:', error);
+            alert(`Error closing survey: ${error?.message ?? error}`);
+        } finally {
+            setIsClosing(false);
         }
-    }; 
+    };
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
     const formatSubmissionTimestamp = (timestampValue) => {
         if (!timestampValue) return 'Submission time unavailable';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CloseSurveyModal = ({ isOpen, onClose, onConfirm }) => {
+const CloseSurveyModal = ({ isOpen, onClose, onConfirm, isLoading }) => {
     if (!isOpen) return null;
     return(
         <div className="modal-overlay">
@@ -11,8 +11,8 @@ const CloseSurveyModal = ({ isOpen, onClose, onConfirm }) => {
                     <button onClick={onClose} className='btn-secondary'>
                         Cancel
                     </button>
-                    <button onClick={onConfirm} className='btn-danger active'>
-                        Confirm & Close
+                    <button onClick={onConfirm} className='btn-danger active' disabled={isLoading}>
+                        {isLoading ? 'Closing...' : 'Confirm & Close'}
                     </button>
                 </div>
             </div>
