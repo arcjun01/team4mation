@@ -18,7 +18,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/projects/team4mation
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             cd frontend && npm run build
             cd ..
             docker compose down
