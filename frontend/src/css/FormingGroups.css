@@ -153,11 +153,6 @@
     width: fit-content;
 }
 
-/* Droppable over state */
-.droppable--over {
-    background: #abcfbe;
-}
-
 /* Button Tray */
 .forming-groups-button-tray {
     margin-top: 40px;

@@ -3,7 +3,8 @@ import { DndContext, closestCenter, useSensor, useSensors, PointerSensor } from 
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
-import '../css/FormingGroups.css';
+import CloseSurveyModal from './CloseSurveyModal';
+import '../css/FormingGroups.css'; 
 import Navbar from './Navbar';
 
 const FormingGroups = () => {
@@ -13,10 +14,34 @@ const FormingGroups = () => {
 
     // Receiving names from the previous page state, or we'll fetch from backend
     const [students, setStudents] = useState(location.state?.names || []);
+    const [groupsState, setGroupsState] = useState([]);
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
     const [isPurging, setIsPurging] = useState(false);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [availabilityMap, setAvailabilityMap] = useState({});
+    const [isSurveyClosed, setIsSurveyClosed] = useState(false);
+    const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+
+    const handleCloseSurvey = async () => {
+        try{
+            const response = await fetch(`/api/config/close/${id}`, {
+                method: 'PATCH'
+            });
+            if(response.ok){
+                setIsSurveyClosed(true);
+                setIsCloseModalOpen(false);
+            }
+        } catch (error) {
+            console.error("Error closing survey")
+        }
+    }; 
+    const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
 
     // Helper function to get availability for a student
     const getStudentAvailability = (student) => {
@@ -124,80 +149,16 @@ const FormingGroups = () => {
         return results.join('\n');
     };
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetch(`/api/config/${id}`);
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 setSurveyConfig(data);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching config:", error);
-    //         }
-
-    //         try {
-    //             const submissionsResponse = await fetch(`/api/teams/${id}/submissions`);
-    //             if (submissionsResponse.ok) {
-    //                 const submissionsData = await submissionsResponse.json();
-
-    //                 // START OF DECRYPTION FIX: Prioritize names from location.state
-    //                 const passedStudents = location.state?.names || [];
-
-    //                 if (submissionsData.students && submissionsData.students.length > 0) {
-    //                     const builtStudents = submissionsData.students.map((student, idx) => {
-    //                         // Find the decrypted name that matches this ID
-    //                         const decryptedMatch = passedStudents.find(ps => ps.id === student.student_id);
-    //                         return {
-    //                             id: student.student_id,
-    //                             name: decryptedMatch ? decryptedMatch.name : `Student ${idx + 1}`,
-    //                             gender: student.gender || 'N/A',
-    //                             gpa: student.gpa || 0,
-    //                             availability: submissionsData.availabilityMap ? submissionsData.availabilityMap[student.student_id] : []
-    //                         };
-    //                     });
-    //                     setStudents(builtStudents);
-    //                 }
-
-    //                 if (submissionsData.availabilityMap) {
-    //                     setAvailabilityMap(submissionsData.availabilityMap);
-    //                 }
-    //                 return; 
-    //             }
-
-    //             // Fallback for teams endpoint
-    //             const teamResponse = await fetch(`/api/teams/${id}`);
-    //             if (teamResponse.ok) {
-    //                 const teamData = await teamResponse.json();
-    //                 if (teamData.availabilityMap) setAvailabilityMap(teamData.availabilityMap);
-
-    //                 const passedStudents = location.state?.names || [];
-    //                 if (passedStudents.length === 0 && teamData.studentCount > 0) {
-    //                     const studentIds = Object.keys(teamData.availabilityMap || {});
-    //                     const builtStudents = studentIds.map((id, idx) => ({
-    //                         id: id,
-    //                         name: `Student ${idx + 1}`,
-    //                         gender: 'N/A',
-    //                         gpa: 0,
-    //                         availability: teamData.availabilityMap[id] || []
-    //                     }));
-    //                     setStudents(builtStudents);
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching data:", error);
-    //         }
-    //     };
-    //     fetchData();
-    // }, [id, location.state]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch config
-                const configResponse = await fetch(`/api/config/${id}`);
-                if (configResponse.ok) {
-                    setSurveyConfig(await configResponse.json());
+                const response = await fetch(`/api/config/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setSurveyConfig(data);
+                    if(data.status === 'closed') {
+                        setIsSurveyClosed(true);
+                    }
                 }
 
                 // ✅ Call the grouper endpoint FIRST — this is what runs the algorithm
@@ -222,6 +183,7 @@ const FormingGroups = () => {
                             name: decrypted?.name || `Student ${idx + 1}`,
                             gender: student.gender || 'N/A',
                             gpa: student.gpa || 0,
+                            created_at: student.created_at || null,
                         };
                     })
                 }));
@@ -235,7 +197,6 @@ const FormingGroups = () => {
         fetchData();
     }, [id, location.state]);
 
-    const [groupsState, setGroupsState] = useState([]);
 
     // useEffect(() => {
     //     const buildGroups = () => {
@@ -275,11 +236,20 @@ const FormingGroups = () => {
         const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: `student-${student.id}` });
         const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
         return (
-            <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="group-table-row draggable">
+            <div
+                ref={setNodeRef}
+                style={style}
+                {...listeners}
+                {...attributes}
+                className={`group-table-row draggable ${!shouldShowAvailability ? 'compact-table' : ''}`}
+                title={formatSubmissionTimestamp(student.created_at)}
+            >
                 <div className="group-table-cell">{student.name}</div>
                 <div className="group-table-cell">{student.gender}</div>
                 <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
-                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>{formatAvailabilityRanges(getStudentAvailability(student))}</div>
+                {shouldShowAvailability && (
+                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>{formatAvailabilityRanges(getStudentAvailability(student))}</div>
+                )}
             </div>
         );
     };
@@ -288,7 +258,7 @@ const FormingGroups = () => {
         const { isOver, setNodeRef } = useDroppable({ id: `group-${group.number}` });
         const overClass = isOver ? 'droppable--over' : '';
         return (
-            <div ref={setNodeRef} className={`group-card droppable ${overClass}`} data-group-number={group.number}>
+            <div ref={setNodeRef} className={`group-card droppable ${overClass} ${!shouldShowAvailability ? 'compact-group-card' : ''}`} data-group-number={group.number}>
                 {children}
             </div>
         );
@@ -350,31 +320,50 @@ const FormingGroups = () => {
                             )}
 
                             <div className="results-layout">
+                                                        {/* Minimum team size and estimated groups */}
+                                                        <div
+                                                            style={{
+                                                                color: 'rgb(96, 163, 40)',
+                                                                fontWeight: 600,
+                                                                marginBottom: 12
+                                                            }}
+                                                        >
+                                                            Minimum team size: {surveyConfig?.team_limit || 'N/A'}
+                                                            <br />
+                                                            Estimated groups:{' '}
+                                                            {surveyConfig?.team_limit
+                                                                ? Math.ceil(students.length / surveyConfig.team_limit)
+                                                                : 'N/A'}
+                                                        </div>
                                 <div className="student-groups-container">
-                                    <div className="forming-groups-grid">
+                                    <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                             {groupsState.map((group) => (
                                                 <DroppableGroup key={group.number} group={group}>
                                                     <div className="group-header"><span>Group #{group.number}</span></div>
                                                     <div className="group-body">
-                                                        <div className="group-table-header">
+                                                        <div className={`group-table-header ${!shouldShowAvailability ? 'compact-table' : ''}`}>
                                                             <div className="group-table-cell">Name</div>
                                                             <div className="group-table-cell">Gender</div>
                                                             <div className="group-table-cell">GPA</div>
-                                                            <div className="group-table-cell">Availability</div>
+                                                            {shouldShowAvailability && (
+                                                                <div className="group-table-cell">Availability</div>
+                                                            )}
                                                         </div>
                                                         {group.members.map((student) => (
                                                             <DraggableStudent key={student.id} student={student} />
                                                         ))}
                                                     </div>
-                                                    <div className="shared-availability-section">
-                                                        <div className="shared-availability-label">Shared Availability:</div>
-                                                        <div className="shared-availability-content">
-                                                            {Object.keys(availabilityMap).length > 0
-                                                                ? formatAvailabilityRanges(getSharedAvailability(group.members))
-                                                                : 'N/A'}
+                                                    {shouldShowAvailability && (
+                                                        <div className="shared-availability-section">
+                                                            <div className="shared-availability-label">Shared Availability:</div>
+                                                            <div className="shared-availability-content">
+                                                                {Object.keys(availabilityMap).length > 0
+                                                                    ? formatAvailabilityRanges(getSharedAvailability(group.members))
+                                                                    : 'N/A'}
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </DroppableGroup>
                                             ))}
                                         </DndContext>
@@ -404,33 +393,102 @@ const FormingGroups = () => {
                                         <span className="icon">View 👁️</span>
                                     </button>
 
-                                    <button
-                                        className="sidebar-btn trash-btn"
-                                        onClick={() => setIsPurgeModalOpen(true)}
-                                        title="Purge Data"
-                                        style={{ padding: '12px', width: '100%' }}
-                                    >
-                                        <span className="icon">Purge 🗑️</span>
-                                    </button>
-                                </div>
-                            </div>
+    {/* CLOSE SURVEY */}
+    <button
+        className="sidebar-btn"
+        onClick={() => setIsCloseModalOpen(true)}
+        disabled={isSurveyClosed}
+        title="Close Survey"
+        style={{
+            padding: '12px',
+            width: '100%',
+            backgroundColor: isSurveyClosed
+                ? '#ccc'
+                : '#e74c3c',
+            color: 'white'
+        }}
+    >
+        <span className="icon">
+            {isSurveyClosed ? 'Closed ✅' : 'Close 🔒'}
+        </span>
+    </button>
 
-                            <div className="button-group forming-groups-button-tray">
-                                <button className="button" onClick={() => navigate(-1)}>
-                                    Back to Submissions
-                                </button>
-                            </div>
-                        </div>
+    {/* VIEW */}
+    <button
+        className="sidebar-btn"
+        onClick={() => {
+            const previewUrl = `/team4mation/student-view/teams/${id}`;
+
+            const previewPayload = {
+                groups: groupsState.map((group) => ({
+                    number: group.number,
+                    members: group.members.map((member) => ({
+                        ...member,
+                        availability: getStudentAvailability(member)
+                    }))
+                }))
+            };
+
+            localStorage.setItem(
+                `preview_data_${id}`,
+                JSON.stringify(previewPayload)
+            );
+
+            window.open(previewUrl, '_blank');
+        }}
+        style={{
+            padding: '12px',
+            width: '100%'
+        }}
+    >
+        <span className="icon">
+            View 👁️
+        </span>
+    </button>
+
+    {/* PURGE */}
+    <button
+        className="sidebar-btn trash-btn"
+        onClick={() => setIsPurgeModalOpen(true)}
+        title="Purge Data"
+        style={{
+            padding: '12px',
+            width: '100%'
+        }}
+    >
+        <span className="icon">
+            Purge 🗑️
+        </span>
+    </button>
+
+    {/* BACK BUTTON */}
+    <div className="button-group forming-groups-button-tray">
+        <button
+            className="button"
+            onClick={() => navigate(-1)}
+        >
+            Back to Submissions
+        </button>
+    </div>
+
+</div>
                     </div>
                 </div>
-
-                <PurgeModal
-                    isOpen={isPurgeModalOpen}
-                    onClose={() => setIsPurgeModalOpen(false)}
-                    onConfirm={handlePurge}
-                    isLoading={isPurging}
-                />
+                </div>
             </div>
+            <PurgeModal 
+                isOpen={isPurgeModalOpen}
+                onClose={() => setIsPurgeModalOpen(false)}
+                onConfirm={handlePurge}
+                isLoading={isPurging}
+            />
+            <CloseSurveyModal
+                isOpen={isCloseModalOpen}
+                onClose={() => setIsCloseModalOpen(false)}
+                onConfirm={handleCloseSurvey}
+            />
+            </div>
+            
         </div>
     );
 };
