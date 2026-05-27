@@ -9,3 +9,12 @@ services:
     volumes:
       - ./frontend/dist:/frontend/dist
     restart: always
+
+  php:
+    image: php:8.2-apache
+    container_name: team4mation_php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./login:/var/www/html
+    restart: always
