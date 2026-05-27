@@ -8,7 +8,9 @@ const ViewFormedTeams = () => {
     const [groups, setGroups] = useState([]);
     const [surveyConfig, setSurveyConfig] = useState(null);
     const [, setLoading] = useState(true);
+
     const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+
     const formatSubmissionTimestamp = (timestampValue) => {
         if (!timestampValue) return 'Submission time unavailable';
         const date = new Date(timestampValue);
@@ -16,7 +18,6 @@ const ViewFormedTeams = () => {
         return `Submitted: ${date.toLocaleString()}`;
     };
 
-    // Helper function to format consecutive times into ranges (copied from FormingGroups for consistency)
     const formatAvailabilityRanges = (availabilityArray) => {
         if (!availabilityArray || availabilityArray.length === 0) return 'N/A';
 
@@ -92,11 +93,9 @@ const ViewFormedTeams = () => {
         return results.join('\n');
     };
 
-    // Helper function to find shared availability between all group members
     const getSharedAvailability = (groupMembers) => {
         if (!groupMembers || groupMembers.length === 0) return [];
 
-        // Only use members that have availability entries
         const availabilityLists = groupMembers
             .map((m) => m.availability || [])
             .filter((arr) => Array.isArray(arr) && arr.length > 0);
@@ -126,91 +125,85 @@ const ViewFormedTeams = () => {
                 let grouped = [];
 
                 if (savedData) {
-                    // Resolve Logic: Use main's robust parsing and prefix handling
-                    if (savedData) {
+                    try {
+                        const parsed = JSON.parse(savedData);
+                        if (parsed && parsed.groups && Array.isArray(parsed.groups)) {
+                            setGroups(parsed.groups);
+                            setLoading(false);
+                            return;
+                        }
+                        if (parsed && parsed.students && Array.isArray(parsed.students)) {
+                            studentArray = parsed.students;
+                        } else if (Array.isArray(parsed)) {
+                            studentArray = parsed;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing preview data:', e);
+                    }
+                } else {
+                    const prefixes = [
+                        '',
+                        window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
+                    ].filter((v, i, a) => a.indexOf(v) === i);
+
+                    let data = null;
+                    for (const p of prefixes) {
                         try {
-                            const parsed = JSON.parse(savedData);
-                            // Check if the data is wrapped in a 'groups' object (from the View button logic)
-                            if (parsed?.groups && Array.isArray(parsed.groups)) {
-                                setGroups(parsed.groups);
-                                setLoading(false);
-                                return;
-                            }
-                            // Check if it's wrapped in a 'students' object or is a raw array
-                            if (parsed?.students && Array.isArray(parsed.students)) {
-                                studentArray = parsed.students;
-                            } else if (Array.isArray(parsed)) {
-                                studentArray = parsed;
+                            const url = `${p}/api/teams/${id}`;
+                            const response = await fetch(url);
+                            if (response.ok) {
+                                data = await response.json();
+                                break;
                             }
                         } catch (e) {
-                            console.error('Error parsing preview data:', e);
+                            // try next prefix
                         }
-                    } else {
-                        // Robust API fetching with path prefix support
-                        const prefixes = [
-                            '',
-                            window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
-                        ].filter((v, i, a) => a.indexOf(v) === i);
+                    }
 
-                        let data = null;
-                        for (const p of prefixes) {
-                            try {
-                                const url = `${p}/api/teams/${id}`;
-                                const response = await fetch(url);
-                                if (response.ok) {
-                                    data = await response.json();
-                                    break;
-                                }
-                            } catch (e) { /* try next prefix */ }
-                        }
-
-                        if (data) {
-                            // If API returned existing teams, map them using the feature's specific fields
-                            if (Array.isArray(data.teams) && data.teams.length > 0) {
-                                const built = data.teams.map((team, idx) => ({
-                                    number: idx + 1,
-                                    members: team.map((s, mIdx) => ({
-                                        id: s.student_id,
-                                        name: s.name || `Student ${mIdx + 1}`, // Preserve name if available
-                                        gender: s.gender || 'N/A',
-                                        gpa: s.gpa || 0,
-                                        availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || [],
-                                        created_at: s.created_at || null
-                                    }))
-                                }));
-                                setGroups(built);
-                                setLoading(false);
-                                return;
-                            }
-
-                            // Fallback: Map raw availability map to student array
-                            studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
-                                id: studentId,
-                                name: `Student ${idx + 1}`,
-                                gender: 'N/A',
-                                gpa: 0,
-                                availability: data.availabilityMap[studentId] || []
+                    if (data) {
+                        if (Array.isArray(data.teams) && data.teams.length > 0) {
+                            const built = data.teams.map((team, idx) => ({
+                                number: idx + 1,
+                                members: team.map((s, mIdx) => ({
+                                    id: s.student_id,
+                                    name: `Student ${mIdx + 1}`,
+                                    gender: s.gender || 'N/A',
+                                    gpa: s.gpa || 0,
+                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || []
+                                }))
                             }));
+                            setGroups(built);
+                            setLoading(false);
+                            return;
                         }
-                    }
 
-                    if (grouped.length === 0 && studentArray.length > 0) {
-                        for (let i = 0; i < studentArray.length; i += 4) {
-                            grouped.push({
-                                number: (i / 4) + 1,
-                                members: studentArray.slice(i, i + 4)
-                            });
-                        }
+                        studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
+                            id: studentId,
+                            name: `Student ${idx + 1}`,
+                            gender: 'N/A',
+                            gpa: 0,
+                            availability: data.availabilityMap[studentId] || []
+                        }));
                     }
-                    setGroups(grouped);
-                } catch (error) {
-                    console.error("Error loading preview:", error);
-                } finally {
-                    setLoading(false);
                 }
-            };
-            fetchTeams();
-        }, [id]);
+
+                if (grouped.length === 0 && studentArray.length > 0) {
+                    for (let i = 0; i < studentArray.length; i += 4) {
+                        grouped.push({
+                            number: (i / 4) + 1,
+                            members: studentArray.slice(i, i + 4)
+                        });
+                    }
+                }
+                setGroups(grouped);
+            } catch (error) {
+                console.error("Error loading preview:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTeams();
+    }, [id]);
 
     return (
         <>
@@ -235,7 +228,9 @@ const ViewFormedTeams = () => {
                                         </div>
                                         {group.members.map((student, idx) => (
                                             <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
-                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>{student.name}</div>
+                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>
+                                                    {student.name}
+                                                </div>
                                                 {shouldShowAvailability && (
                                                     <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
                                                         {formatAvailabilityRanges(student.availability)}
