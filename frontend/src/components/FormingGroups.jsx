@@ -420,14 +420,15 @@ const FormingGroups = () => {
 
                                 </div>
 
-                                {/* BACK BUTTON */}
+                                
+
+                            </div>
+                            {/* BACK BUTTON */}
                                 <div className="button-group forming-groups-button-tray">
                                     <button className="button" onClick={() => navigate(-1)}>
                                         Back to Submissions
                                     </button>
                                 </div>
-
-                            </div>
                         </div>
                     </div>
                 </div>
