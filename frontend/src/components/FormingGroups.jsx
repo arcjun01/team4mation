@@ -388,7 +388,7 @@ const FormingGroups = () => {
                                     </div>
                                 </div>
 
-                                {/* RIGHT SIDEBAR */}
+{/* RIGHT SIDEBAR */}
 <div
     className="stats-card-sidebar"
     style={{
@@ -399,7 +399,6 @@ const FormingGroups = () => {
         alignItems: 'center'
     }}
 >
-
     {/* CLOSE SURVEY */}
     <button
         className="sidebar-btn"
@@ -409,9 +408,7 @@ const FormingGroups = () => {
         style={{
             padding: '12px',
             width: '100%',
-            backgroundColor: isSurveyClosed
-                ? '#ccc'
-                : '#e74c3c',
+            backgroundColor: isSurveyClosed ? '#ccc' : '#e74c3c',
             color: 'white'
         }}
     >
@@ -425,32 +422,24 @@ const FormingGroups = () => {
         className="sidebar-btn"
         onClick={() => {
             const previewUrl = `/team4mation/student-view/teams/${id}`;
-
-            const previewPayload = {
-                groups: groupsState.map((group) => ({
-                    number: group.number,
-                    members: group.members.map((member) => ({
-                        ...member,
-                        availability: getStudentAvailability(member)
-                    }))
-                }))
-            };
-
-            localStorage.setItem(
-                `preview_data_${id}`,
-                JSON.stringify(previewPayload)
-            );
-
+            
+            // Logic from main: handle both grouped and ungrouped states
+            if (groupsState && groupsState.length > 0) {
+                const groupsForPreview = groupsState.map(g => ({
+                    number: g.number,
+                    members: g.members.map(m => ({ ...m, availability: getStudentAvailability(m) }))
+                }));
+                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ groups: groupsForPreview }));
+            } else {
+                const previewStudents = students.map(s => ({ ...s, availability: getStudentAvailability(s) }));
+                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ students: previewStudents || [] }));
+            }
+            
             window.open(previewUrl, '_blank');
         }}
-        style={{
-            padding: '12px',
-            width: '100%'
-        }}
+        style={{ padding: '12px', width: '100%' }}
     >
-        <span className="icon">
-            View 👁️
-        </span>
+        <span className="icon">View 👁️</span>
     </button>
 
     {/* PURGE */}
@@ -458,26 +447,20 @@ const FormingGroups = () => {
         className="sidebar-btn trash-btn"
         onClick={() => setIsPurgeModalOpen(true)}
         title="Purge Data"
-        style={{
-            padding: '12px',
-            width: '100%'
-        }}
+        style={{ padding: '12px', width: '100%' }}
     >
-        <span className="icon">
-            Purge 🗑️
-        </span>
+        <span className="icon">Purge 🗑️</span>
     </button>
+</div>
 
-    {/* BACK BUTTON */}
-    <div className="button-group forming-groups-button-tray">
-        <button
-            className="button"
-            onClick={() => navigate(-1)}
-        >
-            Back to Submissions
-        </button>
-    </div>
-
+{/* BACK BUTTON TRAY */}
+<div className="button-group forming-groups-button-tray">
+    <button
+        className="button"
+        onClick={() => navigate(-1)}
+    >
+        Back to Submissions
+    </button>
 </div>
                     </div>
                 </div>

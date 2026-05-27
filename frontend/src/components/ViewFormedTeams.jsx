@@ -126,24 +126,70 @@ const ViewFormedTeams = () => {
                 let grouped = [];
 
                 if (savedData) {
-                    const parsedData = JSON.parse(savedData);
-                    if (parsedData?.groups && Array.isArray(parsedData.groups)) {
-                        grouped = parsedData.groups;
-                    } else if (Array.isArray(parsedData)) {
-                        studentArray = parsedData;
+// Resolve Logic: Use main's robust parsing and prefix handling
+                if (savedData) {
+                    try {
+                        const parsed = JSON.parse(savedData);
+                        // Check if the data is wrapped in a 'groups' object (from the View button logic)
+                        if (parsed?.groups && Array.isArray(parsed.groups)) {
+                            setGroups(parsed.groups);
+                            setLoading(false);
+                            return;
+                        }
+                        // Check if it's wrapped in a 'students' object or is a raw array
+                        if (parsed?.students && Array.isArray(parsed.students)) {
+                            studentArray = parsed.students;
+                        } else if (Array.isArray(parsed)) {
+                            studentArray = parsed;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing preview data:', e);
                     }
                 } else {
-                    const response = await fetch(`/api/teams/${id}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        grouped = (data.teams || []).map((group, groupIdx) => ({
-                            number: groupIdx + 1,
-                            members: group.map((student, idx) => ({
-                                id: student.student_id,
-                                name: `Student ${idx + 1}`,
-                                availability: (data.availabilityMap && data.availabilityMap[student.student_id]) || [],
-                                created_at: student.created_at || null
-                            }))
+                    // Robust API fetching with path prefix support
+                    const prefixes = [
+                        '',
+                        window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
+                    ].filter((v, i, a) => a.indexOf(v) === i);
+
+                    let data = null;
+                    for (const p of prefixes) {
+                        try {
+                            const url = `${p}/api/teams/${id}`;
+                            const response = await fetch(url);
+                            if (response.ok) {
+                                data = await response.json();
+                                break;
+                            }
+                        } catch (e) { /* try next prefix */ }
+                    }
+
+                    if (data) {
+                        // If API returned existing teams, map them using the feature's specific fields
+                        if (Array.isArray(data.teams) && data.teams.length > 0) {
+                            const built = data.teams.map((team, idx) => ({
+                                number: idx + 1,
+                                members: team.map((s, mIdx) => ({
+                                    id: s.student_id,
+                                    name: s.name || `Student ${mIdx + 1}`, // Preserve name if available
+                                    gender: s.gender || 'N/A',
+                                    gpa: s.gpa || 0,
+                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || [],
+                                    created_at: s.created_at || null
+                                }))
+                            }));
+                            setGroups(built);
+                            setLoading(false);
+                            return;
+                        }
+
+                        // Fallback: Map raw availability map to student array
+                        studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
+                            id: studentId,
+                            name: `Student ${idx + 1}`,
+                            gender: 'N/A',
+                            gpa: 0,
+                            availability: data.availabilityMap[studentId] || []
                         }));
                     }
                 }
