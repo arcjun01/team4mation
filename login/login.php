@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $token = base64_encode($email . ':' . time());
 
-        header('Location: http://localhost:5173?token=' . $token);
+        $redirect = isset($_ENV['APP_URL']) ? $_ENV['APP_URL'] : 'http://localhost:5173';
+        header('Location: ' . $redirect . '?token=' . $token);
         exit;
 
     } elseif ($result == USERNAME_DNE) {

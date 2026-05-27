@@ -21,6 +21,7 @@ jobs:
             cd /home/projects/team4mation
             git fetch origin main
             git reset --hard origin/main
+            echo "VITE_LOGIN_URL=http://164.92.80.18:8000/login.php" > frontend/.env
             rm -rf frontend/dist
             cd frontend
             npm install
