@@ -80,6 +80,22 @@
   padding: calc(var(--instructor-navbar-height) + 32px) 0 0;
 }
 
+.logout-btn {
+    background-color: transparent;
+    border: 1px solid #284740;
+    color: #284740;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.logout-btn:hover {
+    background-color: #284740;
+    color: #fff;
+}
 @media (max-width: 768px) {
   .instructor-navbar-inner {
     width: min(100%, calc(100% - 24px));

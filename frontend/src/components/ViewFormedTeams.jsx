@@ -6,7 +6,15 @@ import '../css/FormingGroups.css';
 const ViewFormedTeams = () => {
     const { id } = useParams();
     const [groups, setGroups] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [surveyConfig, setSurveyConfig] = useState(null);
+    const [, setLoading] = useState(true);
+    const shouldShowAvailability = !(surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional);
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
 
     // Helper function to format consecutive times into ranges (copied from FormingGroups for consistency)
     const formatAvailabilityRanges = (availabilityArray) => {
@@ -108,18 +116,28 @@ const ViewFormedTeams = () => {
     useEffect(() => {
         const fetchTeams = async () => {
             try {
+                const configResponse = await fetch(`/api/config/${id}`);
+                if (configResponse.ok) {
+                    setSurveyConfig(await configResponse.json());
+                }
+
                 const savedData = localStorage.getItem(`preview_data_${id}`);
                 let studentArray = [];
+                let grouped = [];
 
+                if (savedData) {
+// Resolve Logic: Use main's robust parsing and prefix handling
                 if (savedData) {
                     try {
                         const parsed = JSON.parse(savedData);
-                        if (parsed && parsed.groups && Array.isArray(parsed.groups)) {
+                        // Check if the data is wrapped in a 'groups' object (from the View button logic)
+                        if (parsed?.groups && Array.isArray(parsed.groups)) {
                             setGroups(parsed.groups);
                             setLoading(false);
                             return;
                         }
-                        if (parsed && parsed.students && Array.isArray(parsed.students)) {
+                        // Check if it's wrapped in a 'students' object or is a raw array
+                        if (parsed?.students && Array.isArray(parsed.students)) {
                             studentArray = parsed.students;
                         } else if (Array.isArray(parsed)) {
                             studentArray = parsed;
@@ -128,10 +146,11 @@ const ViewFormedTeams = () => {
                         console.error('Error parsing preview data:', e);
                     }
                 } else {
+                    // Robust API fetching with path prefix support
                     const prefixes = [
                         '',
                         window.location.pathname.startsWith('/team4mation') ? '/team4mation' : ''
-                    ].filter((v, i, a) => a.indexOf(v) === i); // unique
+                    ].filter((v, i, a) => a.indexOf(v) === i);
 
                     let data = null;
                     for (const p of prefixes) {
@@ -142,22 +161,21 @@ const ViewFormedTeams = () => {
                                 data = await response.json();
                                 break;
                             }
-                        } catch (e) {
-                            // try next prefix
-                        }
+                        } catch (e) { /* try next prefix */ }
                     }
 
                     if (data) {
-                        // If the API returned `teams` (algorithm result), use those groups directly
+                        // If API returned existing teams, map them using the feature's specific fields
                         if (Array.isArray(data.teams) && data.teams.length > 0) {
                             const built = data.teams.map((team, idx) => ({
                                 number: idx + 1,
                                 members: team.map((s, mIdx) => ({
                                     id: s.student_id,
-                                    name: `Student ${mIdx + 1}`,
+                                    name: s.name || `Student ${mIdx + 1}`, // Preserve name if available
                                     gender: s.gender || 'N/A',
                                     gpa: s.gpa || 0,
-                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || []
+                                    availability: (data.availabilityMap && data.availabilityMap[s.student_id]) || [],
+                                    created_at: s.created_at || null
                                 }))
                             }));
                             setGroups(built);
@@ -165,6 +183,7 @@ const ViewFormedTeams = () => {
                             return;
                         }
 
+                        // Fallback: Map raw availability map to student array
                         studentArray = Object.keys(data.availabilityMap || {}).map((studentId, idx) => ({
                             id: studentId,
                             name: `Student ${idx + 1}`,
@@ -175,12 +194,13 @@ const ViewFormedTeams = () => {
                     }
                 }
 
-                const grouped = [];
-                for (let i = 0; i < studentArray.length; i += 4) {
-                    grouped.push({
-                        number: (i / 4) + 1,
-                        members: studentArray.slice(i, i + 4)
-                    });
+                if (grouped.length === 0 && studentArray.length > 0) {
+                    for (let i = 0; i < studentArray.length; i += 4) {
+                        grouped.push({
+                            number: (i / 4) + 1,
+                            members: studentArray.slice(i, i + 4)
+                        });
+                    }
                 }
                 setGroups(grouped);
             } catch (error) {
@@ -202,32 +222,36 @@ const ViewFormedTeams = () => {
                             <h1>Formed Teams Preview</h1>
                         </div>
 
-                        <div className="forming-groups-grid">
+                        <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                             {groups.map((group) => (
-                                <div key={group.number} className="group-card">
+                                <div key={group.number} className={`group-card ${!shouldShowAvailability ? 'compact-group-card' : ''}`}>
                                     <div className="group-header">
                                         <span>Group #{group.number}</span>
                                     </div>
                                     <div className="group-body">
-                                        <div className="group-table-header two-col">
+                                        <div className={`group-table-header ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
                                             <div className="group-table-cell">Name</div>
-                                            <div className="group-table-cell">Availability</div>
+                                            {shouldShowAvailability && <div className="group-table-cell">Availability</div>}
                                         </div>
                                         {group.members.map((student, idx) => (
-                                            <div key={idx} className="group-table-row two-col">
-                                                <div className="group-table-cell">{student.name}</div>
-                                                <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
-                                                    {formatAvailabilityRanges(student.availability)}
-                                                </div>
+                                            <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
+                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>{student.name}</div>
+                                                {shouldShowAvailability && (
+                                                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
+                                                        {formatAvailabilityRanges(student.availability)}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
-                                        <div className="shared-availability-label">Shared Meeting Times:</div>
-                                        <div className="shared-availability-content">
-                                            {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                    {shouldShowAvailability && (
+                                        <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
+                                            <div className="shared-availability-label">Shared Meeting Times:</div>
+                                            <div className="shared-availability-content">
+                                                {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
