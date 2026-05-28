@@ -16,7 +16,8 @@ import ViewFormedTeams from "./components/ViewFormedTeams";
 const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem('auth_token');
     if (!token) {
-        window.location.href = 'http://localhost:8000/login.php';
+        const loginUrl = import.meta.env.VITE_LOGIN_URL || 'http://localhost:8000/login.php';
+        window.location.href = loginUrl;
         return null;
     }
     return children;
