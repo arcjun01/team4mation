@@ -49,12 +49,12 @@ function evaluateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
 }
 
 function calculateScheduleOverlap(group, availabilityMap) {
-    const availibilitySlots = {}
+    const availabilitySlots = {}
     for (const student of group) {
         const sid = getID(student);
-        const timeSlots = availabilityMap[sid] || []
+        const timeSlots = availabilitySlots[sid] || []
         for (const slot of timeSlots) {
-            availibilitySlots[slot] = (availibilitySlots[slot] || 0) + 1;
+            availabilitySlots[slot] = (availabilitySlots[slot] || 0) + 1;
         }
     }
 
@@ -78,8 +78,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
     let totalOverlap = 0;
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-    for (const slot of Object.keys(availibilitySlots)) {
-        const count = availibilitySlots[slot];
+    for (const slot of Object.keys(availabilitySlots)) {
+        const count = availabilitySlots[slot];
         if (count >= minOverlap) {
             totalOverlap += count;
         }
