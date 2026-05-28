@@ -180,8 +180,8 @@ export default function StudentSurvey() {
       </div>
     )
   }
-  const surveyTitle = surveyConfig.courseName 
-    ? `${surveyConfig.courseName} Group Formation Survey` 
+  const surveyTitle = (surveyConfig.course_name || surveyConfig.courseName)
+    ? `${surveyConfig.course_name || surveyConfig.courseName} Group Formation Survey`
     : "Group Formation Survey";
   const isAvailabilityOptional = Boolean(
     surveyConfig?.availability_optional ?? surveyConfig?.availabilityOptional
