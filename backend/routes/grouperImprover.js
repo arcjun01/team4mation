@@ -49,20 +49,37 @@ function evaluateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
 }
 
 function calculateScheduleOverlap(group, availabilityMap) {
-    const availibilitySlots = {}
+    const availabilitySlots = {}
     for (const student of group) {
         const sid = getID(student);
-        const timeSlots = availabilityMap[sid] || []
+        const timeSlots = availabilitySlots[sid] || []
         for (const slot of timeSlots) {
-            availibilitySlots[slot] = (availibilitySlots[slot] || 0) + 1;
+            availabilitySlots[slot] = (availabilitySlots[slot] || 0) + 1;
         }
     }
 
+    // 1. Check if there is AT LEAST ONE slot that EVERYONE in the group shares
+    const totalStudents = group.length;
+    let perfectOverlapCount = 0;
+
+    for (const slot of Object.keys(availabilitySlots)) {
+        if (availabilitySlots[slot] === totalStudents) {
+            perfectOverlapCount++;
+        }
+    }
+
+    // 2. If a common time slot exists, reward the group heavily.
+    if (perfectOverlapCount > 0) {
+        // Bonus + the number of perfectly overlapping slots to encourage finding even more matches
+        return 100 + perfectOverlapCount;
+    }
+
+    // 3. FALLBACK
     let totalOverlap = 0;
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-    for (const slot of Object.keys(availibilitySlots)) {
-        const count = availibilitySlots[slot];
+    for (const slot of Object.keys(availabilitySlots)) {
+        const count = availabilitySlots[slot];
         if (count >= minOverlap) {
             totalOverlap += count;
         }
