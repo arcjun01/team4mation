@@ -126,7 +126,16 @@ const InstructorFormDetails = () => {
   const handleCopySurveyLink = async () => {
     const surveyUrl = `${window.location.origin}/team4mation/survey/${id}`;
     try {
-      await navigator.clipboard.writeText(surveyUrl);
+      if (navigator.clipboard) {
+          await navigator.clipboard.writeText(surveyUrl);
+      } else {
+          const el = document.createElement('textarea');
+          el.value = surveyUrl;
+          document.body.appendChild(el);
+          el.select();
+          document.execCommand('copy');
+          document.body.removeChild(el);
+      }
       window.alert('Student survey link copied to clipboard.');
     } catch (copyError) {
       console.error('Failed to copy survey link:', copyError);

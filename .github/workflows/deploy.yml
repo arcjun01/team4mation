@@ -17,9 +17,15 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export PATH="/root/.local/share/fnm/aliases/default/bin:$PATH"
             cd /home/projects/team4mation
-            git pull origin main
-            cd frontend && npm run build
+            git fetch origin main
+            git reset --hard origin/main
+            echo "VITE_LOGIN_URL=http://164.92.80.18:8000/login.php" > frontend/.env
+            rm -rf frontend/dist
+            cd frontend
+            npm install
+            npm run build
             cd ..
             docker compose down
-            docker compose up -d --build
+            docker compose up -d
