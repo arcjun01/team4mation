@@ -18,3 +18,7 @@ services:
     volumes:
       - ./login:/var/www/html
     restart: always
+    environment:
+      - APP_URL=http://164.92.80.18:3001
+    command: >
+      bash -c "apt-get update && apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl && apache2-foreground"

@@ -193,4 +193,42 @@ router.post("/reveal", async (req, res) => {
   }
 });
 
+// DELETE a single student submission and associated schedule records
+router.delete('/submission/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+
+  if (!studentId) {
+    return res.status(400).json({ success: false, error: "Missing required studentId path argument" });
+  }
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // 1. Remove dependent child records from availability table
+    await connection.execute('DELETE FROM availability WHERE student_id = ?', [studentId]);
+
+    // 2. Clear main student survey table entry
+    const [result] = await connection.execute('DELETE FROM student_survey_entries WHERE student_id = ?', [studentId]);
+
+    if (result.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({ success: false, error: "Target submission record could not be found." });
+    }
+
+    await connection.commit();
+    return res.status(200).json({ success: true, message: "Submission dropped successfully." });
+  } catch (error) {
+    if (connection) {
+      await connection.rollback();
+    }
+    console.error("Critical error destroying database records:", error);
+    return res.status(500).json({ success: false, error: "Database internal fault processing entity removal." });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+});
+
 export default router;

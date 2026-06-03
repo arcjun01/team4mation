@@ -41,7 +41,7 @@ button {
     width: 100%;
     padding: 10px;
 
-    background-color: #2563eb;
+    background-color:#086759;
     color: white;
 
     border: none;
@@ -51,7 +51,7 @@ button {
 }
 
 button:hover {
-    background-color: #1d4ed8;
+    background-color:#065a4d;
 }
 
 .error {

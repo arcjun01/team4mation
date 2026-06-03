@@ -22,6 +22,12 @@ const __dirname = path.dirname(__filename);
 app.use(express.static("/frontend/dist"));
 // --------------------------
 
+// Routes
+app.use("/api/teams", teamRoutes);
+app.use("/api/survey", surveyRoutes); // Router now evaluates first!
+app.use("/api/config", configRoutes);
+app.use("/api/surveys", teamRoutes);
+
 // Survey Stats Endpoint
 app.get("/api/survey/stats/:surveyId", async (req, res) => {
     const { surveyId } = req.params;
@@ -83,6 +89,12 @@ app.patch("/api/survey/close/:id", async (req, res) => {
 app.delete("/api/survey/purge/:id", async (req, res) => {
     const { id } = req.params;
     try {
+        // Clear out dependent child availability rows first to avoid foreign key violations
+        await pool.execute(
+            "DELETE FROM availability WHERE student_id IN (SELECT student_id FROM student_survey_entries WHERE survey_id = ?)",
+            [id]
+        );
+
         // Deletes all student entries to protect privacy
         const [studentResult] = await pool.execute(
             "DELETE FROM student_survey_entries WHERE survey_id = ?",
@@ -102,12 +114,6 @@ app.delete("/api/survey/purge/:id", async (req, res) => {
         res.status(500).json({ error: "Database error during purge", details: err.message });
     }
 });
-
-// Routes
-app.use("/api/teams", teamRoutes);
-app.use("/api/survey", surveyRoutes);
-app.use("/api/config", configRoutes);
-app.use("/api/surveys", teamRoutes);
 
 app.get("/{*path}", (req, res) => {
     res.sendFile("/frontend/dist/index.html");

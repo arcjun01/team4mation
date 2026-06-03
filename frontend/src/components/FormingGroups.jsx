@@ -7,12 +7,15 @@ import CloseSurveyModal from './CloseSurveyModal';
 import '../css/FormingGroups.css'; 
 import Navbar from './Navbar';
 
-const FormingGroups = () => {
+const FormingGroups = ({ decryptedSessions }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [students, setStudents] = useState(location.state?.names || []);
+    const sessionData = decryptedSessions[id] || {};
+    const decryptedNamesArray = location.state?.names || sessionData.names || [];
+
+    const [students, setStudents] = useState(decryptedNamesArray);
     const [groupsState, setGroupsState] = useState([]);
     const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
     const [isPurging, setIsPurging] = useState(false);
@@ -178,7 +181,7 @@ const FormingGroups = () => {
                 if (!teamResponse.ok) throw new Error("Failed to fetch teams");
 
                 const teamData = await teamResponse.json();
-                const passedStudents = location.state?.names || [];
+                const passedStudents = decryptedNamesArray;
 
                 if (teamData.availabilityMap) {
                     setAvailabilityMap(teamData.availabilityMap);
@@ -206,7 +209,7 @@ const FormingGroups = () => {
             }
         };
         fetchData();
-    }, [id, location.state]);
+    }, [id, decryptedNamesArray]);
 
     const handlePurge = async () => {
         setIsPurging(true);
@@ -420,14 +423,15 @@ const FormingGroups = () => {
 
                                 </div>
 
-                                {/* BACK BUTTON */}
+                                
+
+                            </div>
+                            {/* BACK BUTTON */}
                                 <div className="button-group forming-groups-button-tray">
                                     <button className="button" onClick={() => navigate(-1)}>
                                         Back to Submissions
                                     </button>
                                 </div>
-
-                            </div>
                         </div>
                     </div>
                 </div>

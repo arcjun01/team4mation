@@ -12,7 +12,7 @@ const Navbar = ({ surveyId }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
-    window.location.href = 'http://localhost:8000/login.php';
+    window.location.href = import.meta.env.VITE_LOGIN_URL ||'http://localhost:8000/login.php';
   };
 
   return (
