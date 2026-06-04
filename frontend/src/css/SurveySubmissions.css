@@ -148,11 +148,14 @@
 /* RIGHT SIDE: THE GREEN STATS SIDEBAR */
 .stats-card-sidebar {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: #90db673b;
     padding: 25px;
     border-radius: 16px;
     color: #065f46; 
-    height: fit-content;
+    height: 350px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
