@@ -192,6 +192,19 @@
     display: none;
 }
 
+.formed-teams-preview-results-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.formed-teams-preview-groups-container {
+    width: min(100vw, 1780px);
+}
+
 .forming-groups-content-container {
     width: min(95vw, 1562px);
     padding-left: 0;
