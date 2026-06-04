@@ -44,6 +44,10 @@
     transition: box-shadow 0.2s ease;
 }
 
+.student-list-container:has(.encrypted-submissions-message) {
+    align-items: center;
+}
+
 .student-list-container:focus,
 .student-list-container:focus-within,
 .student-list-container:focus-visible {
@@ -174,7 +178,7 @@
 
 .encrypted-submissions-message p {
     color: #666;
-    margin-bottom: 15px;
+    margin-bottom: 80px;
 }
 
 /* RIGHT SIDE: THE GREEN STATS SIDEBAR */
@@ -202,7 +206,7 @@
 .stats-divider {
     margin: 20px 0;
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 2px solid rgba(6, 95, 70, 0.18);
 }
 
 .survey-closed-message {

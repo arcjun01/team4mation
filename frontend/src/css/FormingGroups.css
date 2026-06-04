@@ -220,6 +220,9 @@
 .formed-teams-preview-actions {
     justify-content: flex-end;
     margin-top: 30px;
+    width: min(100%, 880px);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .forming-groups-content-container {
@@ -270,6 +273,9 @@
     margin-top: 40px;
     display: flex;
     justify-content: flex-end;
+    width: min(100%, 880px);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media (max-width: 927px) {
