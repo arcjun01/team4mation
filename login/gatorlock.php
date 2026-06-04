@@ -319,19 +319,35 @@ function setPermissions($userName, $siteURL, $permission) {
  * @return mixed curl status result
  */
 function curlCall($fields, $fields_string) {
-    //open connection
-    $ch = curl_init();
+    if (function_exists('curl_init')) {
+        //open connection
+        $ch = curl_init();
 
-    //set the url, number of POST vars, POST data
-    curl_setopt($ch,CURLOPT_URL, RECEIVER_URL);
-    curl_setopt($ch,CURLOPT_POST, count($fields));
-    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        //set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, RECEIVER_URL);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    //execute post
-    $result = curl_exec($ch);
+        //execute post
+        $result = curl_exec($ch);
 
-    //close connection
-    curl_close($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+    // Fallback for PHP environments without cURL
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => $fields_string,
+            'timeout' => 30,
+        ),
+    );
+    $context = stream_context_create($options);
+    $result = @file_get_contents(RECEIVER_URL, false, $context);
+
     return $result;
 }
