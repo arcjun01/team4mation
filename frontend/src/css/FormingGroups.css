@@ -124,19 +124,32 @@
 
 /* Configuration Section Styles */
 .forming-groups-config-section {
-    margin-bottom: 30px;
+    display: flex;
+    align-items: stretch;
+    gap: 28px;
+    padding: 24px 30px;
+    margin-bottom: 20px;
 }
 
 .forming-groups-config-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: minmax(220px, 1fr) 160px 120px;
     gap: 20px;
+    flex: 1;
+    min-width: 0;
+    align-items: start;
 }
 
 .forming-groups-config-box {
     padding: 15px;
     background-color: #f3f4f6;
     border-radius: 8px;
+}
+
+.forming-groups-config-box-compact {
+    min-width: 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
 .forming-groups-config-label {
@@ -153,12 +166,73 @@
     color: #333;
 }
 
-/* Groups Grid Styles */
+.forming-groups-config-actions-rail {
+    position: static;
+    top: auto;
+    flex-direction: row;
+    align-self: stretch;
+    min-width: auto;
+    min-height: 0;
+    max-height: none;
+    padding: 10px 14px;
+    margin-right: 0;
+}
+
+.forming-groups-config-actions-rail .form-actions-rail-button {
+    width: 50px;
+    height: 50px;
+}
+
+.forming-groups-config-actions-rail .form-actions-rail-button img {
+    width: 26px;
+    height: 26px;
+}
+
+.forming-groups-results-actions-rail {
+    display: none;
+}
+
+.forming-groups-content-container {
+    width: min(95vw, 1562px);
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.forming-groups-content-container .question-container {
+    width: min(100%, 880px);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.forming-groups-results-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.forming-groups-student-groups-container {
+    width: min(100vw, 1780px);
+}
+
 .forming-groups-grid {
     display: grid;
-    grid-template-columns: repeat(2, 430px);
+    grid-template-columns: repeat(auto-fit, 430px);
     gap: 20px;
-    width: fit-content;
+    width: min(100%, 1780px);
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.forming-groups-grid .group-card.droppable {
+    justify-self: center;
+}
+
+.forming-groups-grid .group-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
 
 /* Button Tray */
@@ -167,3 +241,103 @@
     display: flex;
     justify-content: flex-end;
 }
+
+@media (max-width: 927px) {
+    .forming-groups-content-container .question-container {
+        width: min(100%, 800px);
+    }
+
+    .forming-groups-results-layout {
+        display: grid;
+        grid-template-columns: 430px 86px;
+        justify-content: center;
+        column-gap: 20px;
+    }
+
+    .forming-groups-config-actions-rail {
+        display: none;
+    }
+
+    .forming-groups-student-groups-container {
+        grid-column: 1;
+        width: 430px;
+    }
+
+    .forming-groups-results-actions-rail {
+        display: flex;
+        grid-column: 2;
+        justify-self: start;
+        position: static;
+        top: auto;
+        flex-direction: column;
+        align-self: flex-start;
+        min-width: auto;
+        min-height: 220px;
+        max-height: none;
+        padding: 27px 14px;
+        margin-right: 0;
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: 430px;
+    }
+}
+
+@media (max-width: 640px) {
+    .forming-groups-content-container .question-container {
+        width: 100%;
+    }
+
+    .forming-groups-config-section {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 28px;
+        padding: 32px 36px;
+    }
+
+    .forming-groups-config-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .forming-groups-config-actions-rail {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-self: stretch;
+        gap: 14px;
+        width: 78px;
+        min-width: 78px;
+        min-height: 0;
+        padding: 16px 10px;
+    }
+
+    .forming-groups-config-actions-rail .form-actions-rail-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .forming-groups-config-actions-rail .form-actions-rail-button img {
+        width: 26px;
+        height: 26px;
+    }
+
+    .forming-groups-results-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .forming-groups-results-actions-rail {
+        display: none;
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .forming-groups-grid .group-card {
+        width: min(430px, 100%);
+    }
+}
+

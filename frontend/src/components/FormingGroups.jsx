@@ -295,13 +295,52 @@ const FormingGroups = ({ decryptedSessions }) => {
         });
     };
 
+    const renderFormActionsRail = (className) => (
+        <aside className={`form-actions-rail ${className}`} aria-label="Form actions">
+            <FormActionButton
+                icon={lockIcon}
+                onClick={() => setIsCloseModalOpen(true)}
+                disabled={isSurveyClosed}
+                title="Close Survey"
+                ariaLabel="Close Survey"
+            />
+
+            <FormActionButton
+                icon={viewIcon}
+                onClick={() => {
+                    const previewUrl = `/team4mation/student-view/teams/${id}`;
+                    if (groupsState && groupsState.length > 0) {
+                        const groupsForPreview = groupsState.map(g => ({
+                            number: g.number,
+                            members: g.members.map(m => ({ ...m, availability: getStudentAvailability(m) }))
+                        }));
+                        localStorage.setItem(`preview_data_${id}`, JSON.stringify({ groups: groupsForPreview }));
+                    } else {
+                        const previewStudents = students.map(s => ({ ...s, availability: getStudentAvailability(s) }));
+                        localStorage.setItem(`preview_data_${id}`, JSON.stringify({ students: previewStudents || [] }));
+                    }
+                    window.open(previewUrl, '_blank');
+                }}
+                title="View Results"
+                ariaLabel="View Results"
+            />
+
+            <FormActionButton
+                icon={deleteIcon}
+                onClick={() => setIsPurgeModalOpen(true)}
+                title="Purge Data"
+                ariaLabel="Purge Data"
+            />
+        </aside>
+    );
+
     return (
         <div className="instructor-page-shell">
             <Navbar surveyId={id} />
             <div className="instructor-page-content">
                 <div className="survey-page-wrapper">
                     <div className="main-container">
-                        <div className="content-container">
+                        <div className="content-container forming-groups-content-container">
                             <div className="question-container">
                                 <h1>Forming Groups</h1>
                             </div>
@@ -313,31 +352,24 @@ const FormingGroups = ({ decryptedSessions }) => {
                                             <p className="forming-groups-config-label">Class Name</p>
                                             <p className="forming-groups-config-value">{surveyConfig.courseName || surveyConfig.course_name || 'N/A'}</p>
                                         </div>
-                                        <div className="forming-groups-config-box">
+                                        <div className="forming-groups-config-box forming-groups-config-box-compact">
                                             <p className="forming-groups-config-label">Total Submissions</p>
                                             <p className="forming-groups-config-value">{students.length}</p>
                                         </div>
-                                        <div className="forming-groups-config-box">
+                                        <div className="forming-groups-config-box forming-groups-config-box-compact">
                                             <p className="forming-groups-config-label">Group Size</p>
                                             <p className="forming-groups-config-value">
                                                 {surveyConfig.limitType || surveyConfig.limit_type || 'N/A'}: {surveyConfig.team_limit || surveyConfig.maxSize || 'N/A'}
                                             </p>
                                         </div>
                                     </div>
+
+                                    {renderFormActionsRail('forming-groups-config-actions-rail')}
                                 </div>
                             )}
 
-                            <div className="results-layout">
-                                <div style={{ color: 'rgb(96, 163, 40)', fontWeight: 600, marginBottom: 12 }}>
-                                    Minimum team size: {surveyConfig?.team_limit || 'N/A'}
-                                    <br />
-                                    Estimated groups:{' '}
-                                    {surveyConfig?.team_limit
-                                        ? Math.ceil(students.length / surveyConfig.team_limit)
-                                        : 'N/A'}
-                                </div>
-
-                                <div className="student-groups-container">
+                            <div className="results-layout forming-groups-results-layout">
+                                <div className="student-groups-container forming-groups-student-groups-container">
                                     <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
                                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                             {groupsState.map((group) => (
@@ -372,49 +404,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                                     </div>
                                 </div>
 
-                                {/* SIDEBAR */}
-                                <aside className="form-actions-rail" aria-label="Form actions">
-                                    {/* CLOSE SURVEY */}
-                                    <FormActionButton
-                                        icon={lockIcon}
-                                        onClick={() => setIsCloseModalOpen(true)}
-                                        disabled={isSurveyClosed}
-                                        title="Close Survey"
-                                        ariaLabel="Close Survey"
-                                    />
-
-                                    {/* VIEW */}
-                                    <FormActionButton
-                                        icon={viewIcon}
-                                        onClick={() => {
-                                            const previewUrl = `/team4mation/student-view/teams/${id}`;
-                                            if (groupsState && groupsState.length > 0) {
-                                                const groupsForPreview = groupsState.map(g => ({
-                                                    number: g.number,
-                                                    members: g.members.map(m => ({ ...m, availability: getStudentAvailability(m) }))
-                                                }));
-                                                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ groups: groupsForPreview }));
-                                            } else {
-                                                const previewStudents = students.map(s => ({ ...s, availability: getStudentAvailability(s) }));
-                                                localStorage.setItem(`preview_data_${id}`, JSON.stringify({ students: previewStudents || [] }));
-                                            }
-                                            window.open(previewUrl, '_blank');
-                                        }}
-                                        title="View Results"
-                                        ariaLabel="View Results"
-                                    />
-
-                                    {/* PURGE */}
-                                    <FormActionButton
-                                        icon={deleteIcon}
-                                        onClick={() => setIsPurgeModalOpen(true)}
-                                        title="Purge Data"
-                                        ariaLabel="Purge Data"
-                                    />
-                                </aside>
-
-                                
-
+                                {renderFormActionsRail('forming-groups-results-actions-rail')}
                             </div>
                             {/* BACK BUTTON */}
                                 <div className="button-group forming-groups-button-tray">
