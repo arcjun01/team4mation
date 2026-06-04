@@ -28,6 +28,13 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
     const [isClosed, setIsClosed] = useState(false);
     const [isDeletingId, setIsDeletingId] = useState(null);
 
+    const formatSubmissionTimestamp = (timestampValue) => {
+        if (!timestampValue) return 'Submission time unavailable';
+        const date = new Date(timestampValue);
+        if (Number.isNaN(date.getTime())) return 'Submission time unavailable';
+        return `Submitted: ${date.toLocaleString()}`;
+    };
+
     useEffect(() => {
         if (surveyId) {
             const fetchAndDecrypt = async () => {
@@ -128,6 +135,7 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
                                         <div 
                                             key={student.id || index} 
                                             className="student-row-item"
+                                            title={formatSubmissionTimestamp(student.created_at)}
                                             style={{ 
                                                 display: 'flex', 
                                                 justifyContent: 'space-between', 
