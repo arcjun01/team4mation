@@ -44,6 +44,10 @@
     transition: box-shadow 0.2s ease;
 }
 
+.student-list-container:has(.encrypted-submissions-message) {
+    align-items: center;
+}
+
 .student-list-container:focus,
 .student-list-container:focus-within,
 .student-list-container:focus-visible {
@@ -128,8 +132,16 @@
 .student-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
+}
+
+.student-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .student-name {
@@ -137,7 +149,10 @@
     color: #374151;
     margin: 0;
     padding: 8px 0;
-    border-bottom: 1px solid #f3f4f6;
+}
+
+.student-row-item .student-name {
+    margin: 0;
 }
 
 .name-number {
@@ -146,14 +161,37 @@
     margin-right: 8px;
 }
 
+.student-delete-button {
+    background: none;
+    border: none;
+    color: #c7c7c7;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px 8px;
+}
+
+.encrypted-submissions-message {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.encrypted-submissions-message p {
+    color: #666;
+    margin-bottom: 80px;
+}
+
 /* RIGHT SIDE: THE GREEN STATS SIDEBAR */
 .stats-card-sidebar {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: #90db673b;
     padding: 25px;
     border-radius: 16px;
     color: #065f46; 
-    height: fit-content;
+    height: 350px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
@@ -163,6 +201,19 @@
     align-items: center;
     margin: 15px 0;
     font-size: 15px;
+}
+
+.stats-divider {
+    margin: 20px 0;
+    border: 0;
+    border-top: 2px solid rgba(6, 95, 70, 0.18);
+}
+
+.survey-closed-message {
+    color: #d32f2f;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .stats-row span {
@@ -232,5 +283,10 @@
 
 .generate-groups-btn:hover {
     background-color: #7fb9508e;
+}
+
+.survey-submissions-actions {
+    margin-top: 30px;
+    justify-content: flex-end;
 }
 

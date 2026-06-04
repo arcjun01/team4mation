@@ -12,8 +12,8 @@
 }
 
 .instructor-navbar-inner {
-  width: min(1120px, calc(100% - 20px));
-  margin: 0 auto 0 44px;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
   min-height: 86px;
   display: flex;
   align-items: center;
@@ -26,6 +26,7 @@
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .instructor-nav-link {
@@ -90,6 +91,7 @@
     font-size: 13px;
     font-weight: 500;
     margin-left: auto;
+    flex-shrink: 0;
 }
 
 .logout-btn:hover {

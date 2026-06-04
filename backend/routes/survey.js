@@ -152,7 +152,7 @@ router.post("/reveal", async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      "SELECT student_id, encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
+      "SELECT student_id, encrypted_name, iv, gender, gpa, created_at FROM student_survey_entries WHERE survey_id = ?",
       [surveyId]
     );
 
@@ -174,11 +174,12 @@ router.post("/reveal", async (req, res) => {
           id: row.student_id,
           name: decrypted,
           gender: row.gender,
-          gpa: row.gpa
+          gpa: row.gpa,
+          created_at: row.created_at
         };
       } catch (decryptionError) {
         console.error("Row decryption failed:", decryptionError);
-        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
+        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa, created_at: row.created_at };
       }
     });
 
