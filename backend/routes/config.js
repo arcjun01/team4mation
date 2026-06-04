@@ -23,7 +23,7 @@ router.post("/save-setup", async (req, res) => {
         useGpa ?? 0,
         prevCourse ?? null,
         encryptionSalt ?? null,
-        availabilityOptional ?? 0
+        availabilityOptional ?? 0,
       ]
     );
 
