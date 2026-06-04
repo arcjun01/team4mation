@@ -95,6 +95,10 @@
     white-space: nowrap;
 }
 
+.group-table-cell-prewrap {
+    white-space: pre-wrap;
+}
+
 .group-table-header.two-col,
 .group-table-row.two-col {
     grid-template-columns: 1fr 2fr;
@@ -201,8 +205,21 @@
     transform: translateX(-50%);
 }
 
+.formed-teams-preview-title {
+    text-align: center;
+}
+
 .formed-teams-preview-groups-container {
     width: min(100vw, 1780px);
+}
+
+.formed-teams-shared-availability {
+    background-color: #e0f2f1;
+}
+
+.formed-teams-preview-actions {
+    justify-content: flex-end;
+    margin-top: 30px;
 }
 
 .forming-groups-content-container {

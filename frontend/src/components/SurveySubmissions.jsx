@@ -130,35 +130,21 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
                         {/* LEFT SIDE: The List */}
                         <div className="survey-card student-list-container" tabIndex="-1">
                             {decryptedNames.length > 0 ? (
-                                <div className="student-grid" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div className="student-grid">
                                     {decryptedNames.map((student, index) => (
                                         <div 
                                             key={student.id || index} 
                                             className="student-row-item"
                                             title={formatSubmissionTimestamp(student.created_at)}
-                                            style={{ 
-                                                display: 'flex', 
-                                                justifyContent: 'space-between', 
-                                                alignItems: 'center',
-                                                padding: '8px 12px',
-                                                borderBottom: '1px solid #f0f0f0'
-                                            }}
                                         >
-                                            <p className="student-name" style={{ margin: 0 }}>
+                                            <p className="student-name">
                                                 <span className="name-number">{index + 1}.</span> 
                                                 {student.name}
                                             </p>
                                             <button
                                                 onClick={() => handleDeleteSubmission(student.id)}
                                                 disabled={isDeletingId === student.id}
-                                                style={{
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    color: '#c7c7c7',
-                                                    cursor: 'pointer',
-                                                    fontSize: '1.1rem',
-                                                    padding: '4px 8px'
-                                                }}
+                                                className="student-delete-button"
                                                 title="Delete Submission"
                                             >
                                                 {isDeletingId === student.id ? "⏳" : "x"}
@@ -167,8 +153,8 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="student-name" style={{ textAlign: 'center', padding: '20px', width: '100%' }}>
-                                    <p style={{ color: '#666', marginBottom: '15px' }}>
+                                <div className="encrypted-submissions-message">
+                                    <p>
                                         {stats.submissions} students have submitted, but names are encrypted.
                                     </p>
                                     <button 
@@ -193,10 +179,10 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
                                 <span>Pending:</span> <strong>{stats.pending}</strong>
                             </div>
 
-                            <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #eee' }} />
+                            <hr className="stats-divider" />
 
                             {isClosed && (
-                                <div style={{ color: '#d32f2f', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                                <div className="survey-closed-message">
                                     Survey Closed
                                 </div>
                             )}
@@ -212,7 +198,7 @@ const SurveySubmissions = ({ decryptedSessions, saveDecryptedSession }) => {
                         </div>
                     </div>
 
-                    <div className="button-group" style={{ marginTop: '30px', justifyContent: 'flex-end' }}>
+                    <div className="button-group survey-submissions-actions">
                         <button className="button" onClick={() => navigate(-1)}>
                             Go Back
                         </button>

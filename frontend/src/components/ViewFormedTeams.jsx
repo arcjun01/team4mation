@@ -211,7 +211,7 @@ const ViewFormedTeams = () => {
             <div className="survey-page-wrapper top-gap">
                 <div className="main-container">
                     <div className="content-container forming-groups-content-container formed-teams-preview-content-container">
-                        <div className="question-container" style={{ textAlign: 'center' }}>
+                        <div className="question-container formed-teams-preview-title">
                             <h1>Formed Teams Preview</h1>
                         </div>
 
@@ -234,7 +234,7 @@ const ViewFormedTeams = () => {
                                                             {student.name}
                                                         </div>
                                                         {shouldShowAvailability && (
-                                                            <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
+                                                            <div className="group-table-cell group-table-cell-prewrap">
                                                                 {formatAvailabilityRanges(student.availability)}
                                                             </div>
                                                         )}
@@ -242,7 +242,7 @@ const ViewFormedTeams = () => {
                                                 ))}
                                             </div>
                                             {shouldShowAvailability && (
-                                                <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
+                                                <div className="shared-availability-section formed-teams-shared-availability">
                                                     <div className="shared-availability-label">Shared Meeting Times:</div>
                                                     <div className="shared-availability-content">
                                                         {formatAvailabilityRanges(getSharedAvailability(group.members))}
@@ -255,7 +255,7 @@ const ViewFormedTeams = () => {
                             </div>
                         </div>
 
-                        <div className="button-tray" style={{ justifyContent: 'flex-end', marginTop: '30px' }}>
+                        <div className="button-tray formed-teams-preview-actions">
                             <button className="button" onClick={() => window.close()}>
                                 Go Back
                             </button>

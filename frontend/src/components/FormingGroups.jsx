@@ -250,7 +250,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                 <div className="group-table-cell">{student.gender}</div>
                 <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
                 {shouldShowAvailability && (
-                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
+                    <div className="group-table-cell group-table-cell-prewrap">
                         {formatAvailabilityRanges(getStudentAvailability(student))}
                     </div>
                 )}
