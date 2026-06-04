@@ -4,8 +4,12 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import PurgeModal from "./PurgeModal";
 import CloseSurveyModal from './CloseSurveyModal';
+import FormActionButton from './FormActionButton';
 import '../css/FormingGroups.css'; 
 import Navbar from './Navbar';
+import lockIcon from '../assets/LockIcon.svg';
+import viewIcon from '../assets/ViewIcon.svg';
+import deleteIcon from '../assets/DeleteIcon.svg';
 
 const FormingGroups = ({ decryptedSessions }) => {
     const { id } = useParams();
@@ -369,29 +373,19 @@ const FormingGroups = ({ decryptedSessions }) => {
                                 </div>
 
                                 {/* SIDEBAR */}
-                                <div className="stats-card-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', minWidth: '100px', alignItems: 'center' }}>
-
+                                <aside className="form-actions-rail" aria-label="Form actions">
                                     {/* CLOSE SURVEY */}
-                                    <button
-                                        className="sidebar-btn"
+                                    <FormActionButton
+                                        icon={lockIcon}
                                         onClick={() => setIsCloseModalOpen(true)}
                                         disabled={isSurveyClosed}
                                         title="Close Survey"
-                                        style={{
-                                            padding: '12px',
-                                            width: '100%',
-                                            backgroundColor: isSurveyClosed ? '#ccc' : '#e74c3c',
-                                            color: 'white'
-                                        }}
-                                    >
-                                        <span className="icon">
-                                            {isSurveyClosed ? 'Closed ✅' : 'Close 🔒'}
-                                        </span>
-                                    </button>
+                                        ariaLabel="Close Survey"
+                                    />
 
                                     {/* VIEW */}
-                                    <button
-                                        className="sidebar-btn"
+                                    <FormActionButton
+                                        icon={viewIcon}
                                         onClick={() => {
                                             const previewUrl = `/team4mation/student-view/teams/${id}`;
                                             if (groupsState && groupsState.length > 0) {
@@ -406,22 +400,18 @@ const FormingGroups = ({ decryptedSessions }) => {
                                             }
                                             window.open(previewUrl, '_blank');
                                         }}
-                                        style={{ padding: '12px', width: '100%' }}
-                                    >
-                                        <span className="icon">View 👁️</span>
-                                    </button>
+                                        title="View Results"
+                                        ariaLabel="View Results"
+                                    />
 
                                     {/* PURGE */}
-                                    <button
-                                        className="sidebar-btn trash-btn"
+                                    <FormActionButton
+                                        icon={deleteIcon}
                                         onClick={() => setIsPurgeModalOpen(true)}
                                         title="Purge Data"
-                                        style={{ padding: '12px', width: '100%' }}
-                                    >
-                                        <span className="icon">Purge 🗑️</span>
-                                    </button>
-
-                                </div>
+                                        ariaLabel="Purge Data"
+                                    />
+                                </aside>
 
                                 
 
