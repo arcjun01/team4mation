@@ -76,6 +76,14 @@
     font-size: 13px;
 }
 
+.group-body .group-table-row:nth-child(even) {
+    background-color: #fff;
+}
+
+.group-body .group-table-row:nth-child(odd) {
+    background-color: #f2f8ee;
+}
+
 .group-table-row:last-child {
     border-bottom: none;
 }
