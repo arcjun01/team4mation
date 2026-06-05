@@ -201,6 +201,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                             name: decrypted?.name || `Student ${idx + 1}`,
                             gender: student.gender || 'N/A',
                             gpa: student.gpa || 0,
+                            commitment: student.commitment || 'N/A',
                             created_at: student.created_at || null,
                         };
                     })
@@ -249,6 +250,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                 <div className="group-table-cell">{student.name}</div>
                 <div className="group-table-cell">{student.gender}</div>
                 <div className="group-table-cell">{student.gpa ? student.gpa.toFixed(2) : 'N/A'}</div>
+                <div className="group-table-cell">{student.commitment || 'N/A'}</div>
                 {shouldShowAvailability && (
                     <div className="group-table-cell group-table-cell-prewrap">
                         {formatAvailabilityRanges(getStudentAvailability(student))}
@@ -379,7 +381,12 @@ const FormingGroups = ({ decryptedSessions }) => {
                                                         <div className={`group-table-header ${!shouldShowAvailability ? 'compact-table' : ''}`}>
                                                             <div className="group-table-cell">Name</div>
                                                             <div className="group-table-cell">Gender</div>
-                                                            <div className="group-table-cell">GPA</div>
+                                                            <div className="group-table-cell">
+                                                                {surveyConfig?.use_gpa && surveyConfig?.prev_course 
+                                                                    ? <>{surveyConfig.prev_course}<br/> Grade</> 
+                                                                    : 'GPA'}
+                                                            </div>
+                                                            <div className="group-table-cell">Commitment</div>
                                                             {shouldShowAvailability && (
                                                                 <div className="group-table-cell">Availability</div>
                                                             )}
