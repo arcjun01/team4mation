@@ -4,12 +4,21 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
-// Endpoint to fetch all surveys (open and formed/closed)
 router.get("/open", async (req, res) => {
     try {
-        const [surveys] = await pool.execute(
-            "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course, created_at FROM survey_configurations ORDER BY created_at DESC"
-        );
+        const { email } = req.query;
+        
+        let query = "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course, created_at FROM survey_configurations";
+        let params = [];
+
+        if (email) {
+            query += " WHERE instructor_email = ?";
+            params.push(email);
+        }
+
+        query += " ORDER BY created_at DESC";
+
+        const [surveys] = await pool.execute(query, params);
         
         res.json({
             surveys: surveys || [],
