@@ -8,6 +8,7 @@ import CommitmentQuestion from "./CommitmentQuestion";
 import ConfirmationModal from "../ConfirmationModal";
 import Header from "../Header";
 import "../../css/studentSurvey.css";
+import '../../css/ThankYouPage.css';
 
 export default function StudentSurvey() {
   const { id: surveyId } = useParams();
@@ -170,16 +171,26 @@ export default function StudentSurvey() {
     );
   }
 
-  if (surveyConfig.status === 'closed'){
-    return(
-      <div className="survey-page">
-        <div className="survey-card">
-          <h2>Survey closed</h2>
-          <p>This survey is no longer accepting response. Please contact your instructor.</p>
-        </div>
-      </div>
-    )
-  }
+  if (surveyConfig.status === 'closed') {
+    return (
+        <>
+            <Header />
+            <div className="thank-you-page">
+                <div className="thank-you-wrapper top-gap">
+                    <div className='question-container'><h1>Survey Closed</h1></div>
+                    <div className="thank-you-card">
+                        <p className="thank-you-message">
+                            This survey is no longer accepting responses.
+                        </p>
+                        <p className="thank-you-message">
+                            Please contact your instructor for more information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
   const surveyTitle = (surveyConfig.course_name || surveyConfig.courseName)
     ? `${surveyConfig.course_name || surveyConfig.courseName} Group Formation Survey`
     : "Group Formation Survey";

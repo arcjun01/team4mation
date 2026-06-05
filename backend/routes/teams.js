@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/open", async (req, res) => {
     try {
         const [surveys] = await pool.execute(
-            "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course FROM survey_configurations ORDER BY created_at DESC"
+            "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course, created_at FROM survey_configurations ORDER BY created_at DESC"
         );
         
         res.json({

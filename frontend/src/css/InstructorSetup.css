@@ -213,3 +213,9 @@
     color: #60a328;
     font-weight: bold;
 }
+.key-description {
+    font-size: 13px;
+    color: #e01d1d;
+    margin: 4px 0 12px 0;
+    line-height: 1.5;
+}
