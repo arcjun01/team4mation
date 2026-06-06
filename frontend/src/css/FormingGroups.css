@@ -8,6 +8,22 @@
     flex-direction: column;
     flex-wrap: wrap;
     width: 450px;
+    transition: all 0.2s ease-in-out;
+}
+
+.group-card.dragging-active {
+    border: 2px dashed #4B9E5F;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 0 0 2px rgba(75, 158, 95, 0.1);
+}
+
+.group-card.droppable--over {
+    border: 2px solid #4B9E5F;
+    background-color: #f0f8f4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 0 0 2px rgba(75, 158, 95, 0.2);
+}
+
+.group-card.droppable--inactive {
+    opacity: 0.5;
 }
 
 .group-header {
