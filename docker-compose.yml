@@ -11,7 +11,7 @@ services:
     restart: always
 
   php:
-    image: php:8.2-apache
+    build: ./login
     container_name: team4mation_php
     ports:
       - "8000:80"
@@ -20,5 +20,3 @@ services:
     restart: always
     environment:
       - APP_URL=http://164.92.80.18:3001
-    command: >
-      bash -c "apt-get update && apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl && apache2-foreground"
