@@ -210,48 +210,52 @@ const ViewFormedTeams = () => {
             <Header />
             <div className="survey-page-wrapper top-gap">
                 <div className="main-container">
-                    <div className="content-container">
-                        <div className="question-container" style={{ textAlign: 'center' }}>
+                    <div className="content-container forming-groups-content-container formed-teams-preview-content-container">
+                        <div className="question-container formed-teams-preview-title">
                             <h1>Formed Teams Preview</h1>
                         </div>
 
-                        <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
-                            {groups.map((group) => (
-                                <div key={group.number} className={`group-card ${!shouldShowAvailability ? 'compact-group-card' : ''}`}>
-                                    <div className="group-header">
-                                        <span>Group #{group.number}</span>
-                                    </div>
-                                    <div className="group-body">
-                                        <div className={`group-table-header ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
-                                            <div className="group-table-cell">Name</div>
-                                            {shouldShowAvailability && <div className="group-table-cell">Availability</div>}
-                                        </div>
-                                        {group.members.map((student, idx) => (
-                                            <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
-                                                <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>
-                                                    {student.name}
+                        <div className="results-layout formed-teams-preview-results-layout">
+                            <div className="student-groups-container formed-teams-preview-groups-container">
+                                <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
+                                    {groups.map((group) => (
+                                        <div key={group.number} className={`group-card ${!shouldShowAvailability ? 'compact-group-card' : ''}`}>
+                                            <div className="group-header">
+                                                <span>Group #{group.number}</span>
+                                            </div>
+                                            <div className="group-body">
+                                                <div className={`group-table-header ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
+                                                    <div className="group-table-cell">Name</div>
+                                                    {shouldShowAvailability && <div className="group-table-cell">Availability</div>}
                                                 </div>
-                                                {shouldShowAvailability && (
-                                                    <div className="group-table-cell" style={{ whiteSpace: 'pre-wrap' }}>
-                                                        {formatAvailabilityRanges(student.availability)}
+                                                {group.members.map((student, idx) => (
+                                                    <div key={idx} className={`group-table-row ${shouldShowAvailability ? 'two-col' : 'one-col'}`}>
+                                                        <div className="group-table-cell" title={formatSubmissionTimestamp(student.created_at)}>
+                                                            {student.name}
+                                                        </div>
+                                                        {shouldShowAvailability && (
+                                                            <div className="group-table-cell group-table-cell-prewrap">
+                                                                {formatAvailabilityRanges(student.availability)}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
-                                    {shouldShowAvailability && (
-                                        <div className="shared-availability-section" style={{ backgroundColor: '#e0f2f1' }}>
-                                            <div className="shared-availability-label">Shared Meeting Times:</div>
-                                            <div className="shared-availability-content">
-                                                {formatAvailabilityRanges(getSharedAvailability(group.members))}
-                                            </div>
+                                            {shouldShowAvailability && (
+                                                <div className="shared-availability-section formed-teams-shared-availability">
+                                                    <div className="shared-availability-label">Shared Meeting Times:</div>
+                                                    <div className="shared-availability-content">
+                                                        {formatAvailabilityRanges(getSharedAvailability(group.members))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
 
-                        <div className="button-tray" style={{ justifyContent: 'flex-end', marginTop: '30px' }}>
+                        <div className="button-tray formed-teams-preview-actions">
                             <button className="button" onClick={() => window.close()}>
                                 Go Back
                             </button>

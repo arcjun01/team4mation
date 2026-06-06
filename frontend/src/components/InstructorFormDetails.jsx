@@ -4,7 +4,6 @@ import Navbar from './Navbar';
 import PurgeModal from './PurgeModal';
 import '../css/InstructorFormDetails.css';
 import copyIcon from '../assets/CopyIcon.svg';
-import editIcon from '../assets/EditIcon.svg';
 import deleteIcon from '../assets/DeleteIcon.svg';
 import linkIcon from '../assets/LinkIcon.svg';
 import activityIcon from '../assets/ActivityIcon.svg';
@@ -73,32 +72,12 @@ const InstructorFormDetails = () => {
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
   const createdOn = formConfig?.createdAt || formConfig?.created_at || null;
-  const availabilityOptional = Boolean(
-    formConfig?.availabilityOptional ?? formConfig?.availability_optional
-  );
   const submissionCount = stats?.submissions ?? 0;
   
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
     navigate(-1);
-  };
-
-  const handleEditSurvey = () => {
-    navigate('/setup', {
-      state: {
-        formData: {
-          courseName,
-          description,
-          classSize,
-          teamLimit: String(teamLimit || ''),
-          limitType,
-          prevCourse,
-          useGpa,
-          availabilityOptional
-        }
-      }
-    });
   };
 
   const handlePurgeSurvey = async () => {
@@ -247,16 +226,6 @@ const InstructorFormDetails = () => {
                     aria-label="Copy Student Survey Link"
                   >
                     <img src={copyIcon} alt="" />
-                  </button>
-                  <button
-                    type="button"
-                    className="form-actions-rail-button"
-                    onClick={handleEditSurvey}
-                    title={hasGeneratedGroups ? 'Editing disabled after groups are formed' : 'Edit Survey'}
-                    aria-label="Edit Survey"
-                    disabled={hasGeneratedGroups}
-                  >
-                    <img src={editIcon} alt="" />
                   </button>
                   <button
                     type="button"

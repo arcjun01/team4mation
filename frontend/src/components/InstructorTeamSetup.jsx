@@ -311,6 +311,7 @@ const InstructorTeamSetup = () => {
             {/* Decryption Key */}
             <div className="question-container">
               <label>Secure Data Access Key</label>
+              <p className="key-description">⚠️ Save your decryption key to access and view students' names later. This key cannot be recovered once lost!</p>
               {!generatedKey ? (
                 <button type="button" className="incript-button" onClick={handleGenerateKey}>Generate Decryption Key</button>
               ) : (

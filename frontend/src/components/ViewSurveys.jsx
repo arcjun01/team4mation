@@ -16,7 +16,9 @@ const ViewSurveys = () => {
   const fetchSurveys = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/surveys/open');
+      const token = localStorage.getItem('auth_token');
+      const instructorEmail = token ? atob(token).split(':')[0] : null;
+      const response = await fetch(`/api/surveys/open?email=${encodeURIComponent(instructorEmail)}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch surveys');
@@ -90,7 +92,7 @@ const ViewSurveys = () => {
                           <h3>{survey.course_name}</h3>
                         </div>
                         <div className="survey-card-details">
-                          <p><strong>Survey ID:</strong> {survey.id}</p>
+                          <p><strong>Created On:</strong> {survey.created_at ? new Date(survey.created_at).toLocaleString() : 'N/A'}</p>
                           <p><strong>Class Size:</strong> {survey.class_size}</p>
                           <p><strong>Team Limit:</strong> {survey.team_limit} ({survey.limit_type})</p>
                           {survey.prev_course && (
