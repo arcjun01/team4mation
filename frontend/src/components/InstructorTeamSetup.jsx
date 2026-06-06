@@ -162,6 +162,8 @@ const InstructorTeamSetup = () => {
 
   //save logic 
   const handleConfirm = async () => {
+    const token = localStorage.getItem('auth_token');
+    const instructorEmail = token ? atob(token).split(':')[0] : null;
    
     const uniqueId = typeof crypto.randomUUID === 'function'
   ? crypto.randomUUID()
@@ -177,7 +179,8 @@ const InstructorTeamSetup = () => {
       useGpa: formData.useGpa ? 1 : 0,
       prevCourse: (formData.useGpa && formData.prevCourse?.trim() !== "") ? formData.prevCourse.trim() : null,
       encryptionSalt: generatedKey || null,
-      availabilityOptional: formData.availabilityOptional ? 1 : 0
+      availabilityOptional: formData.availabilityOptional ? 1 : 0,
+      instructorEmail: instructorEmail
     };
 
     try {
