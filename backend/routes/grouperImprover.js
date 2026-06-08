@@ -66,6 +66,42 @@ function evaluateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
     return (testScoreA + testScoreB) > (currentScoreA + currentScoreB);
 }
 
+function evaluateMove(student, fromGroup, toGroup, availabilityMap, minSize, maxSize) {
+    const effectiveMin = Math.max(2, minSize - 1);
+
+    console.log(`--- evaluateMove: ${getID(student)} from group(${fromGroup.length}) to group(${toGroup.length}), minSize=${minSize}, maxSize=${maxSize}, effectiveMin=${effectiveMin}`);
+
+    if (fromGroup.length <= effectiveMin) {
+        console.log(`  BLOCKED: fromGroup too small (${fromGroup.length} <= ${effectiveMin})`);
+        return false;
+    }
+    if (toGroup.length >= maxSize) {
+        console.log(`  BLOCKED: toGroup too large (${toGroup.length} >= ${maxSize})`);
+        return false;
+    }
+
+    const testFrom = fromGroup.filter(s => getID(s) !== getID(student));
+    const testTo = [...toGroup, student];
+
+    if (!isGenderBalanced(testFrom)) {
+        console.log(`  BLOCKED: testFrom gender imbalanced`);
+        return false;
+    }
+    if (!isGenderBalanced(testTo)) {
+        console.log(`  BLOCKED: testTo gender imbalanced`);
+        return false;
+    }
+
+    const currentScore = calculateGroupScore(fromGroup, availabilityMap) +
+        calculateGroupScore(toGroup, availabilityMap);
+    const testScore = calculateGroupScore(testFrom, availabilityMap) +
+        calculateGroupScore(testTo, availabilityMap);
+
+    console.log(`  currentScore=${currentScore}, testScore=${testScore}, improvement=${testScore > currentScore}`);
+
+    return testScore > currentScore;
+}
+
 function calculateScheduleOverlap(group, availabilityMap) {
     const availabilitySlots = {}
     for (const student of group) {
