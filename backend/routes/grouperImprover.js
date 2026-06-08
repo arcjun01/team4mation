@@ -103,12 +103,12 @@ function evaluateMove(student, fromGroup, toGroup, availabilityMap, minSize, max
 }
 
 function calculateScheduleOverlap(group, availabilityMap) {
-    const availabilitySlots = {}
+    const slotCounts = {}
     for (const student of group) {
         const sid = getID(student);
-        const timeSlots = availabilitySlots[sid] || []
+        const timeSlots = availabilityMap[sid] || []
         for (const slot of timeSlots) {
-            availabilitySlots[slot] = (availabilitySlots[slot] || 0) + 1;
+            slotCounts[slot] = (slotCounts[slot] || 0) + 1;
         }
     }
 
@@ -116,8 +116,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
     const totalStudents = group.length;
     let perfectOverlapCount = 0;
 
-    for (const slot of Object.keys(availabilitySlots)) {
-        if (availabilitySlots[slot] === totalStudents) {
+    for (const slot of Object.keys(slotCounts)) {
+        if (slotCounts[slot] === totalStudents) {
             perfectOverlapCount++;
         }
     }
@@ -132,8 +132,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
     let totalOverlap = 0;
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-    for (const slot of Object.keys(availabilitySlots)) {
-        const count = availabilitySlots[slot];
+    for (const slot of Object.keys(slotCounts)) {
+        const count = slotCounts[slot];
         if (count >= minOverlap) {
             totalOverlap += count;
         }
@@ -144,12 +144,16 @@ function calculateScheduleOverlap(group, availabilityMap) {
 
 function calculateSpread(group, field) {
     if (group.length === 0) return 0;
-    let min = group[0][field], max = group[0][field];
-    for (const student of group) {
-        if (student[field] > max) max = student[field];
-        if (student[field] < min) min = student[field];
+
+    const values = group.map(s => parseFloat(s[field])).filter(v => !isNaN(v));
+    if (values.length === 0) return 0;
+
+    let min = values[0], max = values[0];
+    for (const v of values) {
+        if (v > max) max = v;
+        if (v < min) min = v;
     }
-    let spread = max - min;
+    const spread = max - min;
     return spread === 0 ? 0 : (-1 * spread);
 }
 
