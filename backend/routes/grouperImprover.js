@@ -1,7 +1,7 @@
 // Determine unique ID key (database uses id or student_id)
 const getID = (s) => s.id || s.student_id;
 
-function improveGroups(groups, availabilityMap) {
+function improveGroups(groups, availabilityMap, minSize, maxSize) {
     let improvementMade = true;
     let passCount = 0;
     const MAX_PASSES = 4;
@@ -30,6 +30,24 @@ function improveGroups(groups, availabilityMap) {
             }
             if (improvementMade) break;
         }
+
+        if (improvementMade) continue;
+
+        // move logic
+        outer:
+        for (let i = 0; i < groups.length; i++) {
+            for (let j = 0; j < groups.length; j++) {
+                if (i === j) continue;
+                for (let k = 0; k < groups[i].length; k++) {
+                    const student = groups[i][k];
+                    if (evaluateMove(student, groups[i], groups[j], availabilityMap, minSize, maxSize)) {
+                        groups[j].push(groups[i].splice(k, 1)[0]);
+                        improvementMade = true;
+                        break outer;
+                    }
+                }
+            }
+        }
     }
     return groups;
 }
@@ -48,13 +66,49 @@ function evaluateSwap(studentA, studentB, groupA, groupB, availabilityMap) {
     return (testScoreA + testScoreB) > (currentScoreA + currentScoreB);
 }
 
+function evaluateMove(student, fromGroup, toGroup, availabilityMap, minSize, maxSize) {
+    const effectiveMin = Math.max(2, minSize - 1);
+
+    console.log(`--- evaluateMove: ${getID(student)} from group(${fromGroup.length}) to group(${toGroup.length}), minSize=${minSize}, maxSize=${maxSize}, effectiveMin=${effectiveMin}`);
+
+    if (fromGroup.length <= effectiveMin) {
+        console.log(`  BLOCKED: fromGroup too small (${fromGroup.length} <= ${effectiveMin})`);
+        return false;
+    }
+    if (toGroup.length >= maxSize) {
+        console.log(`  BLOCKED: toGroup too large (${toGroup.length} >= ${maxSize})`);
+        return false;
+    }
+
+    const testFrom = fromGroup.filter(s => getID(s) !== getID(student));
+    const testTo = [...toGroup, student];
+
+    if (!isGenderBalanced(testFrom)) {
+        console.log(`  BLOCKED: testFrom gender imbalanced`);
+        return false;
+    }
+    if (!isGenderBalanced(testTo)) {
+        console.log(`  BLOCKED: testTo gender imbalanced`);
+        return false;
+    }
+
+    const currentScore = calculateGroupScore(fromGroup, availabilityMap) +
+        calculateGroupScore(toGroup, availabilityMap);
+    const testScore = calculateGroupScore(testFrom, availabilityMap) +
+        calculateGroupScore(testTo, availabilityMap);
+
+    console.log(`  currentScore=${currentScore}, testScore=${testScore}, improvement=${testScore > currentScore}`);
+
+    return testScore > currentScore;
+}
+
 function calculateScheduleOverlap(group, availabilityMap) {
-    const availabilitySlots = {}
+    const slotCounts = {}
     for (const student of group) {
         const sid = getID(student);
-        const timeSlots = availabilitySlots[sid] || []
+        const timeSlots = availabilityMap[sid] || []
         for (const slot of timeSlots) {
-            availabilitySlots[slot] = (availabilitySlots[slot] || 0) + 1;
+            slotCounts[slot] = (slotCounts[slot] || 0) + 1;
         }
     }
 
@@ -62,8 +116,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
     const totalStudents = group.length;
     let perfectOverlapCount = 0;
 
-    for (const slot of Object.keys(availabilitySlots)) {
-        if (availabilitySlots[slot] === totalStudents) {
+    for (const slot of Object.keys(slotCounts)) {
+        if (slotCounts[slot] === totalStudents) {
             perfectOverlapCount++;
         }
     }
@@ -78,8 +132,8 @@ function calculateScheduleOverlap(group, availabilityMap) {
     let totalOverlap = 0;
     const minOverlap = Math.max(2, Math.ceil(group.length / 2));
 
-    for (const slot of Object.keys(availabilitySlots)) {
-        const count = availabilitySlots[slot];
+    for (const slot of Object.keys(slotCounts)) {
+        const count = slotCounts[slot];
         if (count >= minOverlap) {
             totalOverlap += count;
         }
@@ -90,12 +144,16 @@ function calculateScheduleOverlap(group, availabilityMap) {
 
 function calculateSpread(group, field) {
     if (group.length === 0) return 0;
-    let min = group[0][field], max = group[0][field];
-    for (const student of group) {
-        if (student[field] > max) max = student[field];
-        if (student[field] < min) min = student[field];
+
+    const values = group.map(s => parseFloat(s[field])).filter(v => !isNaN(v));
+    if (values.length === 0) return 0;
+
+    let min = values[0], max = values[0];
+    for (const v of values) {
+        if (v > max) max = v;
+        if (v < min) min = v;
     }
-    let spread = max - min;
+    const spread = max - min;
     return spread === 0 ? 0 : (-1 * spread);
 }
 

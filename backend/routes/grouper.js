@@ -57,7 +57,7 @@ function grouper(studentsParam, availabilityData, teamLimitParam, limitType) {
     // Enforce group size constraints
     enforceGroupSizes(groups, minSize, maxSize);
 
-    improveGroups(groups, availabilityMap);
+    improveGroups(groups, availabilityMap, minSize, maxSize);
 
     return groups;
 }
