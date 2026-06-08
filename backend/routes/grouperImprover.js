@@ -1,7 +1,7 @@
 // Determine unique ID key (database uses id or student_id)
 const getID = (s) => s.id || s.student_id;
 
-function improveGroups(groups, availabilityMap) {
+function improveGroups(groups, availabilityMap, minSize, maxSize) {
     let improvementMade = true;
     let passCount = 0;
     const MAX_PASSES = 4;
@@ -29,6 +29,24 @@ function improveGroups(groups, availabilityMap) {
                 if (improvementMade) break;
             }
             if (improvementMade) break;
+        }
+
+        if (improvementMade) continue;
+
+        // move logic
+        outer:
+        for (let i = 0; i < groups.length; i++) {
+            for (let j = 0; j < groups.length; j++) {
+                if (i === j) continue;
+                for (let k = 0; k < groups[i].length; k++) {
+                    const student = groups[i][k];
+                    if (evaluateMove(student, groups[i], groups[j], availabilityMap, minSize, maxSize)) {
+                        groups[j].push(groups[i].splice(k, 1)[0]);
+                        improvementMade = true;
+                        break outer;
+                    }
+                }
+            }
         }
     }
     return groups;
