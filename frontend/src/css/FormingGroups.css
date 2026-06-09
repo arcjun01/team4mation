@@ -296,7 +296,43 @@
     margin-right: auto;
 }
 
-@media (max-width: 927px) {
+@media (min-width: 1122px) and (max-width: 1655px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(2 * var(--forming-group-card-width, 520px) + var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(2, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(2 * var(--forming-group-card-width, 520px) + var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (min-width: 1656px) and (max-width: 2193px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(3 * var(--forming-group-card-width, 520px) + 2 * var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(3, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(3 * var(--forming-group-card-width, 520px) + 2 * var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (min-width: 2194px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(4, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (max-width: 1121px) {
     .forming-groups-content-container .question-container {
         width: min(100%, 800px);
     }
@@ -337,7 +373,7 @@
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 719px) {
     .forming-groups-content-container .question-container {
         width: 100%;
     }
@@ -376,7 +412,8 @@
         height: 26px;
     }
 
-    .forming-groups-results-layout {
+    .forming-groups-results-layout,
+    .formed-teams-preview-results-layout {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -386,8 +423,15 @@
         display: none;
     }
 
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: 100%;
+        max-width: min(100vw, var(--forming-group-card-width, 520px));
+    }
+
     .forming-groups-grid {
         grid-template-columns: minmax(0, 1fr);
+        width: 100%;
     }
 
     .forming-groups-grid .group-card {
