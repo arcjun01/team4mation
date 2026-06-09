@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import '../css/InstructorDecryption.css';
 import Navbar from './Navbar';
 
-function InstructorDecryption() {
+function InstructorDecryption({ saveDecryptedSession }) {
     const [decryptionKey, setDecryptionKey] = useState("");
     const [isDecrypting, setIsDecrypting] = useState(false);
     const { id } = useParams();
@@ -26,6 +26,12 @@ function InstructorDecryption() {
             const data = await response.json();
             
             if (data.success) {
+                // SUCCESS: Save the data into our App global state dictionary
+                saveDecryptedSession(id, {
+                    names: data.names,
+                    userKey: decryptionKey
+                });
+
                 // SUCCESS: Pass the decrypted names array to the dashboard
                 navigate(`/survey-submissions/${id}`, { 
                     state: { 

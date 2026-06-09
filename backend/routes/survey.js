@@ -152,7 +152,7 @@ router.post("/reveal", async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      "SELECT student_id, encrypted_name, iv, gender, gpa FROM student_survey_entries WHERE survey_id = ?",
+      "SELECT student_id, encrypted_name, iv, gender, gpa, created_at FROM student_survey_entries WHERE survey_id = ?",
       [surveyId]
     );
 
@@ -161,10 +161,6 @@ router.post("/reveal", async (req, res) => {
 
     const decryptedResults = rows.map(row => {
       try {
-        if (typeof row.iv !== 'string' || !/^[0-9a-fA-F]{32}$/.test(row.iv)) {
-          return { id: row.student_id, name: "Invalid IV Format", gender: row.gender, gpa: row.gpa };
-        }
-
         const decipher = crypto.createDecipheriv(
           algorithm,
           instructorKey,
@@ -178,11 +174,12 @@ router.post("/reveal", async (req, res) => {
           id: row.student_id,
           name: decrypted,
           gender: row.gender,
-          gpa: row.gpa
+          gpa: row.gpa,
+          created_at: row.created_at
         };
       } catch (decryptionError) {
         console.error("Row decryption failed:", decryptionError);
-        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa };
+        return { id: row.student_id, name: "Invalid Key/Decryption Failed", gender: row.gender, gpa: row.gpa, created_at: row.created_at };
       }
     });
 
@@ -194,6 +191,44 @@ router.post("/reveal", async (req, res) => {
   } catch (err) {
     console.error("Database Error:", err);
     res.status(500).json({ success: false, error: "Database error" });
+  }
+});
+
+// DELETE a single student submission and associated schedule records
+router.delete('/submission/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+
+  if (!studentId) {
+    return res.status(400).json({ success: false, error: "Missing required studentId path argument" });
+  }
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // 1. Remove dependent child records from availability table
+    await connection.execute('DELETE FROM availability WHERE student_id = ?', [studentId]);
+
+    // 2. Clear main student survey table entry
+    const [result] = await connection.execute('DELETE FROM student_survey_entries WHERE student_id = ?', [studentId]);
+
+    if (result.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({ success: false, error: "Target submission record could not be found." });
+    }
+
+    await connection.commit();
+    return res.status(200).json({ success: true, message: "Submission dropped successfully." });
+  } catch (error) {
+    if (connection) {
+      await connection.rollback();
+    }
+    console.error("Critical error destroying database records:", error);
+    return res.status(500).json({ success: false, error: "Database internal fault processing entity removal." });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 });
 

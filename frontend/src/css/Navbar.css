@@ -12,8 +12,8 @@
 }
 
 .instructor-navbar-inner {
-  width: min(1120px, calc(100% - 20px));
-  margin: 0 auto 0 44px;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
   min-height: 86px;
   display: flex;
   align-items: center;
@@ -26,6 +26,7 @@
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .instructor-nav-link {
@@ -80,6 +81,23 @@
   padding: calc(var(--instructor-navbar-height) + 32px) 0 0;
 }
 
+.logout-btn {
+    background-color: transparent;
+    border: 1px solid #284740;
+    color: #284740;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background-color: #284740;
+    color: #fff;
+}
 @media (max-width: 768px) {
   .instructor-navbar-inner {
     width: min(100%, calc(100% - 24px));

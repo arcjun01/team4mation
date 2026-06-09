@@ -4,7 +4,6 @@ import Navbar from './Navbar';
 import PurgeModal from './PurgeModal';
 import '../css/InstructorFormDetails.css';
 import copyIcon from '../assets/CopyIcon.svg';
-import editIcon from '../assets/EditIcon.svg';
 import deleteIcon from '../assets/DeleteIcon.svg';
 import linkIcon from '../assets/LinkIcon.svg';
 import activityIcon from '../assets/ActivityIcon.svg';
@@ -14,6 +13,12 @@ const normalizeLimitType = (limitType) => {
   return limitType.toLowerCase() === 'minimum' || limitType.toLowerCase() === 'min'
     ? 'Minimum'
     : 'Maximum';
+};
+const formatDateTime = (value) => {
+  if (!value) return 'N/A';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'N/A';
+  return parsed.toLocaleString();
 };
 
 const InstructorFormDetails = () => {
@@ -66,28 +71,13 @@ const InstructorFormDetails = () => {
   const useGpa = Boolean(
     formConfig?.useGpa ?? formConfig?.use_gpa
   );
+  const createdOn = formConfig?.createdAt || formConfig?.created_at || null;
   const submissionCount = stats?.submissions ?? 0;
-  const displayStatus = (stats?.status || '').toString();
+  
   const hasGeneratedGroups = ['closed', 'formed'].includes((stats?.status || '').toLowerCase());
 
   const handleGoBack = () => {
     navigate(-1);
-  };
-
-  const handleEditSurvey = () => {
-    navigate('/setup', {
-      state: {
-        formData: {
-          courseName,
-          description,
-          classSize,
-          teamLimit: String(teamLimit || ''),
-          limitType,
-          prevCourse,
-          useGpa
-        }
-      }
-    });
   };
 
   const handlePurgeSurvey = async () => {
@@ -174,10 +164,14 @@ const InstructorFormDetails = () => {
                     <span className="form-detail-label">Class Size</span>
                     <span className="form-detail-value">{classSize || 'N/A'}</span>
                   </div>
-                  {useGpa && (
+                  <div className="form-detail-card">
+                    <span className="form-detail-label">Created on</span>
+                    <span className="form-detail-value">{formatDateTime(createdOn)}</span>
+                  </div>
+                  {useGpa && prevCourse && (
                     <div className="form-detail-card">
                       <span className="form-detail-label">Prerequisite Course</span>
-                      <span className="form-detail-value">{prevCourse || 'N/A'}</span>
+                      <span className="form-detail-value">{prevCourse}</span>
                     </div>
                   )}
                   {hasGeneratedGroups ? (
@@ -232,16 +226,6 @@ const InstructorFormDetails = () => {
                     aria-label="Copy Student Survey Link"
                   >
                     <img src={copyIcon} alt="" />
-                  </button>
-                  <button
-                    type="button"
-                    className="form-actions-rail-button"
-                    onClick={handleEditSurvey}
-                    title={hasGeneratedGroups ? 'Editing disabled after groups are formed' : 'Edit Survey'}
-                    aria-label="Edit Survey"
-                    disabled={hasGeneratedGroups}
-                  >
-                    <img src={editIcon} alt="" />
                   </button>
                   <button
                     type="button"

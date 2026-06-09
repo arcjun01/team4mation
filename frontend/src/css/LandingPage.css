@@ -62,12 +62,26 @@
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  padding: clamp(40px, 10vw, 120px) clamp(20px, 5vw, 40px);
+  padding: clamp(28px, 6vw, 64px) clamp(20px, 5vw, 40px);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 25px;
   box-sizing: border-box;
+}
+
+.landing-description {
+  max-width: 680px;
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.landing-description p {
+  margin: 0;
+  padding-top: 16px;
+  padding-bottom: 40px;
 }
 
 .landing-primary-button {

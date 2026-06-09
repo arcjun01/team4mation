@@ -9,3 +9,14 @@ services:
     volumes:
       - ./frontend/dist:/frontend/dist
     restart: always
+
+  php:
+    build: ./login
+    container_name: team4mation_php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./login:/var/www/html
+    restart: always
+    environment:
+      - APP_URL=http://164.92.80.18:3001

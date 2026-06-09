@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear }) {
+  const [localError, setLocalError] = useState("");
+
   const handleGpaChange = (value) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue)) {
       setGpa("");
+      setLocalError("");
       return;
     }
 
+    // do not accept negative values
+    if (numValue < 0) {
+      setLocalError("Grade cannot be negative");
+      return;
+    }
+
+    // clear any local validation error
+    if (localError) setLocalError("");
+
     setGpa(numValue);
-    if (error) onClear();
+    if (error && onClear) onClear();
   };
 
   const courseDisplay = prevCourse || "SDEV 344";
@@ -41,7 +53,11 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
       <div style={{ fontSize: "14px", color: "#666", fontWeight: "500", marginTop: "8px" }}>
         {courseDisplay} GPA
       </div>
-      {error && <div className="error-message">{error}</div>}
+      {localError ? (
+        <div className="error-message">{localError}</div>
+      ) : (
+        error && <div className="error-message">{error}</div>
+      )}
     </div>
   );
 }

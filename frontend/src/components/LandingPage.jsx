@@ -21,6 +21,13 @@ const LandingPage = () => {
         <section className="landing-card top-gap">
           <div className="question-container "><h1>Smart Team Formation</h1></div>
           <div className="landing-content-card">
+            <div className="landing-description">
+              <p>
+                Team4mation helps instructors create balanced student teams from survey responses.
+                Set up a team formation survey, collect student information, review submissions,
+                and generate organized groups based on different criteria.
+              </p>
+            </div>
             <button
               className="landing-primary-button"
               onClick={handleNewGroupFormationClick}

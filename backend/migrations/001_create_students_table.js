@@ -2,8 +2,11 @@ import { pool } from '../db.js';
 
 export const up = async () => {
   const connection = await pool.getConnection();
+
   try {
-    // Create availability table
+    // -----------------------------
+    // 1. Availability table
+    // -----------------------------
     await connection.query(`
       CREATE TABLE IF NOT EXISTS availability (
         student_id INT(11) NOT NULL,
@@ -14,28 +17,53 @@ export const up = async () => {
     `);
     console.log('✓ Availability table created successfully');
 
-    // Create survey configurations table
+    // -----------------------------
+    // 2. Survey configurations table
+    // -----------------------------
     await connection.query(`
       CREATE TABLE IF NOT EXISTS survey_configurations (
-          id VARCHAR(255) PRIMARY KEY, 
-          course_name VARCHAR(255),
-          class_size INT,
-          team_limit INT,        
-          limit_type VARCHAR(20),
-          use_gpa BOOLEAN,
-          prev_course VARCHAR(255),
-          encryption_salt VARCHAR(255),
-          status VARCHAR(20) DEFAULT 'open',
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        id VARCHAR(255) PRIMARY KEY,
+        course_name VARCHAR(255),
+        class_size INT,
+        team_limit INT,
+        limit_type VARCHAR(20),
+        use_gpa BOOLEAN,
+        prev_course VARCHAR(255),
+        encryption_salt VARCHAR(255),
+        status VARCHAR(20) DEFAULT 'open',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    await connection.query(`
-      ALTER TABLE survey_configurations
-      ADD COLUMN IF NOT EXISTS description TEXT
+
+    // SAFE ADD COLUMN: description
+    const [descCol] = await connection.query(`
+      SHOW COLUMNS FROM survey_configurations LIKE 'description'
     `);
+
+    if (descCol.length === 0) {
+      await connection.query(`
+        ALTER TABLE survey_configurations
+        ADD COLUMN description TEXT
+      `);
+    }
+
+    // SAFE ADD COLUMN: availability_optional
+    const [availCol] = await connection.query(`
+      SHOW COLUMNS FROM survey_configurations LIKE 'availability_optional'
+    `);
+
+    if (availCol.length === 0) {
+      await connection.query(`
+        ALTER TABLE survey_configurations
+        ADD COLUMN availability_optional BOOLEAN DEFAULT FALSE
+      `);
+    }
+
     console.log('✓ Survey configurations table created successfully');
 
-    // Create student survey entries table
+    // -----------------------------
+    // 3. Student survey entries
+    // -----------------------------
     await connection.query(`
       CREATE TABLE IF NOT EXISTS student_survey_entries (
         student_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -45,9 +73,23 @@ export const up = async () => {
         gpa DOUBLE,
         commitment VARCHAR(50),
         survey_id VARCHAR(255),
+        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // SAFE ADD COLUMN: submitted_at (only if missing)
+    const [subCol] = await connection.query(`
+      SHOW COLUMNS FROM student_survey_entries LIKE 'submitted_at'
+    `);
+
+    if (subCol.length === 0) {
+      await connection.query(`
+        ALTER TABLE student_survey_entries
+        ADD COLUMN submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      `);
+    }
+
     console.log('✓ Student survey entries table created successfully');
 
   } finally {
@@ -57,10 +99,12 @@ export const up = async () => {
 
 export const down = async () => {
   const connection = await pool.getConnection();
+
   try {
     await connection.query('DROP TABLE IF EXISTS student_survey_entries');
     await connection.query('DROP TABLE IF EXISTS survey_configurations');
     await connection.query('DROP TABLE IF EXISTS availability');
+
     console.log('✓ Tables dropped successfully');
   } finally {
     connection.release();
