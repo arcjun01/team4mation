@@ -1,0 +1,132 @@
+/* ── Info Modal Overlay ── */
+.info-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: infoFadeIn 0.3s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+@keyframes infoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Info Modal Content ── */
+.info-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: clamp(20px, 5vw, 40px);
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: infoSlideUp 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+@keyframes infoSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ── Info Modal Header ── */
+.info-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.info-modal-header h2 {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* ── Info Modal Message ── */
+.info-modal-message {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 20px 0 30px 0;
+  text-align: left;
+}
+
+/* ── Info Modal Actions ── */
+.info-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.info-modal-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  background-color: #5ba89f;
+  color: white;
+}
+
+.info-modal-btn:hover {
+  background-color: #4d9690;
+  transform: translateY(-2px);
+}
+
+.info-modal-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Info Modal Body Styles ── */
+.info-modal-intro {
+  margin: 0 0 16px 0;
+  color: #555;
+}
+
+.info-modal-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-modal-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.info-step-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.info-modal-footer {
+  margin: 0;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.5;
+}

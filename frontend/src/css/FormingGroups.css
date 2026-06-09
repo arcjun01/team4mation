@@ -1,4 +1,10 @@
 /* Group Card Styles for FormingGroups */
+.forming-groups-content-container,
+.formed-teams-preview-content-container {
+    --forming-group-card-width: 520px;
+    --forming-groups-grid-gap: 16px;
+}
+
 .group-card {
     background: white;
     border-radius: 12px;
@@ -7,7 +13,23 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    width: 450px;
+    width: var(--forming-group-card-width, 520px);
+    transition: all 0.2s ease-in-out;
+}
+
+.group-card.dragging-active {
+    border: 2px dashed #4B9E5F;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 0 0 2px rgba(75, 158, 95, 0.1);
+}
+
+.group-card.droppable--over {
+    border: 2px solid #4B9E5F;
+    background-color: #f0f8f4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 0 0 2px rgba(75, 158, 95, 0.2);
+}
+
+.group-card.droppable--inactive {
+    opacity: 0.5;
 }
 
 .group-header {
@@ -55,7 +77,7 @@
 
 .group-table-header {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1.8fr;
+    grid-template-columns: 1.15fr 0.85fr 0.95fr 0.85fr 2.8fr;
     gap: 8px;
     padding: 10px;
     background-color: #f3f4f6;
@@ -70,7 +92,7 @@
 
 .group-table-row {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1.8fr;
+    grid-template-columns: 1.15fr 0.85fr 0.95fr 0.85fr 2.8fr;
     gap: 8px;
     padding: 8px;
     border-bottom: 1px solid #f3f4f6;
@@ -206,7 +228,7 @@
 }
 
 .formed-teams-preview-groups-container {
-    width: min(100vw, 1780px);
+    width: min(100vw, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
 }
 
 .formed-teams-shared-availability {
@@ -243,14 +265,14 @@
 }
 
 .forming-groups-student-groups-container {
-    width: min(100vw, 1780px);
+    width: min(100vw, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
 }
 
 .forming-groups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 550px);
-    gap: 20px;
-    width: min(100%, 1780px);
+    grid-template-columns: repeat(auto-fit, var(--forming-group-card-width, 520px));
+    gap: var(--forming-groups-grid-gap, 16px);
+    width: min(100%, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
     justify-content: center;
     margin: 0 auto;
 }
@@ -274,14 +296,50 @@
     margin-right: auto;
 }
 
-@media (max-width: 927px) {
+@media (min-width: 1122px) and (max-width: 1655px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(2 * var(--forming-group-card-width, 520px) + var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(2, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(2 * var(--forming-group-card-width, 520px) + var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (min-width: 1656px) and (max-width: 2193px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(3 * var(--forming-group-card-width, 520px) + 2 * var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(3, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(3 * var(--forming-group-card-width, 520px) + 2 * var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (min-width: 2194px) {
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: min(100vw, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
+    }
+
+    .forming-groups-grid {
+        grid-template-columns: repeat(4, var(--forming-group-card-width, 520px));
+        width: min(100%, calc(4 * var(--forming-group-card-width, 520px) + 3 * var(--forming-groups-grid-gap, 16px)));
+    }
+}
+
+@media (max-width: 1121px) {
     .forming-groups-content-container .question-container {
         width: min(100%, 800px);
     }
 
     .forming-groups-results-layout {
         display: grid;
-        grid-template-columns: 430px 86px;
+        grid-template-columns: var(--forming-group-card-width, 520px) 86px;
         justify-content: center;
         column-gap: 20px;
     }
@@ -292,7 +350,7 @@
 
     .forming-groups-student-groups-container {
         grid-column: 1;
-        width: 430px;
+        width: var(--forming-group-card-width, 520px);
     }
 
     .forming-groups-results-actions-rail {
@@ -311,11 +369,11 @@
     }
 
     .forming-groups-grid {
-        grid-template-columns: 430px;
+        grid-template-columns: var(--forming-group-card-width, 520px);
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 719px) {
     .forming-groups-content-container .question-container {
         width: 100%;
     }
@@ -354,7 +412,8 @@
         height: 26px;
     }
 
-    .forming-groups-results-layout {
+    .forming-groups-results-layout,
+    .formed-teams-preview-results-layout {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -364,12 +423,19 @@
         display: none;
     }
 
+    .forming-groups-student-groups-container,
+    .formed-teams-preview-groups-container {
+        width: 100%;
+        max-width: min(100vw, var(--forming-group-card-width, 520px));
+    }
+
     .forming-groups-grid {
         grid-template-columns: minmax(0, 1fr);
+        width: 100%;
     }
 
     .forming-groups-grid .group-card {
-        width: min(430px, 100%);
+        width: min(var(--forming-group-card-width, 520px), 100%);
     }
 }
 

@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         >
 
         <button type="submit">Login</button>
-
+        <a href="https://gatorlock.greenrivertech.net/register">Don't have an account? Register</a>
     </form>
 
 </div>

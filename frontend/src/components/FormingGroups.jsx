@@ -28,6 +28,8 @@ const FormingGroups = ({ decryptedSessions }) => {
     const [isSurveyClosed, setIsSurveyClosed] = useState(false);
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [activeDropTarget, setActiveDropTarget] = useState(null);
 
     const handleCloseSurvey = async () => {
         setIsClosing(true);
@@ -262,11 +264,13 @@ const FormingGroups = ({ decryptedSessions }) => {
 
     const DroppableGroup = ({ group, children }) => {
         const { isOver, setNodeRef } = useDroppable({ id: `group-${group.number}` });
-        const overClass = isOver ? 'droppable--over' : '';
+        const isTargetGroup = isOver && isDragging;
+        const isNonTargetInDrag = isDragging && !isOver;
+        
         return (
             <div
                 ref={setNodeRef}
-                className={`group-card droppable ${overClass} ${!shouldShowAvailability ? 'compact-group-card' : ''}`}
+                className={`group-card droppable ${isDragging ? 'dragging-active' : ''} ${isTargetGroup ? 'droppable--over' : ''} ${isNonTargetInDrag ? 'droppable--inactive' : ''} ${!shouldShowAvailability ? 'compact-group-card' : ''}`}
                 data-group-number={group.number}
             >
                 {children}
@@ -274,8 +278,15 @@ const FormingGroups = ({ decryptedSessions }) => {
         );
     };
 
+    const handleDragStart = (event) => {
+        setIsDragging(true);
+    };
+
     const handleDragEnd = (event) => {
         const { active, over } = event;
+        setIsDragging(false);
+        setActiveDropTarget(null);
+        
         if (!over) return;
         const activeId = active.id;
         const overId = over.id;
@@ -373,7 +384,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                             <div className="results-layout forming-groups-results-layout">
                                 <div className="student-groups-container forming-groups-student-groups-container">
                                     <div className={`forming-groups-grid ${!shouldShowAvailability ? 'compact-grid' : ''}`}>
-                                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                                             {groupsState.map((group) => (
                                                 <DroppableGroup key={group.number} group={group}>
                                                     <div className="group-header"><span>Group #{group.number}</span></div>
@@ -384,7 +395,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                                                             <div className="group-table-cell">
                                                                 {surveyConfig?.use_gpa && surveyConfig?.prev_course 
                                                                     ? <>{surveyConfig.prev_course}<br/> Grade</> 
-                                                                    : 'GPA'}
+                                                                    : 'Grade'}
                                                             </div>
                                                             <div className="group-table-cell">Commitment</div>
                                                             {shouldShowAvailability && (

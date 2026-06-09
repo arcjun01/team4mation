@@ -16,7 +16,7 @@ body {
     width: 300px;
 
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     text-align: center;
 }
@@ -41,7 +41,7 @@ button {
     width: 100%;
     padding: 10px;
 
-    background-color:#086759;
+    background-color: #086759;
     color: white;
 
     border: none;
@@ -50,8 +50,14 @@ button {
     cursor: pointer;
 }
 
+a {
+    display: block;
+    margin-top: 25px;
+    text-decoration: none;
+}
+
 button:hover {
-    background-color:#065a4d;
+    background-color: #065a4d;
 }
 
 .error {

@@ -59,6 +59,17 @@ export const up = async () => {
       `);
     }
 
+    const [emailCol] = await connection.query(`
+      SHOW COLUMNS FROM survey_configurations LIKE 'instructor_email'
+    `);
+
+    if (emailCol.length === 0) {
+      await connection.query(`
+        ALTER TABLE survey_configurations
+        ADD COLUMN instructor_email VARCHAR(255) DEFAULT NULL
+      `);
+    }
+
     console.log('✓ Survey configurations table created successfully');
 
     // -----------------------------

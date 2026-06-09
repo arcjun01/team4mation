@@ -18,7 +18,10 @@ const ViewSurveys = () => {
       setLoading(true);
       const token = localStorage.getItem('auth_token');
       const instructorEmail = token ? atob(token).split(':')[0] : null;
-      const response = await fetch(`/api/surveys/open?email=${encodeURIComponent(instructorEmail)}`);
+      const surveysUrl = instructorEmail
+        ? `/api/surveys/open?email=${encodeURIComponent(instructorEmail)}`
+        : '/api/surveys/open';
+      const response = await fetch(surveysUrl);
       
       if (!response.ok) {
         throw new Error('Failed to fetch surveys');

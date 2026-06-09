@@ -5,7 +5,8 @@ import { pool } from '../db.js';
 router.post("/save-setup", async (req, res) => {
   const { 
     uniqueId, courseName, description, classSize, teamLimit, 
-    limitType, useGpa, prevCourse, encryptionSalt, availabilityOptional, instructorEmail
+    limitType, useGpa, prevCourse, encryptionSalt, availabilityOptional,
+    instructorEmail
   } = req.body;
 
   try {
@@ -24,7 +25,7 @@ router.post("/save-setup", async (req, res) => {
         prevCourse ?? null,
         encryptionSalt ?? null,
         availabilityOptional ?? 0,
-        instructorEmail ?? null
+        instructorEmail ?? null,
       ]
     );
 
