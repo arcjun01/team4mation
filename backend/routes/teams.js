@@ -12,7 +12,7 @@ router.get("/open", async (req, res) => {
         let params = [];
 
         if (email) {
-            query += " WHERE instructor_email = ?";
+            query += " WHERE instructor_email = ? OR instructor _email IS NULL";
             params.push(email);
         }
 
