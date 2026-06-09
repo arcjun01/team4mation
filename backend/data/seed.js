@@ -1,15 +1,22 @@
+import crypto from 'crypto';
 import { pool } from '../db.js';
 import dotenv from 'dotenv';
+import {
+    survey5DecryptionKey,
+    survey5Students,
+    buildSurvey5Availability,
+} from './survey5SeedData.js';
 
 dotenv.config({ path: '.env' });
 
 /**
  * Seed script to populate the database with test data.
- * Creates four survey configurations with different constraints:
+ * Creates five survey configurations with different constraints:
  * 1. Class with only 1 female
  * 2. Class with max group size 4 and class size 23
  * 3. Class with min group size 2 and class size 19
  * 4. Class with max group size 3 and class size 20
+ * 5. Nine groups demo with 32 students (8 groups of 4)
  */
 
 const seedData = async () => {
@@ -947,18 +954,77 @@ const seedData = async () => {
         }
         console.log(`✓ ${availabilityDataSurvey4.length} availability slots added for survey 4\n`);
 
+        // ===== SURVEY CONFIGURATION 5: Nine Groups Demo, 32 Students =====
+        const surveyId5 = 'SURVEY-NINE-GROUPS-DEMO-001';
+        console.log(`📝 Creating Survey Configuration 5: ${surveyId5}`);
+
+        await connection.query(
+            `INSERT INTO survey_configurations (id, course_name, class_size, team_limit, limit_type, use_gpa, prev_course, encryption_salt, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                surveyId5,
+                'Nine Groups Demo',
+                32,
+                4,
+                'max',
+                true,
+                null,
+                survey5DecryptionKey,
+                'open',
+            ]
+        );
+        console.log('✓ Survey configuration 5 created');
+
+        let survey5StudentIdStart = 0;
+        const survey5KeyBuffer = Buffer.from(survey5DecryptionKey.substring(0, 32), 'utf8');
+
+        for (const student of survey5Students) {
+            const iv = crypto.randomBytes(16);
+            const cipher = crypto.createCipheriv('aes-256-cbc', survey5KeyBuffer, iv);
+            let encryptedName = cipher.update(student.name, 'utf8', 'hex');
+            encryptedName += cipher.final('hex');
+            const ivHex = iv.toString('hex');
+
+            const [result] = await connection.query(
+                `INSERT INTO student_survey_entries (encrypted_name, iv, gender, gpa, commitment, survey_id) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+                [encryptedName, ivHex, student.gender, student.gpa, student.commitment, surveyId5]
+            );
+
+            if (survey5StudentIdStart === 0) {
+                survey5StudentIdStart = result.insertId;
+            }
+        }
+        console.log(`✓ ${survey5Students.length} students added to survey 5\n`);
+
+        const availabilityDataSurvey5 = buildSurvey5Availability(survey5StudentIdStart);
+
+        for (const availability of availabilityDataSurvey5) {
+            await connection.query(
+                `INSERT INTO availability (student_id, day_of_week, time_slot) 
+         VALUES (?, ?, ?)`,
+                [availability.student_id, availability.day_of_week, availability.time_slot]
+            );
+        }
+        console.log(`✓ ${availabilityDataSurvey5.length} availability slots added for survey 5\n`);
+
         console.log('✅ Database seeding completed successfully!');
         console.log('\n📊 Summary:');
         console.log('   - Survey 1 (Female Only): 24 students');
         console.log('   - Survey 2 (Max Group 4): 23 students');
         console.log('   - Survey 3 (Min Group 2): 19 students');
         console.log('   - Survey 4 (Max Group 3): 20 students');
-        console.log('   - Total: 86 students seeded');
+        console.log('   - Survey 5 (Nine Groups Demo): 32 students');
+        console.log('   - Total: 118 students seeded');
         console.log(`   - Survey 1 availability slots: ${availabilityDataSurvey1.length}`);
         console.log(`   - Survey 2 availability slots: ${availabilityDataSurvey2.length}`);
         console.log(`   - Survey 3 availability slots: ${availabilityDataSurvey3.length}`);
         console.log(`   - Survey 4 availability slots: ${availabilityDataSurvey4.length}`);
-        console.log(`   - Total availability slots: ${availabilityDataSurvey1.length + availabilityDataSurvey2.length + availabilityDataSurvey3.length + availabilityDataSurvey4.length}\n`);
+        console.log(`   - Survey 5 availability slots: ${availabilityDataSurvey5.length}`);
+        console.log(`   - Total availability slots: ${availabilityDataSurvey1.length + availabilityDataSurvey2.length + availabilityDataSurvey3.length + availabilityDataSurvey4.length + availabilityDataSurvey5.length}`);
+        console.log('\n🔑 Survey 5 decryption key (for name reveal):');
+        console.log(`   ${survey5DecryptionKey}`);
+        console.log(`   Survey ID: ${surveyId5}\n`);
 
     } catch (error) {
         console.error('❌ Error seeding database:', error);

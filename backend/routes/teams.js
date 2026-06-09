@@ -11,8 +11,8 @@ router.get("/open", async (req, res) => {
         let query = "SELECT id, course_name, class_size, team_limit, limit_type, status, prev_course, created_at FROM survey_configurations";
         let params = [];
 
-        if (email) {
-            query += " WHERE instructor_email = ?";
+        if (email && email !== "null" && email !== "undefined") {
+            query += " WHERE (instructor_email = ? OR instructor_email IS NULL)";
             params.push(email);
         }
 
