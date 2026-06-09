@@ -50,9 +50,6 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
         onChange={(e) => handleGpaChange(e.target.value)}
         className="gpa-input"
       />
-      <div style={{ fontSize: "14px", color: "#666", fontWeight: "500", marginTop: "8px" }}>
-        {courseDisplay} GPA
-      </div>
       {localError ? (
         <div className="error-message">{localError}</div>
       ) : (
