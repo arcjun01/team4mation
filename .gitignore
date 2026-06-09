@@ -12,3 +12,4 @@ frontend/.env
 # OS / IDE
 .DS_Store
 *.log
+docker-compose.override.yml
