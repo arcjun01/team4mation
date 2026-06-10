@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
 
   const gpaNum = parseFloat(gpa ?? 2.0);
   if (isNaN(gpaNum) || gpaNum < 1.0 || gpaNum > 4.0) {
-    return res.status(400).json({ success: false, error: "GPA must be 1.0–4.0" });
+    return res.status(400).json({ success: false, error: "Grade must be 1.0–4.0" });
   }
 
   if (!commitment) {
