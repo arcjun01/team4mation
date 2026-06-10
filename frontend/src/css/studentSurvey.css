@@ -162,6 +162,10 @@ span {
     margin-top: 4px;
 }
 
+.grade-question .details {
+    margin-bottom: 12px;
+}
+
 .gpa-input {
     background-color: #B2E1CB;
     border: none;
@@ -171,7 +175,7 @@ span {
     font-size: 18px;
     text-align: center;
     cursor: pointer;
-    margin-top: 16px;
+    margin-top: 0;
     margin-bottom: 8px;
 }
 
