@@ -275,11 +275,11 @@ const InstructorTeamSetup = () => {
               )}
             </div>
 
-            {/* GPA Checkbox */}
+            {/* Grade checkbox */}
             <div className="setup-card checkbox-section">
               <div className="checkbox-row">
                 <input type="checkbox" id="useGpa" name="useGpa" checked={formData.useGpa} onChange={handleChange} />
-                <label htmlFor="useGpa">Factor prerequisite GPA into team formation</label>
+                <label htmlFor="useGpa">Factor prerequisite grade into team formation</label>
               </div>
             </div>
 

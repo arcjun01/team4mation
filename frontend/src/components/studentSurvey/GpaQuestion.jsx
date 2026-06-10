@@ -28,9 +28,9 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
 
   return (
     <div className="question-container">
-      <h2 className="question-title">What was your final GPA in {courseDisplay}? Enter or adjust below</h2>
+      <h2 className="question-title">What was your final grade in {courseDisplay}? Enter or adjust below</h2>
       <p className="details">
-        You can view your GPA in{" "}
+        You can view your grades in{" "}
         <a
             href="https://csprd.ctclink.us/psc/csprd_9/EMPLOYEE/SA/c/SSR_STUDENT_ACAD_REC_FL.SSR_MD_ACAD_REC_FL.GBL?Action=U&MD=Y&GMenu=SSR_STUDENT_ACAD_REC_FL&GComp=SSR_ACADREC_NAV_FL&GPage=SCC_START_PAGE_FL&scname=CTC_ACADEMIC_RECORDS_NAVCOL&AJAXTRANSFER=Y"
             target="_blank"
@@ -50,9 +50,6 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
         onChange={(e) => handleGpaChange(e.target.value)}
         className="gpa-input"
       />
-      <div style={{ fontSize: "14px", color: "#666", fontWeight: "500", marginTop: "8px" }}>
-        {courseDisplay} GPA
-      </div>
       {localError ? (
         <div className="error-message">{localError}</div>
       ) : (
