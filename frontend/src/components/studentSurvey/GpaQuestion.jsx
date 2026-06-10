@@ -27,7 +27,7 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
   const courseDisplay = prevCourse || "SDEV 344";
 
   return (
-    <div className="question-container">
+    <div className="question-container grade-question">
       <h2 className="question-title">What was your final grade in {courseDisplay}? Enter or adjust below</h2>
       <p className="details">
         You can view your grades in{" "}
@@ -46,7 +46,7 @@ export default function GpaQuestion({ gpa, setGpa, prevCourse, error, onClear })
         step="0.1"
         min="1.0"
         max="4.0"
-        value={gpa ? (Number.isInteger(gpa) ? gpa : gpa.toFixed(1)) : ""}
+        value={gpa !== "" && gpa != null ? Number(gpa).toFixed(1) : ""}
         onChange={(e) => handleGpaChange(e.target.value)}
         className="gpa-input"
       />
