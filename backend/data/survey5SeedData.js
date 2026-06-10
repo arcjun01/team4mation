@@ -1,46 +1,47 @@
-export const survey5DecryptionKey = 'Team4mationSurvey5DemoKey1234567';
+export const survey5DecryptionKey = 'salt_survey_5_123456789012345678';
 
+// Commitment 1–4; weighted toward 3–4 (~59% at 4, ~28% at 3, ~12% at 2, ~3% at 1)
 export const survey5Students = [
-    // GROUP 1
-    { name: 'Student 1', gender: 'Female', gpa: 3.90, commitment: 4 },
-    { name: 'Student 2', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 3', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 4', gender: 'Male', gpa: 3.20, commitment: 4 },
-    // GROUP 2
-    { name: 'Student 5', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 6', gender: 'Male', gpa: 3.70, commitment: 4 },
-    { name: 'Student 7', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 8', gender: 'Female', gpa: 3.60, commitment: 4 },
-    // GROUP 3
-    { name: 'Student 9', gender: 'Male', gpa: 2.80, commitment: 4 },
-    { name: 'Student 10', gender: 'Other', gpa: 3.90, commitment: 4 },
-    { name: 'Student 11', gender: 'Female', gpa: 3.80, commitment: 4 },
-    { name: 'Student 12', gender: 'Female', gpa: 3.90, commitment: 4 },
-    // GROUP 4
-    { name: 'Student 13', gender: 'Male', gpa: 3.80, commitment: 4 },
-    { name: 'Student 14', gender: 'Female', gpa: 3.30, commitment: 4 },
-    { name: 'Student 15', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 16', gender: 'Male', gpa: 3.80, commitment: 4 },
-    // GROUP 5
-    { name: 'Student 17', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 18', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 19', gender: 'Male', gpa: 4.00, commitment: 4 },
-    { name: 'Student 20', gender: 'Male', gpa: 4.00, commitment: 4 },
-    // GROUP 6
-    { name: 'Student 21', gender: 'Male', gpa: 2.50, commitment: 4 },
-    { name: 'Student 22', gender: 'Female', gpa: 3.85, commitment: 4 },
-    { name: 'Student 23', gender: 'Male', gpa: 3.50, commitment: 4 },
-    { name: 'Student 24', gender: 'Male', gpa: 3.00, commitment: 4 },
-    // GROUP 7
-    { name: 'Student 25', gender: 'Female', gpa: 4.00, commitment: 4 },
-    { name: 'Student 26', gender: 'Female', gpa: 3.90, commitment: 4 },
-    { name: 'Student 27', gender: 'Female', gpa: 3.90, commitment: 4 },
-    { name: 'Student 28', gender: 'Other', gpa: 4.00, commitment: 4 },
-    // GROUP 8
-    { name: 'Student 29', gender: 'Male', gpa: 3.40, commitment: 4 },
-    { name: 'Student 30', gender: 'Male', gpa: 3.10, commitment: 4 },
-    { name: 'Student 31', gender: 'Male', gpa: 3.40, commitment: 4 },
-    { name: 'Student 32', gender: 'Female', gpa: 3.60, commitment: 4 },
+    // GROUP 1 — Fellowship hobbits & allies
+    { name: 'Galadriel', gender: 'Female', gpa: 3.90, commitment: 4 },
+    { name: 'Frodo Baggins', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Samwise Gamgee', gender: 'Male', gpa: 4.00, commitment: 3 },
+    { name: 'Meriadoc Brandybuck', gender: 'Male', gpa: 3.20, commitment: 2 },
+    // GROUP 2 — Rangers & warriors
+    { name: 'Aragorn', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Legolas', gender: 'Male', gpa: 3.70, commitment: 3 },
+    { name: 'Gimli', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Eowyn', gender: 'Female', gpa: 3.60, commitment: 4 },
+    // GROUP 3 — Wizards & elves
+    { name: 'Gandalf', gender: 'Male', gpa: 2.80, commitment: 3 },
+    { name: 'Gollum', gender: 'Other', gpa: 3.90, commitment: 4 },
+    { name: 'Arwen', gender: 'Female', gpa: 3.80, commitment: 4 },
+    { name: 'Goldberry', gender: 'Female', gpa: 3.90, commitment: 3 },
+    // GROUP 4 — Men of Gondor & Rohan
+    { name: 'Boromir', gender: 'Male', gpa: 3.80, commitment: 4 },
+    { name: 'Rosie Cotton', gender: 'Female', gpa: 3.30, commitment: 2 },
+    { name: 'Faramir', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Eomer', gender: 'Male', gpa: 3.80, commitment: 3 },
+    // GROUP 5 — Company of Thorin
+    { name: 'Thorin Oakenshield', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Balin', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Dwalin', gender: 'Male', gpa: 4.00, commitment: 4 },
+    { name: 'Bilbo Baggins', gender: 'Male', gpa: 4.00, commitment: 3 },
+    // GROUP 6 — More dwarves & hobbits
+    { name: 'Bofur', gender: 'Male', gpa: 2.50, commitment: 2 },
+    { name: 'Celebrían', gender: 'Female', gpa: 3.85, commitment: 4 },
+    { name: 'Bombur', gender: 'Male', gpa: 3.50, commitment: 3 },
+    { name: 'Peregrin Took', gender: 'Male', gpa: 3.00, commitment: 1 },
+    // GROUP 7 — Elves & ents
+    { name: 'Lúthien', gender: 'Female', gpa: 4.00, commitment: 4 },
+    { name: 'Ioreth', gender: 'Female', gpa: 3.90, commitment: 4 },
+    { name: 'Lobelia Sackville-Baggins', gender: 'Female', gpa: 3.90, commitment: 3 },
+    { name: 'Treebeard', gender: 'Other', gpa: 4.00, commitment: 4 },
+    // GROUP 8 — Lords & remaining dwarves
+    { name: 'Elrond', gender: 'Male', gpa: 3.40, commitment: 3 },
+    { name: 'Denethor', gender: 'Male', gpa: 3.10, commitment: 2 },
+    { name: 'Fili', gender: 'Male', gpa: 3.40, commitment: 4 },
+    { name: 'Morwen', gender: 'Female', gpa: 3.60, commitment: 4 },
 ];
 
 export function buildSurvey5Availability(studentIdStart) {
