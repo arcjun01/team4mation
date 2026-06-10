@@ -55,7 +55,7 @@ export default function AvailabilityQuestion({ availability, setAvailability, er
         What time slots are you available for team meetings?
       </h2>
       <div className="details">
-        Select all that apply.
+        Drag and drop or click to select all time slots that apply.
       </div>
 
       <div className="placement-center">
