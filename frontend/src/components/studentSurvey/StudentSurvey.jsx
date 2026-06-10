@@ -75,7 +75,7 @@ export default function StudentSurvey() {
     // Validate GPA if it's required
     if (surveyConfig?.use_gpa) {
       if (!gpa || gpa < 1.0 || gpa > 4.0) {
-        newErrors.gpa = "Please enter a valid grade between 1.0 and 4.0.";
+        newErrors.gpa = "Please enter a valid GPA between 1.0 and 4.0.";
       }
     }
 

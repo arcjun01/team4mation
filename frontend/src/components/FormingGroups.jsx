@@ -395,7 +395,7 @@ const FormingGroups = ({ decryptedSessions }) => {
                                                             <div className="group-table-cell">
                                                                 {surveyConfig?.use_gpa && surveyConfig?.prev_course 
                                                                     ? <>{surveyConfig.prev_course}<br/> Grade</> 
-                                                                    : 'Grade'}
+                                                                    : 'GPA'}
                                                             </div>
                                                             <div className="group-table-cell">Commitment</div>
                                                             {shouldShowAvailability && (
