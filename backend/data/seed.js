@@ -16,7 +16,7 @@ dotenv.config({ path: '.env' });
  * 2. Class with max group size 4 and class size 23
  * 3. Class with min group size 2 and class size 19
  * 4. Class with max group size 3 and class size 20
- * 5. Nine groups demo with 32 students (8 groups of 4)
+ * 5. SDEV 486 demo with 32 students (8 groups of 4)
  */
 
 const seedData = async () => {
@@ -954,7 +954,7 @@ const seedData = async () => {
         }
         console.log(`✓ ${availabilityDataSurvey4.length} availability slots added for survey 4\n`);
 
-        // ===== SURVEY CONFIGURATION 5: Nine Groups Demo, 32 Students =====
+        // ===== SURVEY CONFIGURATION 5: SDEV 486, 32 Students =====
         const surveyId5 = 'SURVEY-NINE-GROUPS-DEMO-001';
         console.log(`📝 Creating Survey Configuration 5: ${surveyId5}`);
 
@@ -963,7 +963,7 @@ const seedData = async () => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 surveyId5,
-                'Nine Groups Demo',
+                'SDEV 486',
                 32,
                 4,
                 'max',
@@ -1014,7 +1014,7 @@ const seedData = async () => {
         console.log('   - Survey 2 (Max Group 4): 23 students');
         console.log('   - Survey 3 (Min Group 2): 19 students');
         console.log('   - Survey 4 (Max Group 3): 20 students');
-        console.log('   - Survey 5 (Nine Groups Demo): 32 students');
+        console.log('   - Survey 5 (SDEV 486): 32 students');
         console.log('   - Total: 118 students seeded');
         console.log(`   - Survey 1 availability slots: ${availabilityDataSurvey1.length}`);
         console.log(`   - Survey 2 availability slots: ${availabilityDataSurvey2.length}`);
