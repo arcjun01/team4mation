@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Project Overview](#project-overview)
+- [Still To Be Implemented](#still-to-be-implemented)
 - [Prerequisites](#prerequisites)
 - [Environment Setup](#environment-setup)
 - [Dependencies & Installation](#dependencies--installation)
@@ -28,6 +29,17 @@ Students complete a short survey, and the system automatically forms teams that 
 - Beza
 - Juno
 - Liza
+
+---
+
+## Still To Be Implemented
+
+The following items are planned but not yet complete:
+
+1. **Login screen first** — Show the login screen before any other screens in the app flow.
+2. **Fix mobile login layout** — The login screen is too small on phones; it needs responsive/larger styling for mobile.
+3. **Deploy to greenrivertech.net** — Move the app to that domain.
+4. **Replace the New/Existing Group screen** — Instead of two buttons (New Group Formation / Existing Group Formation), show a list of existing groups with a **CREATE NEW SURVEY** button at the top.
 
 ---
 
