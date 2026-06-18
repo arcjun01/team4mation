@@ -32,7 +32,7 @@ Students complete a short survey, and the system automatically forms teams that 
 
 ---
 
-## Still To Be Implemented
+## Still To Be Implemented (Client's Requests)
 
 The following items are planned but not yet complete:
 
