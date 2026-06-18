@@ -271,6 +271,31 @@ npm run preview
 
 ---
 
+**Terminal 3 - PHP Login Server:**
+
+```bash
+cd login
+php -S localhost:8000
+```
+
+Expected output:
+```
+PHP 8.x.x Development Server (http://localhost:8000) started
+```
+
+**Terminal 2 - Frontend Development Server:**
+
+```bash
+cd frontend
+npm run dev
+```
+
+Expected output:
+```
+➜  Local:   http://localhost:5173/
+➜  press h to show help
+```
+
 ## API Endpoints Overview
 
 ### Core API Routes
